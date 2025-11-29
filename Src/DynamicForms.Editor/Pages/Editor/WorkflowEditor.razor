@@ -1,0 +1,449 @@
+@page "/editor/workflow/{WorkflowId:int?}"
+@using DynamicForms.Core.V2.Schemas
+@using DynamicForms.Editor.Services.State
+@using DynamicForms.Editor.Components.Workflow
+@inject WorkflowStateService StateService
+@inject UndoRedoService UndoRedoService
+@inject AutoSaveService AutoSaveService
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<PageTitle>@GetPageTitle()</PageTitle>
+
+<div class="workflow-editor">
+    <!-- Toolbar -->
+    <WorkflowToolbar
+        CanUndo="@UndoRedoService.CanUndo"
+        CanRedo="@UndoRedoService.CanRedo"
+        IsDirty="@StateService.IsDirty"
+        OnSave="HandleSaveAsync"
+        OnPublish="HandlePublishAsync"
+        OnUndo="HandleUndoAsync"
+        OnRedo="HandleRedoAsync"
+        OnImport="HandleImportAsync"
+        OnExport="HandleExportAsync" />
+
+    <!-- Main Content Area -->
+    <div class="workflow-content">
+        @if (StateService.CurrentWorkflow != null)
+        {
+            <!-- Left: Module List -->
+            <WorkflowModuleList
+                Modules="@GetWorkflowModules()"
+                SelectedModuleId="@_selectedModuleId"
+                AvailableModules="@_availableModules"
+                OnModuleSelected="@HandleModuleSelected"
+                OnModuleMoveUp="@HandleModuleMoveUpAsync"
+                OnModuleMoveDown="@HandleModuleMoveDownAsync"
+                OnModuleRemove="@HandleModuleRemoveAsync"
+                OnModuleAdd="@HandleModuleAddAsync"
+                OnEditBranch="@HandleEditBranchAsync" />
+
+            <!-- Right: Module Properties / Branching Editor -->
+            <div class="workflow-properties-panel">
+                @if (_editingBranch != null)
+                {
+                    <ConditionalBranchEditor
+                        WorkflowModule="@_editingBranch"
+                        AvailableFields="@GetModuleFields(_editingBranch.ModuleId)"
+                        AvailableModules="@GetWorkflowModules()"
+                        OnBranchChanged="@HandleBranchChangedAsync"
+                        OnCancel="@HandleCancelBranchEdit" />
+                }
+                else if (_selectedModuleId.HasValue)
+                {
+                    <div class="properties-placeholder">
+                        <h5>Module Properties</h5>
+                        <p class="text-muted">Module ID: @_selectedModuleId</p>
+                        <div class="alert alert-info">
+                            <strong>TODO:</strong> WorkflowModuleProperties component will be implemented here.
+                            <br />
+                            <small>Use the Edit Branch button (✏) on a module to configure conditional branching.</small>
+                        </div>
+                        <button type="button" class="btn btn-secondary" @onclick="HandleCancelEdit">
+                            Close
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="properties-empty">
+                        <div class="empty-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1z"/>
+                            </svg>
+                        </div>
+                        <h5 class="empty-title">No Module Selected</h5>
+                        <p class="empty-message">Select a module from the list to edit its properties and branching logic</p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="workflow-loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading workflow...</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Status Bar -->
+    <div class="workflow-status-bar">
+        <div class="status-item">
+            <strong>Last Saved:</strong>
+            @if (AutoSaveService.LastAutoSave.HasValue)
+            {
+                <span>@AutoSaveService.LastAutoSave.Value.ToLocalTime().ToString("hh:mm:ss tt")</span>
+            }
+            else
+            {
+                <span class="text-muted">Never</span>
+            }
+        </div>
+
+        <div class="status-item">
+            <strong>Modified:</strong>
+            <span>@StateService.LastModified.ToLocalTime().ToString("hh:mm:ss tt")</span>
+        </div>
+
+        <div class="status-item">
+            @if (StateService.IsDirty)
+            {
+                <span class="badge bg-warning">Unsaved Changes</span>
+            }
+            else
+            {
+                <span class="badge bg-success">Saved</span>
+            }
+        </div>
+
+        @if (AutoSaveService.IsSaving)
+        {
+            <div class="status-item">
+                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                <span>Saving...</span>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// Workflow ID from route (null for new workflow)
+    /// </summary>
+    [Parameter]
+    public int? WorkflowId { get; set; }
+
+    // ========================================================================
+    // STATE
+    // ========================================================================
+
+    private int? _selectedModuleId;
+    private List<FormModuleSchema> _availableModules = new();
+    private WorkflowModuleInfo? _editingBranch;
+
+    // ========================================================================
+    // LIFECYCLE
+    // ========================================================================
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Subscribe to state changes
+        StateService.StateChanged += OnStateChanged;
+        UndoRedoService.StackChanged += OnStackChanged;
+        AutoSaveService.AutoSaveCompleted += OnAutoSaveCompleted;
+
+        // Load existing workflow or create new
+        if (WorkflowId.HasValue)
+        {
+            var workflow = await LoadWorkflowAsync(WorkflowId.Value);
+            if (workflow != null)
+            {
+                StateService.LoadWorkflow(workflow);
+            }
+        }
+        else
+        {
+            // Create new blank workflow
+            var newWorkflow = new FormWorkflowSchema
+            {
+                Id = 0,
+                TitleEn = "New Workflow",
+                TitleFr = "Nouveau flux de travail"
+            };
+            StateService.LoadWorkflow(newWorkflow);
+        }
+
+        // Start auto-save
+        await AutoSaveService.StartAsync();
+
+        // Load available modules
+        // TODO: Load from repository
+        _availableModules = GetSampleAvailableModules();
+    }
+
+    private List<FormModuleSchema> GetSampleAvailableModules()
+    {
+        // TODO: Replace with actual repository call
+        return new List<FormModuleSchema>
+        {
+            new FormModuleSchema
+            {
+                Id = 1,
+                TitleEn = "Organization Information",
+                TitleFr = "Informations sur l'organisation",
+                DescriptionEn = "Collect basic organization details",
+                Fields = Array.Empty<FormFieldSchema>()
+            },
+            new FormModuleSchema
+            {
+                Id = 2,
+                TitleEn = "Project Details",
+                TitleFr = "Détails du projet",
+                DescriptionEn = "Project information and scope",
+                Fields = Array.Empty<FormFieldSchema>()
+            },
+            new FormModuleSchema
+            {
+                Id = 3,
+                TitleEn = "Budget & Funding",
+                TitleFr = "Budget et financement",
+                DescriptionEn = "Financial information",
+                Fields = Array.Empty<FormFieldSchema>()
+            },
+            new FormModuleSchema
+            {
+                Id = 4,
+                TitleEn = "Review & Submit",
+                TitleFr = "Révision et soumission",
+                DescriptionEn = "Final review before submission",
+                Fields = Array.Empty<FormFieldSchema>()
+            }
+        };
+    }
+
+    // ========================================================================
+    // EVENT HANDLERS
+    // ========================================================================
+
+    private async Task HandleSaveAsync()
+    {
+        await AutoSaveService.SaveNowAsync();
+        // TODO: Show toast notification
+    }
+
+    private async Task HandlePublishAsync()
+    {
+        // TODO: Validate before publish
+        // TODO: Confirm publish
+        // TODO: Publish workflow
+        // TODO: Show success message
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleUndoAsync()
+    {
+        // TODO: Implement undo
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleRedoAsync()
+    {
+        // TODO: Implement redo
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleImportAsync()
+    {
+        // TODO: Implement import
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleExportAsync()
+    {
+        // TODO: Implement export
+        await Task.CompletedTask;
+    }
+
+    private void HandleModuleSelected(int moduleId)
+    {
+        _selectedModuleId = moduleId;
+        StateHasChanged();
+    }
+
+    private async Task HandleModuleMoveUpAsync(WorkflowModuleList.ModuleMoveRequest request)
+    {
+        // TODO: Implement move up logic
+        // Swap with previous module in the ModuleIds array
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleModuleMoveDownAsync(WorkflowModuleList.ModuleMoveRequest request)
+    {
+        // TODO: Implement move down logic
+        // Swap with next module in the ModuleIds array
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleModuleRemoveAsync(int moduleId)
+    {
+        // TODO: Implement remove with confirmation
+        // Remove from ModuleIds array
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleModuleAddAsync(int moduleId)
+    {
+        // TODO: Add module to workflow (append to ModuleIds array)
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleEditBranchAsync(WorkflowModuleInfo module)
+    {
+        _editingBranch = module;
+        _selectedModuleId = null; // Close module properties if open
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleBranchChangedAsync(ConditionalBranch? branch)
+    {
+        if (_editingBranch == null) return;
+
+        // TODO: Update the workflow module's branch in the workflow
+        // This would involve updating the WorkflowModuleInfo and saving to StateService
+
+        _editingBranch = null;
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    private void HandleCancelBranchEdit()
+    {
+        _editingBranch = null;
+        StateHasChanged();
+    }
+
+    private void HandleCancelEdit()
+    {
+        _selectedModuleId = null;
+        _editingBranch = null;
+        StateHasChanged();
+    }
+
+    // ========================================================================
+    // HELPER METHODS
+    // ========================================================================
+
+    private List<WorkflowModuleInfo> GetWorkflowModules()
+    {
+        if (StateService.CurrentWorkflow == null)
+            return new List<WorkflowModuleInfo>();
+
+        // Convert ModuleIds to WorkflowModuleInfo
+        // TODO: Load actual module titles from repository
+        // For now, create placeholders
+        var modules = new List<WorkflowModuleInfo>();
+        for (int i = 0; i < StateService.CurrentWorkflow.ModuleIds.Length; i++)
+        {
+            var moduleId = StateService.CurrentWorkflow.ModuleIds[i];
+            modules.Add(new WorkflowModuleInfo
+            {
+                ModuleId = moduleId,
+                TitleEn = $"Module {moduleId} Title", // TODO: Load from repository
+                TitleFr = $"Titre du module {moduleId}", // TODO: Load from repository
+                Order = i,
+                Branch = null, // TODO: Load branching rules if any
+                IsRequired = true,
+                IsSkippable = false
+            });
+        }
+        return modules;
+    }
+
+    private List<FormFieldSchema> GetModuleFields(int moduleId)
+    {
+        // TODO: Load actual fields from the module repository
+        // For now, return sample fields
+        var availableModule = _availableModules.FirstOrDefault(m => m.Id == moduleId);
+        if (availableModule != null && availableModule.Fields.Length > 0)
+        {
+            return availableModule.Fields.ToList();
+        }
+
+        // Return sample fields for demonstration
+        return new List<FormFieldSchema>
+        {
+            new FormFieldSchema
+            {
+                Id = "organization_type",
+                FieldType = "DropDown",
+                LabelEn = "Organization Type",
+                LabelFr = "Type d'organisation"
+            },
+            new FormFieldSchema
+            {
+                Id = "project_category",
+                FieldType = "DropDown",
+                LabelEn = "Project Category",
+                LabelFr = "Catégorie de projet"
+            },
+            new FormFieldSchema
+            {
+                Id = "budget_amount",
+                FieldType = "TextBox",
+                LabelEn = "Budget Amount",
+                LabelFr = "Montant du budget"
+            },
+            new FormFieldSchema
+            {
+                Id = "is_continuing",
+                FieldType = "CheckBox",
+                LabelEn = "Is this a continuing project?",
+                LabelFr = "S'agit-il d'un projet continu?"
+            }
+        };
+    }
+
+    private string GetPageTitle()
+    {
+        var title = StateService.CurrentWorkflow?.TitleEn ?? "New Workflow";
+        return $"{title} - Workflow Editor";
+    }
+
+    private async Task<FormWorkflowSchema?> LoadWorkflowAsync(int workflowId)
+    {
+        // TODO: Load from repository
+        await Task.CompletedTask;
+        return null;
+    }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnStackChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnAutoSaveCompleted(object? sender, AutoSaveEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        StateService.StateChanged -= OnStateChanged;
+        UndoRedoService.StackChanged -= OnStackChanged;
+        AutoSaveService.AutoSaveCompleted -= OnAutoSaveCompleted;
+        AutoSaveService.Stop();
+    }
+}

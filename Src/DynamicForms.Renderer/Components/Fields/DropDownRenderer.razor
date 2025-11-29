@@ -1,0 +1,108 @@
+@inherits FieldRendererBase
+
+<div class="@GetCssClasses()">
+    @if (ShouldRenderLabel())
+    {
+        <label for="@GetHtmlId()" class="@GetLabelCssClasses()">
+            @GetLabel()
+        </label>
+    }
+
+    <select id="@GetHtmlId()"
+            class="@GetInputCssClasses()"
+            value="@GetValueAsString()"
+            disabled="@IsDisabled"
+            required="@IsRequired()"
+            @onchange="@(e => HandleValueChanged(e.Value))"
+            aria-describedby="@GetAriaDescribedBy()">
+
+        @* Placeholder option *@
+        <option value="">@GetPlaceholderOption()</option>
+
+        @* Render options from schema *@
+        @if (Schema.Options != null)
+        {
+            @foreach (var option in Schema.Options.OrderBy(o => o.Order))
+            {
+                <option value="@option.Value" selected="@IsOptionSelected(option)">
+                    @GetOptionLabel(option)
+                </option>
+            }
+        }
+    </select>
+
+    @if (ShouldRenderHelpText())
+    {
+        <small id="@GetHelpTextId()" class="form-text text-muted dynamic-field-help">
+            @GetHelpText()
+        </small>
+    }
+
+    @if (ShouldRenderErrors())
+    {
+        <div id="@GetErrorId()" class="invalid-feedback d-block dynamic-field-error">
+            @Errors.First()
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Gets the localized placeholder text for the empty option.
+    /// Uses custom placeholder if provided, otherwise defaults to "-- Select --" / "-- Sélectionner --"
+    /// </summary>
+    private string GetPlaceholderOption()
+    {
+        var customPlaceholder = GetPlaceholder();
+        if (!string.IsNullOrWhiteSpace(customPlaceholder))
+            return customPlaceholder;
+
+        return IsFrench ? "-- Sélectionner --" : "-- Select --";
+    }
+
+    /// <summary>
+    /// Gets the localized label for a dropdown option.
+    /// Returns French label if current culture is French and French label exists,
+    /// otherwise returns English label.
+    /// </summary>
+    private string GetOptionLabel(FieldOption option)
+    {
+        if (IsFrench && !string.IsNullOrWhiteSpace(option.LabelFr))
+            return option.LabelFr;
+
+        return option.LabelEn;
+    }
+
+    /// <summary>
+    /// Determines if an option should be selected.
+    /// Checks if the option value matches the current field value,
+    /// or if it's marked as default and no value is set.
+    /// </summary>
+    private bool IsOptionSelected(FieldOption option)
+    {
+        var currentValue = GetValueAsString();
+
+        // If there's a current value, check if it matches this option
+        if (!string.IsNullOrEmpty(currentValue))
+            return string.Equals(option.Value, currentValue, StringComparison.OrdinalIgnoreCase);
+
+        // If no current value, check if this option is marked as default
+        return option.IsDefault;
+    }
+
+    /// <summary>
+    /// Builds the aria-describedby attribute value combining help text and error IDs
+    /// </summary>
+    private string? GetAriaDescribedBy()
+    {
+        var ids = new List<string>();
+
+        if (ShouldRenderHelpText())
+            ids.Add(GetHelpTextId());
+
+        if (ShouldRenderErrors())
+            ids.Add(GetErrorId());
+
+        return ids.Count > 0 ? string.Join(" ", ids) : null;
+    }
+}

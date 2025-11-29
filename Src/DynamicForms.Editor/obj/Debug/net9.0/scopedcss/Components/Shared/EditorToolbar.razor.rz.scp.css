@@ -1,0 +1,391 @@
+/* Editor Toolbar Container */
+.editor-toolbar[b-vwf24c6jy3] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-bottom: 2px solid #dee2e6;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    min-height: 60px;
+    gap: 1rem;
+}
+
+/* Toolbar Sections */
+.toolbar-section[b-vwf24c6jy3] {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.toolbar-left[b-vwf24c6jy3] {
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.toolbar-center[b-vwf24c6jy3] {
+    flex: 0 0 auto;
+    justify-content: center;
+}
+
+.toolbar-right[b-vwf24c6jy3] {
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* Button Groups */
+.button-group[b-vwf24c6jy3] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Toolbar Divider */
+.toolbar-divider[b-vwf24c6jy3] {
+    width: 1px;
+    height: 32px;
+    background-color: #dee2e6;
+    margin: 0 0.5rem;
+}
+
+/* Toolbar Buttons */
+.toolbar-btn[b-vwf24c6jy3] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    position: relative;
+    border: 1px solid transparent;
+}
+
+.toolbar-btn i[b-vwf24c6jy3] {
+    font-size: 1rem;
+}
+
+.toolbar-btn .btn-label[b-vwf24c6jy3] {
+    font-size: 0.9rem;
+}
+
+/* Button Hover States */
+.toolbar-btn:not(:disabled):hover[b-vwf24c6jy3] {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.toolbar-btn:not(:disabled):active[b-vwf24c6jy3] {
+    transform: translateY(0);
+}
+
+/* Primary Button (Save) */
+.toolbar-btn.btn-primary[b-vwf24c6jy3] {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: #fff;
+}
+
+.toolbar-btn.btn-primary:not(:disabled):hover[b-vwf24c6jy3] {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.toolbar-btn.btn-primary:disabled[b-vwf24c6jy3] {
+    background-color: #95a5a6;
+    border-color: #95a5a6;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Success Button (Publish) */
+.toolbar-btn.btn-success[b-vwf24c6jy3] {
+    background-color: #2ecc71;
+    border-color: #2ecc71;
+    color: #fff;
+}
+
+.toolbar-btn.btn-success:not(:disabled):hover[b-vwf24c6jy3] {
+    background-color: #27ae60;
+    border-color: #27ae60;
+}
+
+/* Outline Secondary Buttons */
+.toolbar-btn.btn-outline-secondary[b-vwf24c6jy3] {
+    color: #6c757d;
+    border-color: #dee2e6;
+    background-color: #fff;
+}
+
+.toolbar-btn.btn-outline-secondary:not(:disabled):hover[b-vwf24c6jy3] {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+    color: #495057;
+}
+
+.toolbar-btn.btn-outline-secondary:disabled[b-vwf24c6jy3] {
+    color: #adb5bd;
+    border-color: #e9ecef;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Dirty Indicator */
+.dirty-indicator[b-vwf24c6jy3] {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    width: 8px;
+    height: 8px;
+    background-color: #e74c3c;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    animation: pulse-b-vwf24c6jy3 2s infinite;
+}
+
+@keyframes pulse-b-vwf24c6jy3 {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Action Count Badge */
+.action-count[b-vwf24c6jy3] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 0.375rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background-color: #3498db;
+    color: #fff;
+    border-radius: 9px;
+    line-height: 1;
+}
+
+.toolbar-btn.btn-outline-secondary .action-count[b-vwf24c6jy3] {
+    background-color: #6c757d;
+}
+
+.toolbar-btn:disabled .action-count[b-vwf24c6jy3] {
+    background-color: #adb5bd;
+    opacity: 0.5;
+}
+
+/* Editor Title */
+.editor-title[b-vwf24c6jy3] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    padding: 0 1rem;
+}
+
+.editor-title i[b-vwf24c6jy3] {
+    color: #3498db;
+    font-size: 1.2rem;
+}
+
+/* Keyboard Shortcuts */
+.keyboard-shortcuts[b-vwf24c6jy3] {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.shortcut-item[b-vwf24c6jy3] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.shortcut-item kbd[b-vwf24c6jy3] {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    font-family: 'Courier New', monospace;
+    background-color: #fff;
+    border: 1px solid #adb5bd;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Tooltips Enhancement */
+.toolbar-btn[title]:hover[b-vwf24c6jy3]::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 0.75rem;
+    background-color: #2c3e50;
+    color: #fff;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    pointer-events: none;
+}
+
+.toolbar-btn[title]:hover[b-vwf24c6jy3]::before {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 0.5rem 0.5rem 0.5rem;
+    border-style: solid;
+    border-color: transparent transparent #2c3e50 transparent;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+/* Focus States for Accessibility */
+.toolbar-btn:focus-visible[b-vwf24c6jy3] {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .toolbar-center[b-vwf24c6jy3] {
+        display: none;
+    }
+
+    .toolbar-left[b-vwf24c6jy3],
+    .toolbar-right[b-vwf24c6jy3] {
+        flex: 1;
+    }
+}
+
+@media (max-width: 992px) {
+    .editor-toolbar[b-vwf24c6jy3] {
+        padding: 0.5rem 1rem;
+    }
+
+    .toolbar-section[b-vwf24c6jy3] {
+        gap: 0.5rem;
+    }
+
+    .button-group[b-vwf24c6jy3] {
+        gap: 0.375rem;
+    }
+
+    .toolbar-btn .btn-label[b-vwf24c6jy3] {
+        display: none;
+    }
+
+    .toolbar-btn[b-vwf24c6jy3] {
+        padding: 0.5rem 0.75rem;
+        gap: 0;
+    }
+
+    .toolbar-divider[b-vwf24c6jy3] {
+        height: 28px;
+        margin: 0 0.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .editor-toolbar[b-vwf24c6jy3] {
+        padding: 0.5rem;
+        flex-wrap: wrap;
+        min-height: auto;
+    }
+
+    .toolbar-section[b-vwf24c6jy3] {
+        gap: 0.25rem;
+    }
+
+    .button-group[b-vwf24c6jy3] {
+        gap: 0.25rem;
+    }
+
+    .toolbar-btn[b-vwf24c6jy3] {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .toolbar-btn i[b-vwf24c6jy3] {
+        font-size: 0.9rem;
+    }
+
+    .toolbar-divider[b-vwf24c6jy3] {
+        display: none;
+    }
+
+    /* Hide less critical actions on mobile */
+    .toolbar-right .button-group:last-child[b-vwf24c6jy3] {
+        display: none;
+    }
+
+    .action-count[b-vwf24c6jy3] {
+        min-width: 16px;
+        height: 16px;
+        font-size: 0.65rem;
+        padding: 0 0.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .editor-toolbar[b-vwf24c6jy3] {
+        padding: 0.375rem;
+    }
+
+    .toolbar-left[b-vwf24c6jy3],
+    .toolbar-center[b-vwf24c6jy3],
+    .toolbar-right[b-vwf24c6jy3] {
+        flex: 0 0 auto;
+    }
+
+    .toolbar-section[b-vwf24c6jy3] {
+        flex-wrap: wrap;
+    }
+
+    .toolbar-btn[b-vwf24c6jy3] {
+        padding: 0.375rem 0.5rem;
+    }
+
+    .toolbar-btn i[b-vwf24c6jy3] {
+        font-size: 0.85rem;
+    }
+
+    /* Stack toolbar on very small screens */
+    .editor-toolbar[b-vwf24c6jy3] {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-section[b-vwf24c6jy3] {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .toolbar-left[b-vwf24c6jy3],
+    .toolbar-right[b-vwf24c6jy3] {
+        justify-content: center;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .editor-toolbar[b-vwf24c6jy3] {
+        display: none;
+    }
+}

@@ -1,0 +1,37 @@
+/* Validation Rules Section Styles */
+
+.validation-rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+}
+
+.custom-rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.custom-rule-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.custom-rule-item code {
+    flex: 1;
+    font-size: 13px;
+    color: #495057;
+}
+
+.custom-rule-item .btn {
+    padding: 2px 6px;
+}

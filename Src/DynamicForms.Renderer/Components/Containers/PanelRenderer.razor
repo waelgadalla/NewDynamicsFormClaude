@@ -1,0 +1,150 @@
+@inherits FieldRendererBase
+
+@*
+    PanelRenderer
+
+    Renders a panel container with a header and body.
+    Similar to Section but with card-style styling.
+    Recursively renders all child fields.
+*@
+
+<div class="@GetPanelCssClasses()">
+    @* Panel Header *@
+    @if (ShouldRenderHeader())
+    {
+        <div class="@GetHeaderCssClasses()">
+            <h6 class="dynamic-panel-title mb-0">
+                @GetLabel()
+            </h6>
+            @if (!string.IsNullOrWhiteSpace(GetDescription()))
+            {
+                <small class="text-muted d-block mt-1">@GetDescription()</small>
+            }
+        </div>
+    }
+
+    @* Panel Body *@
+    <div class="@GetBodyCssClasses()">
+        @* Render child fields *@
+        @if (Node.Children.Count > 0)
+        {
+            <div class="row g-3">
+                @foreach (var childNode in GetOrderedChildren())
+                {
+                    <div class="@GetChildColumnClass(childNode)">
+                        <DynamicFieldRenderer Node="@childNode"
+                                            FormData="@FormData"
+                                            ValidationErrors="@ValidationErrors"
+                                            RenderContext="@RenderContext"
+                                            OnFieldValueChanged="@OnFieldValueChanged"
+                                            Culture="@Culture" />
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted mb-0">
+                <em>@GetEmptyMessage()</em>
+            </p>
+        }
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// The form data containing all field values
+    /// </summary>
+    [Parameter]
+    public required FormData FormData { get; set; }
+
+    /// <summary>
+    /// Dictionary of validation errors keyed by field ID
+    /// </summary>
+    [Parameter]
+    public Dictionary<string, List<string>> ValidationErrors { get; set; } = new();
+
+    /// <summary>
+    /// The render context containing visibility and enabled state
+    /// </summary>
+    [Parameter]
+    public RenderContext? RenderContext { get; set; }
+
+    /// <summary>
+    /// Callback invoked when a field value changes
+    /// </summary>
+    [Parameter]
+    public EventCallback<(string fieldId, object? value)> OnFieldValueChanged { get; set; }
+
+    /// <summary>
+    /// Whether to show the panel header (defaults to true)
+    /// </summary>
+    [Parameter]
+    public bool ShowHeader { get; set; } = true;
+
+    /// <summary>
+    /// Gets CSS classes for the panel container
+    /// </summary>
+    private string GetPanelCssClasses()
+    {
+        var classes = new List<string> { "dynamic-panel", "card", "mb-4" };
+
+        if (!string.IsNullOrWhiteSpace(Node.Schema.CssClasses))
+            classes.Add(Node.Schema.CssClasses);
+
+        return string.Join(" ", classes);
+    }
+
+    /// <summary>
+    /// Gets CSS classes for the panel header
+    /// </summary>
+    private string GetHeaderCssClasses()
+    {
+        return "card-header dynamic-panel-header";
+    }
+
+    /// <summary>
+    /// Gets CSS classes for the panel body
+    /// </summary>
+    private string GetBodyCssClasses()
+    {
+        return "card-body dynamic-panel-body";
+    }
+
+    /// <summary>
+    /// Determines if the header should be rendered
+    /// </summary>
+    private bool ShouldRenderHeader()
+    {
+        if (!ShowHeader)
+            return false;
+
+        // Render header if there's a label or description
+        return !string.IsNullOrWhiteSpace(GetLabel()) || !string.IsNullOrWhiteSpace(GetDescription());
+    }
+
+    /// <summary>
+    /// Gets children ordered by their Order property
+    /// </summary>
+    private IEnumerable<FormFieldNode> GetOrderedChildren()
+    {
+        return Node.Children.OrderBy(c => c.Schema.Order);
+    }
+
+    /// <summary>
+    /// Gets the Bootstrap column class for a child field based on its WidthClass
+    /// </summary>
+    private string GetChildColumnClass(FormFieldNode childNode)
+    {
+        var widthClass = childNode.Schema.WidthClass ?? 12; // Default to full width
+        return $"col-md-{widthClass}";
+    }
+
+    /// <summary>
+    /// Gets the message to display when panel has no children
+    /// </summary>
+    private string GetEmptyMessage()
+    {
+        return IsFrench ? "Aucun champ dans ce panneau" : "No fields in this panel";
+    }
+}

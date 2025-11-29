@@ -9,10 +9,10 @@
   },
   "project": {
     "restore": {
-      "projectUniqueName": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\src\\DynamicForms.SqlServer\\DynamicForms.SqlServer.csproj",
-      "projectPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\src\\DynamicForms.SqlServer\\DynamicForms.SqlServer.csproj",
+      "projectUniqueName": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.SqlServer\\DynamicForms.SqlServer.csproj",
+      "projectPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.SqlServer\\DynamicForms.SqlServer.csproj",
       "packagesPath": "C:\\Users\\waelm\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\src\\DynamicForms.SqlServer\\obj\\",
+      "outputPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.SqlServer\\obj\\",
       "projectStyle": "PackageReference",
       "UsingMicrosoftNETSdk": false,
       "fallbackFolders": [

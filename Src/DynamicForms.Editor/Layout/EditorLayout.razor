@@ -1,0 +1,85 @@
+@inherits LayoutComponentBase
+
+<div class="editor-layout">
+    <!-- Sticky Toolbar -->
+    <div class="editor-toolbar">
+        <div class="toolbar-left">
+            <a href="/" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>
+                <span class="ms-1">Back</span>
+            </a>
+            <div class="toolbar-divider"></div>
+            <button class="btn btn-sm btn-primary" title="Save (Ctrl+S)">
+                <i class="bi bi-floppy-fill"></i>
+                <span class="ms-1">Save</span>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" title="Undo (Ctrl+Z)">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" title="Redo (Ctrl+Y)">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+        </div>
+
+        <div class="toolbar-center">
+            <h5 class="editor-title">
+                <i class="bi bi-pencil-square"></i>
+                <span>Form Editor</span>
+            </h5>
+        </div>
+
+        <div class="toolbar-right">
+            <button class="btn btn-sm btn-outline-secondary" title="Preview">
+                <i class="bi bi-eye-fill"></i>
+                <span class="ms-1">Preview</span>
+            </button>
+            <button class="btn btn-sm btn-success" title="Publish">
+                <i class="bi bi-cloud-upload-fill"></i>
+                <span class="ms-1">Publish</span>
+            </button>
+            <div class="toolbar-divider"></div>
+            <button class="btn btn-sm btn-outline-secondary" title="Settings">
+                <i class="bi bi-gear-fill"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="editor-content">
+        @Body
+    </div>
+
+    <!-- Status Bar -->
+    <div class="editor-status-bar">
+        <div class="status-left">
+            <span class="status-item">
+                <i class="bi bi-circle-fill text-success"></i>
+                <span class="ms-1">Ready</span>
+            </span>
+            <span class="status-divider">|</span>
+            <span class="status-item">
+                <i class="bi bi-clock"></i>
+                <span class="ms-1">Last saved: Just now</span>
+            </span>
+        </div>
+
+        <div class="status-center">
+            <span class="status-item">
+                <i class="bi bi-layers"></i>
+                <span class="ms-1">0 fields</span>
+            </span>
+        </div>
+
+        <div class="status-right">
+            <span class="status-item">
+                <i class="bi bi-info-circle"></i>
+                <span class="ms-1">Press F1 for help</span>
+            </span>
+        </div>
+    </div>
+</div>
+
+@code {
+    // This layout will be used for editor pages
+    // State and functionality will be added later
+}

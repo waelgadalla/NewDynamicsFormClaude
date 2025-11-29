@@ -1,0 +1,114 @@
+/* ==========================================================================
+   WorkflowEditor Page Styles
+   ========================================================================== */
+
+.workflow-editor {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Main Content Area */
+.workflow-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Properties Panel */
+.workflow-properties-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    overflow-y: auto;
+}
+
+.properties-placeholder {
+    padding: 2rem;
+}
+
+.properties-placeholder h5 {
+    margin-bottom: 1rem;
+}
+
+/* Empty State */
+.properties-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 3rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+.empty-icon {
+    margin-bottom: 1.5rem;
+    opacity: 0.3;
+}
+
+.empty-title {
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.empty-message {
+    font-size: 0.9375rem;
+    margin: 0;
+    max-width: 400px;
+}
+
+/* Loading State */
+.workflow-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* Status Bar */
+.workflow-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.75rem 1rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    font-size: 0.875rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-item strong {
+    font-weight: 600;
+    color: #495057;
+}
+
+.status-item span {
+    color: #6c757d;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+    .workflow-content {
+        flex-direction: column;
+    }
+
+    .workflow-status-bar {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .status-item {
+        font-size: 0.8125rem;
+    }
+}

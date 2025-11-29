@@ -1,0 +1,145 @@
+/* ========================================================================
+   Field List Panel - Scoped Styles
+   ======================================================================== */
+
+/* Panel Container */
+.field-list-panel[b-101tpt0p8a] {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 30%;
+    min-width: 280px;
+    max-width: 400px;
+    border-right: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+/* Header Section */
+.field-list-header[b-101tpt0p8a] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.field-list-title[b-101tpt0p8a] {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.field-count[b-101tpt0p8a] {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 8px;
+}
+
+/* Scrollable List Area */
+.field-list-scroll[b-101tpt0p8a] {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px;
+}
+
+/* Custom scrollbar for webkit browsers */
+.field-list-scroll[b-101tpt0p8a]::-webkit-scrollbar {
+    width: 8px;
+}
+
+.field-list-scroll[b-101tpt0p8a]::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.field-list-scroll[b-101tpt0p8a]::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.field-list-scroll[b-101tpt0p8a]::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Field Items Container */
+.field-list-items[b-101tpt0p8a] {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Empty State */
+.field-list-empty[b-101tpt0p8a] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 32px 16px;
+    text-align: center;
+}
+
+.empty-icon[b-101tpt0p8a] {
+    margin-bottom: 16px;
+    color: #adb5bd;
+    opacity: 0.6;
+}
+
+.empty-message[b-101tpt0p8a] {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.empty-hint[b-101tpt0p8a] {
+    margin: 0;
+    font-size: 13px;
+    color: #adb5bd;
+    max-width: 220px;
+}
+
+/* Footer Section */
+.field-list-footer[b-101tpt0p8a] {
+    padding: 12px;
+    border-top: 1px solid #dee2e6;
+    background-color: #ffffff;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.field-list-footer .btn[b-101tpt0p8a] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.field-list-footer .btn:hover[b-101tpt0p8a] {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.field-list-footer .btn:active[b-101tpt0p8a] {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .field-list-panel[b-101tpt0p8a] {
+        width: 35%;
+        min-width: 260px;
+    }
+}
+
+@media (max-width: 992px) {
+    .field-list-panel[b-101tpt0p8a] {
+        width: 100%;
+        max-width: none;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+    }
+}

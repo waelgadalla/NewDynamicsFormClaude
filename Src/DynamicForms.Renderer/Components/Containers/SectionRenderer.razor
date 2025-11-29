@@ -1,0 +1,200 @@
+@inherits FieldRendererBase
+
+@*
+    SectionRenderer
+
+    Renders a bordered section container with a title.
+    Optionally collapsible using Bootstrap collapse.
+    Recursively renders all child fields.
+*@
+
+<div class="@GetSectionCssClasses()">
+    @* Section Header *@
+    <div class="@GetHeaderCssClasses()" @onclick="ToggleCollapse">
+        <h5 class="dynamic-section-title mb-0">
+            @GetLabel()
+            @if (IsCollapsible)
+            {
+                <span class="float-end">
+                    <i class="@GetCollapseIconClass()"></i>
+                </span>
+            }
+        </h5>
+        @if (!string.IsNullOrWhiteSpace(GetDescription()))
+        {
+            <small class="text-muted d-block mt-1">@GetDescription()</small>
+        }
+    </div>
+
+    @* Section Body *@
+    <div class="@GetBodyCssClasses()" id="@GetCollapseId()">
+        <div class="dynamic-section-content">
+            @* Render child fields *@
+            @if (Node.Children.Count > 0)
+            {
+                <div class="row g-3">
+                    @foreach (var childNode in GetOrderedChildren())
+                    {
+                        <div class="@GetChildColumnClass(childNode)">
+                            <DynamicFieldRenderer Node="@childNode"
+                                                FormData="@FormData"
+                                                ValidationErrors="@ValidationErrors"
+                                                RenderContext="@RenderContext"
+                                                OnFieldValueChanged="@OnFieldValueChanged"
+                                                Culture="@Culture" />
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">
+                    <em>@GetEmptyMessage()</em>
+                </p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// The form data containing all field values
+    /// </summary>
+    [Parameter]
+    public required FormData FormData { get; set; }
+
+    /// <summary>
+    /// Dictionary of validation errors keyed by field ID
+    /// </summary>
+    [Parameter]
+    public Dictionary<string, List<string>> ValidationErrors { get; set; } = new();
+
+    /// <summary>
+    /// The render context containing visibility and enabled state
+    /// </summary>
+    [Parameter]
+    public RenderContext? RenderContext { get; set; }
+
+    /// <summary>
+    /// Callback invoked when a field value changes
+    /// </summary>
+    [Parameter]
+    public EventCallback<(string fieldId, object? value)> OnFieldValueChanged { get; set; }
+
+    /// <summary>
+    /// Whether the section is collapsible (defaults to false)
+    /// </summary>
+    [Parameter]
+    public bool IsCollapsible { get; set; } = false;
+
+    /// <summary>
+    /// Whether the section is initially collapsed (defaults to false)
+    /// </summary>
+    [Parameter]
+    public bool IsInitiallyCollapsed { get; set; } = false;
+
+    private bool _isCollapsed;
+
+    protected override void OnInitialized()
+    {
+        _isCollapsed = IsInitiallyCollapsed;
+        base.OnInitialized();
+    }
+
+    /// <summary>
+    /// Gets CSS classes for the section container
+    /// </summary>
+    private string GetSectionCssClasses()
+    {
+        var classes = new List<string> { "dynamic-section", "mb-4" };
+
+        if (!string.IsNullOrWhiteSpace(Node.Schema.CssClasses))
+            classes.Add(Node.Schema.CssClasses);
+
+        return string.Join(" ", classes);
+    }
+
+    /// <summary>
+    /// Gets CSS classes for the section header
+    /// </summary>
+    private string GetHeaderCssClasses()
+    {
+        var classes = new List<string> { "dynamic-section-header", "p-3" };
+
+        if (IsCollapsible)
+            classes.Add("cursor-pointer");
+
+        return string.Join(" ", classes);
+    }
+
+    /// <summary>
+    /// Gets CSS classes for the section body
+    /// </summary>
+    private string GetBodyCssClasses()
+    {
+        var classes = new List<string> { "dynamic-section-body" };
+
+        if (IsCollapsible)
+        {
+            classes.Add("collapse");
+            if (!_isCollapsed)
+                classes.Add("show");
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    /// <summary>
+    /// Gets the CSS class for the collapse icon
+    /// </summary>
+    private string GetCollapseIconClass()
+    {
+        return _isCollapsed ? "bi bi-chevron-down" : "bi bi-chevron-up";
+    }
+
+    /// <summary>
+    /// Gets the ID for the collapsible element
+    /// </summary>
+    private string GetCollapseId()
+    {
+        return $"section-{Node.Schema.Id}";
+    }
+
+    /// <summary>
+    /// Toggles the collapsed state of the section
+    /// </summary>
+    private void ToggleCollapse()
+    {
+        if (IsCollapsible)
+        {
+            _isCollapsed = !_isCollapsed;
+        }
+    }
+
+    /// <summary>
+    /// Gets children ordered by their Order property
+    /// </summary>
+    private IEnumerable<FormFieldNode> GetOrderedChildren()
+    {
+        return Node.Children.OrderBy(c => c.Schema.Order);
+    }
+
+    /// <summary>
+    /// Gets the Bootstrap column class for a child field based on its WidthClass
+    /// </summary>
+    private string GetChildColumnClass(FormFieldNode childNode)
+    {
+        var widthClass = childNode.Schema.WidthClass ?? 12; // Default to full width
+
+        // Bootstrap grid uses 12 columns
+        return $"col-md-{widthClass}";
+    }
+
+    /// <summary>
+    /// Gets the message to display when section has no children
+    /// </summary>
+    private string GetEmptyMessage()
+    {
+        return IsFrench ? "Aucun champ dans cette section" : "No fields in this section";
+    }
+}

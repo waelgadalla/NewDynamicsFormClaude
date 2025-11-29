@@ -1,0 +1,290 @@
+@page "/workflow-preview-demo"
+@using DynamicForms.Core.V2.Schemas
+@using DynamicForms.Editor.Components.Workflow
+
+<PageTitle>Workflow Preview Demo</PageTitle>
+
+<div class="container-fluid p-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h2>Workflow Preview Demo</h2>
+            <p class="text-muted">
+                Interactive demonstration of the WorkflowPreview component showing visual workflow navigation,
+                conditional branching, and form data collection.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <WorkflowPreview
+                Workflow="_sampleWorkflow"
+                Modules="_sampleModules"
+                ModuleSchemas="_sampleModuleSchemas"
+                OnWorkflowSubmit="HandleWorkflowSubmit" />
+        </div>
+    </div>
+
+    @if (_submittedData != null)
+    {
+        <div class="row mt-4">
+            <div class="col">
+                <div class="alert alert-success">
+                    <h5 class="alert-heading">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                        </svg>
+                        Workflow Submitted Successfully!
+                    </h5>
+                    <p class="mb-0">The workflow has been completed and the data has been collected.</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private FormWorkflowSchema _sampleWorkflow = default!;
+    private List<WorkflowModuleInfo> _sampleModules = new();
+    private List<FormModuleSchema> _sampleModuleSchemas = new();
+    private Dictionary<string, object>? _submittedData;
+
+    protected override void OnInitialized()
+    {
+        // Create sample workflow
+        _sampleWorkflow = new FormWorkflowSchema
+        {
+            Id = 1,
+            TitleEn = "Grant Application Workflow",
+            TitleFr = "Flux de demande de subvention",
+            DescriptionEn = "Complete multi-step grant application with conditional branching",
+            DescriptionFr = "Demande de subvention en plusieurs étapes avec branchement conditionnel",
+            ModuleIds = new[] { 1, 2, 3, 4 }
+        };
+
+        // Create sample modules with branching info
+        _sampleModules = new List<WorkflowModuleInfo>
+        {
+            new WorkflowModuleInfo
+            {
+                ModuleId = 1,
+                TitleEn = "Organization Information",
+                TitleFr = "Informations sur l'organisation",
+                Order = 0,
+                Branch = new ConditionalBranch(
+                    ConditionFieldId: "organization_type",
+                    Operator: "Equals",
+                    Value: "Non-Profit",
+                    NextModuleIdIfTrue: 2,
+                    NextModuleIdIfFalse: 3
+                )
+            },
+            new WorkflowModuleInfo
+            {
+                ModuleId = 2,
+                TitleEn = "Project Details",
+                TitleFr = "Détails du projet",
+                Order = 1,
+                Branch = null
+            },
+            new WorkflowModuleInfo
+            {
+                ModuleId = 3,
+                TitleEn = "Business Information",
+                TitleFr = "Informations commerciales",
+                Order = 2,
+                Branch = null
+            },
+            new WorkflowModuleInfo
+            {
+                ModuleId = 4,
+                TitleEn = "Review & Submit",
+                TitleFr = "Révision et soumission",
+                Order = 3,
+                Branch = null
+            }
+        };
+
+        // Create sample module schemas with fields
+        _sampleModuleSchemas = new List<FormModuleSchema>
+        {
+            new FormModuleSchema
+            {
+                Id = 1,
+                TitleEn = "Organization Information",
+                TitleFr = "Informations sur l'organisation",
+                DescriptionEn = "Tell us about your organization",
+                DescriptionFr = "Parlez-nous de votre organisation",
+                Fields = new[]
+                {
+                    new FormFieldSchema
+                    {
+                        Id = "organization_name",
+                        FieldType = "TextBox",
+                        LabelEn = "Organization Name",
+                        LabelFr = "Nom de l'organisation",
+                        PlaceholderEn = "Enter your organization name",
+                        HelpEn = "Legal name of your organization",
+                        IsRequired = true,
+                        Order = 1
+                    },
+                    new FormFieldSchema
+                    {
+                        Id = "organization_type",
+                        FieldType = "DropDown",
+                        LabelEn = "Organization Type",
+                        LabelFr = "Type d'organisation",
+                        HelpEn = "This will determine which path you take in the workflow",
+                        IsRequired = true,
+                        Order = 2,
+                        Options = new[]
+                        {
+                            new FieldOption("Non-Profit", "Non-Profit Organization"),
+                            new FieldOption("For-Profit", "For-Profit Business"),
+                            new FieldOption("Government", "Government Entity")
+                        }
+                    },
+                    new FormFieldSchema
+                    {
+                        Id = "registration_date",
+                        FieldType = "DatePicker",
+                        LabelEn = "Registration Date",
+                        LabelFr = "Date d'inscription",
+                        HelpEn = "When was your organization registered?",
+                        IsRequired = false,
+                        Order = 3
+                    }
+                }
+            },
+            new FormModuleSchema
+            {
+                Id = 2,
+                TitleEn = "Project Details",
+                TitleFr = "Détails du projet",
+                DescriptionEn = "Describe your project (Non-Profit path)",
+                DescriptionFr = "Décrivez votre projet (parcours sans but lucratif)",
+                Fields = new[]
+                {
+                    new FormFieldSchema
+                    {
+                        Id = "project_title",
+                        FieldType = "TextBox",
+                        LabelEn = "Project Title",
+                        LabelFr = "Titre du projet",
+                        PlaceholderEn = "Enter project title",
+                        IsRequired = true,
+                        Order = 1
+                    },
+                    new FormFieldSchema
+                    {
+                        Id = "project_description",
+                        FieldType = "TextArea",
+                        LabelEn = "Project Description",
+                        LabelFr = "Description du projet",
+                        PlaceholderEn = "Describe your project goals and outcomes",
+                        HelpEn = "Provide a detailed description of what you plan to accomplish",
+                        IsRequired = true,
+                        Order = 2
+                    },
+                    new FormFieldSchema
+                    {
+                        Id = "community_benefit",
+                        FieldType = "CheckBox",
+                        LabelEn = "Community Benefit",
+                        LabelFr = "Avantage communautaire",
+                        PlaceholderEn = "This project will benefit the community",
+                        IsRequired = false,
+                        Order = 3
+                    }
+                }
+            },
+            new FormModuleSchema
+            {
+                Id = 3,
+                TitleEn = "Business Information",
+                TitleFr = "Informations commerciales",
+                DescriptionEn = "Provide your business details (For-Profit path)",
+                DescriptionFr = "Fournissez les détails de votre entreprise (parcours à but lucratif)",
+                Fields = new[]
+                {
+                    new FormFieldSchema
+                    {
+                        Id = "business_number",
+                        FieldType = "TextBox",
+                        LabelEn = "Business Number",
+                        LabelFr = "Numéro d'entreprise",
+                        PlaceholderEn = "Enter your 9-digit business number",
+                        IsRequired = true,
+                        Order = 1
+                    },
+                    new FormFieldSchema
+                    {
+                        Id = "annual_revenue",
+                        FieldType = "TextBox",
+                        LabelEn = "Annual Revenue",
+                        LabelFr = "Revenu annuel",
+                        PlaceholderEn = "Enter annual revenue in CAD",
+                        HelpEn = "Your organization's total annual revenue",
+                        IsRequired = true,
+                        Order = 2
+                    },
+                    new FormFieldSchema
+                    {
+                        Id = "employee_count",
+                        FieldType = "DropDown",
+                        LabelEn = "Number of Employees",
+                        LabelFr = "Nombre d'employés",
+                        IsRequired = false,
+                        Order = 3,
+                        Options = new[]
+                        {
+                            new FieldOption("1-10", "1-10 employees"),
+                            new FieldOption("11-50", "11-50 employees"),
+                            new FieldOption("51-200", "51-200 employees"),
+                            new FieldOption("200+", "200+ employees")
+                        }
+                    }
+                }
+            },
+            new FormModuleSchema
+            {
+                Id = 4,
+                TitleEn = "Review & Submit",
+                TitleFr = "Révision et soumission",
+                DescriptionEn = "Review your information and submit your application",
+                DescriptionFr = "Examinez vos informations et soumettez votre demande",
+                Fields = new[]
+                {
+                    new FormFieldSchema
+                    {
+                        Id = "terms_accepted",
+                        FieldType = "CheckBox",
+                        LabelEn = "Terms & Conditions",
+                        LabelFr = "Termes et conditions",
+                        PlaceholderEn = "I accept the terms and conditions",
+                        IsRequired = true,
+                        Order = 1
+                    },
+                    new FormFieldSchema
+                    {
+                        Id = "contact_email",
+                        FieldType = "TextBox",
+                        LabelEn = "Contact Email",
+                        LabelFr = "Email de contact",
+                        PlaceholderEn = "your.email@example.com",
+                        HelpEn = "We'll send confirmation to this email",
+                        IsRequired = true,
+                        Order = 2
+                    }
+                }
+            }
+        };
+    }
+
+    private async Task HandleWorkflowSubmit(Dictionary<string, object> data)
+    {
+        _submittedData = data;
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+}

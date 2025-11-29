@@ -1,0 +1,7 @@
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\wwwroot\js\timeHelpers.js
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\wwwroot\exampleJsInterop.js
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\wwwroot\app.css
+wwwroot\app.css
+wwwroot\background.png
+wwwroot\exampleJsInterop.js
+wwwroot\js\timeHelpers.js

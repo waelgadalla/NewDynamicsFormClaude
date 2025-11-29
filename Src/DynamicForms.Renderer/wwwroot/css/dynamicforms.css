@@ -1,0 +1,254 @@
+/* ============================================================================
+   DynamicForms Renderer Styles
+   ============================================================================
+   Custom styles for the dynamic form renderer components
+   ============================================================================ */
+
+/* Form Container */
+.dynamic-form-container {
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 0.375rem;
+}
+
+.dynamic-form-container.readonly {
+    background-color: #f8f9fa;
+}
+
+/* Form Header */
+.dynamic-form-header {
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 1rem;
+}
+
+.dynamic-form-title {
+    margin: 0;
+    color: #212529;
+    font-weight: 600;
+}
+
+/* Form Loading */
+.dynamic-form-loading {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+/* Form Fields Container */
+.dynamic-form-fields {
+    margin-top: 1.5rem;
+}
+
+/* Field Group */
+.dynamic-field-group {
+    margin-bottom: 1rem;
+}
+
+/* Field Label */
+.dynamic-field-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.dynamic-field-label.required::after {
+    content: " *";
+    color: #dc3545;
+}
+
+/* Field Input */
+.dynamic-field-input {
+    width: 100%;
+}
+
+/* Help Text */
+.dynamic-field-help {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Validation Errors */
+.dynamic-field-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.dynamic-field-input.is-invalid {
+    border-color: #dc3545;
+}
+
+/* Section Container */
+.dynamic-section {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    margin-bottom: 1.5rem;
+    background-color: #ffffff;
+}
+
+.dynamic-section-header {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-bottom: 2px solid #dee2e6;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.dynamic-section-header.cursor-pointer {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.dynamic-section-header.cursor-pointer:hover {
+    background-color: #e9ecef;
+}
+
+.dynamic-section-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.dynamic-section-body {
+    transition: all 0.3s ease-in-out;
+}
+
+.dynamic-section-content {
+    padding: 1.5rem;
+}
+
+/* Panel Container */
+.dynamic-panel {
+    margin-bottom: 1.5rem;
+}
+
+.dynamic-panel-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.dynamic-panel-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.dynamic-panel-body {
+    /* Styles from Bootstrap card-body */
+}
+
+/* Tab Container */
+.dynamic-tab-container {
+    margin-bottom: 1.5rem;
+}
+
+.dynamic-tab-title {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.dynamic-tab-content {
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.375rem 0.375rem;
+    background-color: #ffffff;
+}
+
+/* File Upload */
+.dynamic-file-upload {
+    position: relative;
+}
+
+.dynamic-file-list {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.dynamic-file-item {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0;
+}
+
+.dynamic-file-item-name {
+    flex: 1;
+}
+
+.dynamic-file-item-remove {
+    margin-left: 0.5rem;
+    cursor: pointer;
+    color: #dc3545;
+}
+
+/* Checkbox Field */
+.dynamic-checkbox-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.dynamic-checkbox-input {
+    margin-right: 0.5rem;
+}
+
+.dynamic-checkbox-label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+/* Form Actions */
+.dynamic-form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Disabled State */
+.dynamic-field-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Hidden Field */
+.dynamic-field-hidden {
+    display: none;
+}
+
+/* Collapsible Section */
+.dynamic-section-collapsible .dynamic-section-header {
+    cursor: pointer;
+    user-select: none;
+}
+
+.dynamic-section-collapsible .dynamic-section-header::before {
+    content: "▼ ";
+    display: inline-block;
+    margin-right: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.dynamic-section-collapsible.collapsed .dynamic-section-header::before {
+    transform: rotate(-90deg);
+}
+
+.dynamic-section-collapsible.collapsed .dynamic-section-body {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dynamic-form-container {
+        padding: 0.5rem;
+    }
+
+    .dynamic-section,
+    .dynamic-panel {
+        margin-bottom: 0.75rem;
+    }
+}

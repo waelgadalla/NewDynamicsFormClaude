@@ -1,0 +1,64 @@
+@inherits FieldRendererBase
+
+<div class="@GetCssClasses()">
+    @if (ShouldRenderLabel())
+    {
+        <label for="@GetHtmlId()" class="@GetLabelCssClasses()">
+            @GetLabel()
+        </label>
+    }
+
+    <textarea id="@GetHtmlId()"
+              class="@GetInputCssClasses()"
+              rows="@GetRows()"
+              placeholder="@GetPlaceholder()"
+              disabled="@IsDisabled"
+              required="@IsRequired()"
+              maxlength="@GetMaxLength()"
+              @onchange="@(e => HandleValueChanged(e.Value))"
+              aria-describedby="@GetAriaDescribedBy()">@GetValueAsString()</textarea>
+
+    @if (ShouldRenderHelpText())
+    {
+        <small id="@GetHelpTextId()" class="form-text text-muted dynamic-field-help">
+            @GetHelpText()
+        </small>
+    }
+
+    @if (ShouldRenderErrors())
+    {
+        <div id="@GetErrorId()" class="invalid-feedback d-block dynamic-field-error">
+            @Errors.First()
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Gets the number of rows for the textarea from TypeConfig.
+    /// Defaults to 4 if no configuration is provided.
+    /// </summary>
+    private int GetRows()
+    {
+        if (Schema.TypeConfig is TextAreaConfig config)
+            return config.Rows;
+
+        return 4; // Default rows
+    }
+
+    /// <summary>
+    /// Builds the aria-describedby attribute value combining help text and error IDs
+    /// </summary>
+    private string? GetAriaDescribedBy()
+    {
+        var ids = new List<string>();
+
+        if (ShouldRenderHelpText())
+            ids.Add(GetHelpTextId());
+
+        if (ShouldRenderErrors())
+            ids.Add(GetErrorId());
+
+        return ids.Count > 0 ? string.Join(" ", ids) : null;
+    }
+}

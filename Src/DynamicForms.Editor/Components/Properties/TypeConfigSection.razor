@@ -1,0 +1,258 @@
+@using static DynamicForms.Editor.Components.Properties.PropertiesPanel
+
+@*
+    TypeConfigSection - Type-specific configuration
+
+    Shows different properties based on field type:
+    - TextBox: MaxLength, Pattern
+    - DropDown: Options, CodeSetId
+    - DatePicker: Min/Max dates
+    - FileUpload: Allowed types, max size
+    - etc.
+*@
+
+@if (WorkingCopy != null)
+{
+    @switch (WorkingCopy.FieldType)
+    {
+        case "TextBox":
+        case "TextArea":
+            <!-- Text Field Configuration -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Minimum Length</label>
+                    <input type="number"
+                           class="form-control"
+                           @bind="WorkingCopy.MinLength"
+                           @bind:after="NotifyChanged"
+                           min="0"
+                           placeholder="No minimum" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Maximum Length</label>
+                    <input type="number"
+                           class="form-control"
+                           @bind="WorkingCopy.MaxLength"
+                           @bind:after="NotifyChanged"
+                           min="1"
+                           placeholder="No maximum" />
+                </div>
+            </div>
+
+            @if (WorkingCopy.FieldType == "TextBox")
+            {
+                <div class="mb-3">
+                    <label class="form-label">Validation Pattern (Regex)</label>
+                    <input type="text"
+                           class="form-control font-monospace"
+                           @bind="WorkingCopy.Pattern"
+                           @bind:after="NotifyChanged"
+                           placeholder="e.g., ^[A-Za-z0-9]+$" />
+                    <div class="form-text">Regular expression for validation</div>
+                </div>
+            }
+
+            @if (WorkingCopy.FieldType == "TextArea")
+            {
+                <div class="mb-3">
+                    <label class="form-label">Rows</label>
+                    <input type="number"
+                           class="form-control"
+                           value="3"
+                           min="1"
+                           max="20" />
+                    <div class="form-text">Number of visible rows</div>
+                </div>
+            }
+            break;
+
+        case "DropDown":
+        case "RadioButton":
+        case "CheckBox":
+            <!-- Selection Field Configuration -->
+            <div class="mb-3">
+                <label class="form-label">Data Source</label>
+                <select class="form-select"
+                        value="@(WorkingCopy.CodeSetId.HasValue ? "codeset" : "inline")"
+                        @onchange="NotifyChanged">
+                    <option value="inline">Inline Options</option>
+                    <option value="codeset">Code Set (Database)</option>
+                </select>
+            </div>
+
+            @if (WorkingCopy.CodeSetId.HasValue)
+            {
+                <!-- Code Set -->
+                <div class="mb-3">
+                    <label class="form-label">Code Set ID</label>
+                    <input type="number"
+                           class="form-control"
+                           @bind="WorkingCopy.CodeSetId"
+                           @bind:after="NotifyChanged"
+                           min="1" />
+                    <div class="form-text">ID of the code set to use</div>
+                </div>
+            }
+            else
+            {
+                <!-- Inline Options -->
+                <div class="mb-3">
+                    <label class="form-label">Options</label>
+                    <div class="alert alert-info">
+                        <small>
+                            <strong>Note:</strong> Option editor coming soon.
+                            Currently using code set or edit JSON directly.
+                        </small>
+                    </div>
+                    @* TODO: Implement inline option editor *@
+                </div>
+            }
+            break;
+
+        case "DatePicker":
+        case "DateRange":
+            <!-- Date Field Configuration -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Minimum Date</label>
+                    <input type="date"
+                           class="form-control"
+                           @oninput="NotifyChanged" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Maximum Date</label>
+                    <input type="date"
+                           class="form-control"
+                           @oninput="NotifyChanged" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Date Format</label>
+                <select class="form-select" @onchange="NotifyChanged">
+                    <option value="yyyy-MM-dd">yyyy-MM-dd (2024-01-15)</option>
+                    <option value="MM/dd/yyyy">MM/dd/yyyy (01/15/2024)</option>
+                    <option value="dd/MM/yyyy">dd/MM/yyyy (15/01/2024)</option>
+                    <option value="MMM dd, yyyy">MMM dd, yyyy (Jan 15, 2024)</option>
+                </select>
+            </div>
+            break;
+
+        case "FileUpload":
+            <!-- File Upload Configuration -->
+            <div class="mb-3">
+                <label class="form-label">Allowed File Types</label>
+                <input type="text"
+                       class="form-control"
+                       placeholder=".pdf,.doc,.docx,.jpg,.png"
+                       @oninput="NotifyChanged" />
+                <div class="form-text">Comma-separated list of extensions</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Maximum File Size (MB)</label>
+                <input type="number"
+                       class="form-control"
+                       min="1"
+                       max="100"
+                       value="10"
+                       @oninput="NotifyChanged" />
+            </div>
+
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="multipleFiles"
+                       @onchange="NotifyChanged" />
+                <label class="form-check-label" for="multipleFiles">
+                    Allow Multiple Files
+                </label>
+            </div>
+            break;
+
+        case "Section":
+        case "Tab":
+        case "Panel":
+            <!-- Container Configuration -->
+            <div class="alert alert-info">
+                <div class="d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                    <div>
+                        <strong>Container Field</strong>
+                        <p class="mb-0 small">This field can contain child fields. Use the field list to add children.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="collapsible"
+                       @onchange="NotifyChanged" />
+                <label class="form-check-label" for="collapsible">
+                    Collapsible
+                </label>
+            </div>
+
+            @if (WorkingCopy.FieldType == "Section")
+            {
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="showBorder"
+                           @onchange="NotifyChanged" />
+                    <label class="form-check-label" for="showBorder">
+                        Show Border
+                    </label>
+                </div>
+            }
+            break;
+
+        case "ModalTable":
+            <!-- Modal Table Configuration -->
+            <div class="alert alert-info">
+                <small>
+                    <strong>Note:</strong> Modal table configuration requires a separate dialog editor.
+                    Set up columns, validation, and behavior in the advanced editor.
+                </small>
+            </div>
+            break;
+
+        default:
+            <!-- Default/Unknown Type -->
+            <div class="alert alert-secondary">
+                <small>No type-specific configuration available for <strong>@WorkingCopy.FieldType</strong></small>
+            </div>
+            break;
+    }
+}
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// Working copy of the field being edited
+    /// </summary>
+    [Parameter]
+    public FieldWorkingCopy? WorkingCopy { get; set; }
+
+    /// <summary>
+    /// Event fired when any property changes
+    /// </summary>
+    [Parameter]
+    public EventCallback OnPropertyChanged { get; set; }
+
+    // ========================================================================
+    // METHODS
+    // ========================================================================
+
+    private async Task NotifyChanged()
+    {
+        await OnPropertyChanged.InvokeAsync();
+    }
+}

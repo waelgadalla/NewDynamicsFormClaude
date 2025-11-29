@@ -1,0 +1,5 @@
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Renderer\wwwroot\css\dynamicforms.css
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Renderer\wwwroot\exampleJsInterop.js
+wwwroot\background.png
+wwwroot\css\dynamicforms.css
+wwwroot\exampleJsInterop.js

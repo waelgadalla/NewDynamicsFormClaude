@@ -1,0 +1,256 @@
+@using DynamicForms.Core.V2.Schemas
+@using static DynamicForms.Editor.Components.Properties.PropertiesPanel
+
+@*
+    ConditionalRulesSection - Edit conditional logic rules
+
+    Manages:
+    - Conditional visibility rules (show/hide field based on other field values)
+    - Conditional enablement rules
+    - Multiple conditions (AND logic)
+*@
+
+@if (WorkingCopy != null)
+{
+    @if (WorkingCopy.ConditionalRules.Any())
+    {
+        <!-- Existing Rules -->
+        <div class="conditional-rules-list mb-3">
+            @foreach (var rule in WorkingCopy.ConditionalRules.Select((r, i) => new { Rule = r, Index = i }))
+            {
+                <div class="conditional-rule-card">
+                    <div class="rule-header">
+                        <span class="rule-number">Rule @(rule.Index + 1)</span>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                @onclick="() => RemoveRule(rule.Index)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="rule-body">
+                        <div class="rule-expression">
+                            <strong>When</strong>
+                            <code>@rule.Rule.FieldId</code>
+                            <strong>@GetOperatorDisplay(rule.Rule.Operator)</strong>
+                            <code>@rule.Rule.Value</code>
+                        </div>
+
+                        <div class="rule-action">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                            <strong>Then</strong> @rule.Rule.Action this field
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-secondary mb-3">
+            <small>No conditional rules defined. Click "Add Rule" to create one.</small>
+        </div>
+    }
+
+    <!-- Add New Rule -->
+    @if (_showAddRule)
+    {
+        <div class="add-rule-form">
+            <h6 class="mb-3">Add Conditional Rule</h6>
+
+            <!-- Target Field ID -->
+            <div class="mb-3">
+                <label class="form-label">Target Field ID</label>
+                <input type="text"
+                       class="form-control font-monospace"
+                       @bind="_newRule.FieldId"
+                       placeholder="e.g., organization_type" />
+                <div class="form-text">The field to check</div>
+            </div>
+
+            <!-- Operator -->
+            <div class="mb-3">
+                <label class="form-label">Operator</label>
+                <select class="form-select" @bind="_newRule.Operator">
+                    <option value="Equals">Equals</option>
+                    <option value="NotEquals">Not Equals</option>
+                    <option value="Contains">Contains</option>
+                    <option value="GreaterThan">Greater Than</option>
+                    <option value="LessThan">Less Than</option>
+                    <option value="IsEmpty">Is Empty</option>
+                    <option value="IsNotEmpty">Is Not Empty</option>
+                </select>
+            </div>
+
+            <!-- Value (hide for IsEmpty/IsNotEmpty) -->
+            @if (_newRule.Operator != "IsEmpty" && _newRule.Operator != "IsNotEmpty")
+            {
+                <div class="mb-3">
+                    <label class="form-label">Value</label>
+                    <input type="text"
+                           class="form-control"
+                           @bind="_newRule.Value"
+                           placeholder="Value to compare" />
+                </div>
+            }
+
+            <!-- Action -->
+            <div class="mb-3">
+                <label class="form-label">Action</label>
+                <select class="form-select" @bind="_newRule.Action">
+                    <option value="Show">Show</option>
+                    <option value="Hide">Hide</option>
+                    <option value="Enable">Enable</option>
+                    <option value="Disable">Disable</option>
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex gap-2">
+                <button type="button"
+                        class="btn btn-sm btn-primary"
+                        @onclick="SaveNewRule"
+                        disabled="@(!IsNewRuleValid())">
+                    Save Rule
+                </button>
+                <button type="button"
+                        class="btn btn-sm btn-secondary"
+                        @onclick="CancelAddRule">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <button type="button"
+                class="btn btn-sm btn-outline-primary w-100"
+                @onclick="StartAddRule">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            Add Conditional Rule
+        </button>
+    }
+
+    <!-- Help Text -->
+    <div class="mt-3">
+        <small class="text-muted">
+            <strong>Note:</strong> All conditions must be met (AND logic).
+            For OR logic, create multiple fields with different rules.
+        </small>
+    </div>
+}
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// Working copy of the field being edited
+    /// </summary>
+    [Parameter]
+    public FieldWorkingCopy? WorkingCopy { get; set; }
+
+    /// <summary>
+    /// Event fired when any property changes
+    /// </summary>
+    [Parameter]
+    public EventCallback OnPropertyChanged { get; set; }
+
+    // ========================================================================
+    // STATE
+    // ========================================================================
+
+    private bool _showAddRule = false;
+    private NewConditionalRule _newRule = new();
+
+    private class NewConditionalRule
+    {
+        public string FieldId { get; set; } = string.Empty;
+        public string Operator { get; set; } = "Equals";
+        public string? Value { get; set; }
+        public string Action { get; set; } = "Show";
+    }
+
+    // ========================================================================
+    // METHODS
+    // ========================================================================
+
+    private void StartAddRule()
+    {
+        _showAddRule = true;
+        _newRule = new NewConditionalRule();
+    }
+
+    private void CancelAddRule()
+    {
+        _showAddRule = false;
+        _newRule = new NewConditionalRule();
+    }
+
+    private bool IsNewRuleValid()
+    {
+        if (string.IsNullOrWhiteSpace(_newRule.FieldId))
+            return false;
+
+        if (_newRule.Operator != "IsEmpty" && _newRule.Operator != "IsNotEmpty")
+        {
+            if (string.IsNullOrWhiteSpace(_newRule.Value))
+                return false;
+        }
+
+        return true;
+    }
+
+    private void SaveNewRule()
+    {
+        if (WorkingCopy == null || !IsNewRuleValid()) return;
+
+        var rule = new ConditionalRule(
+            _newRule.FieldId.Trim(),
+            _newRule.Operator,
+            _newRule.Value?.Trim() ?? string.Empty,
+            _newRule.Action
+        );
+
+        WorkingCopy.ConditionalRules.Add(rule);
+        _showAddRule = false;
+        _newRule = new NewConditionalRule();
+
+        NotifyChanged();
+    }
+
+    private void RemoveRule(int index)
+    {
+        if (WorkingCopy == null) return;
+
+        WorkingCopy.ConditionalRules.RemoveAt(index);
+        NotifyChanged();
+    }
+
+    private string GetOperatorDisplay(string operatorValue)
+    {
+        return operatorValue switch
+        {
+            "Equals" => "equals",
+            "NotEquals" => "does not equal",
+            "Contains" => "contains",
+            "GreaterThan" => "is greater than",
+            "LessThan" => "is less than",
+            "IsEmpty" => "is empty",
+            "IsNotEmpty" => "is not empty",
+            _ => operatorValue
+        };
+    }
+
+    private async Task NotifyChanged()
+    {
+        await OnPropertyChanged.InvokeAsync();
+    }
+}

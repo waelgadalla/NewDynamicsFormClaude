@@ -1,0 +1,362 @@
+@using DynamicForms.Core.V2.Schemas
+@using DynamicForms.Editor.Components.Properties
+
+@*
+    PropertiesPanel - Field property editor
+
+    Allows editing all properties of a selected field.
+    Uses working copy pattern to avoid mutating original until Apply is clicked.
+*@
+
+<div class="properties-panel">
+    @if (Field != null)
+    {
+        <!-- Header -->
+        <div class="properties-header">
+            <div class="header-content">
+                <h5 class="properties-title">Field Properties</h5>
+                <span class="field-type-badge badge bg-info">@Field.FieldType</span>
+            </div>
+            @if (OnCancel.HasDelegate)
+            {
+                <button type="button"
+                        class="btn-close"
+                        @onclick="HandleCancel"
+                        title="Close properties panel"
+                        aria-label="Close"></button>
+            }
+        </div>
+
+        <!-- Content (Scrollable) -->
+        <div class="properties-content">
+            <!-- Basic Properties Section -->
+            <div class="property-section">
+                <h6 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="section-icon" viewBox="0 0 16 16">
+                        <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                        <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/>
+                    </svg>
+                    Basic Properties
+                </h6>
+                <BasicPropertiesSection
+                    WorkingCopy="@_workingCopy"
+                    OnPropertyChanged="@HandlePropertyChanged" />
+            </div>
+
+            <!-- Type-Specific Configuration -->
+            <div class="property-section">
+                <h6 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="section-icon" viewBox="0 0 16 16">
+                        <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/>
+                    </svg>
+                    Type Configuration
+                </h6>
+                <TypeConfigSection
+                    WorkingCopy="@_workingCopy"
+                    OnPropertyChanged="@HandlePropertyChanged" />
+            </div>
+
+            <!-- Validation Rules -->
+            <div class="property-section">
+                <h6 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="section-icon" viewBox="0 0 16 16">
+                        <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z"/>
+                    </svg>
+                    Validation Rules
+                </h6>
+                <ValidationRulesSection
+                    WorkingCopy="@_workingCopy"
+                    OnPropertyChanged="@HandlePropertyChanged" />
+            </div>
+
+            <!-- Conditional Rules -->
+            <div class="property-section">
+                <h6 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="section-icon" viewBox="0 0 16 16">
+                        <path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1z"/>
+                        <path d="M6 4.5v1h4v-1A.5.5 0 0 0 9.5 4h-3a.5.5 0 0 0-.5.5z"/>
+                    </svg>
+                    Conditional Logic
+                </h6>
+                <ConditionalRulesSection
+                    WorkingCopy="@_workingCopy"
+                    OnPropertyChanged="@HandlePropertyChanged" />
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="properties-footer">
+            <button type="button"
+                    class="btn btn-secondary"
+                    @onclick="HandleCancel">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                </svg>
+                Cancel
+            </button>
+            <button type="button"
+                    class="btn btn-primary"
+                    @onclick="HandleApply"
+                    disabled="@(!_hasChanges)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                </svg>
+                Apply Changes
+            </button>
+        </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="properties-empty">
+            <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                </svg>
+            </div>
+            <h5 class="empty-title">No Field Selected</h5>
+            <p class="empty-message">Select a field from the list to edit its properties</p>
+        </div>
+    }
+</div>
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// The field to edit (null if no selection)
+    /// </summary>
+    [Parameter]
+    public FormFieldSchema? Field { get; set; }
+
+    /// <summary>
+    /// Event fired when field properties are applied
+    /// </summary>
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnFieldChanged { get; set; }
+
+    /// <summary>
+    /// Event fired when editing is cancelled
+    /// </summary>
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    // ========================================================================
+    // STATE
+    // ========================================================================
+
+    private FieldWorkingCopy? _workingCopy;
+    private bool _hasChanges = false;
+
+    // ========================================================================
+    // LIFECYCLE
+    // ========================================================================
+
+    protected override void OnParametersSet()
+    {
+        // Create working copy when field changes
+        if (Field != null && (_workingCopy == null || _workingCopy.OriginalField != Field))
+        {
+            _workingCopy = new FieldWorkingCopy(Field);
+            _hasChanges = false;
+        }
+        else if (Field == null)
+        {
+            _workingCopy = null;
+            _hasChanges = false;
+        }
+    }
+
+    // ========================================================================
+    // METHODS
+    // ========================================================================
+
+    /// <summary>
+    /// Handles property changes from subsections
+    /// </summary>
+    private void HandlePropertyChanged()
+    {
+        _hasChanges = true;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Applies changes and notifies parent
+    /// </summary>
+    private async Task HandleApply()
+    {
+        if (_workingCopy != null && _hasChanges)
+        {
+            var updatedField = _workingCopy.ToSchema();
+            await OnFieldChanged.InvokeAsync(updatedField);
+            _hasChanges = false;
+        }
+    }
+
+    /// <summary>
+    /// Cancels editing and discards changes
+    /// </summary>
+    private async Task HandleCancel()
+    {
+        if (Field != null)
+        {
+            // Reset working copy to original
+            _workingCopy = new FieldWorkingCopy(Field);
+            _hasChanges = false;
+        }
+
+        await OnCancel.InvokeAsync();
+    }
+
+    // ========================================================================
+    // WORKING COPY CLASS
+    // ========================================================================
+
+    /// <summary>
+    /// Mutable working copy of FormFieldSchema for editing.
+    /// Allows two-way binding while keeping original immutable.
+    /// </summary>
+    public class FieldWorkingCopy
+    {
+        public FormFieldSchema OriginalField { get; }
+
+        // Core Identity
+        public string Id { get; set; } = string.Empty;
+        public string FieldType { get; set; } = string.Empty;
+        public int Order { get; set; } = 1;
+        public float Version { get; set; } = 1.0f;
+
+        // Hierarchy
+        public string? ParentId { get; set; }
+        public string Relationship { get; set; } = "Container";
+
+        // Multilingual Text
+        public string? LabelEn { get; set; }
+        public string? LabelFr { get; set; }
+        public string? DescriptionEn { get; set; }
+        public string? DescriptionFr { get; set; }
+        public string? HelpEn { get; set; }
+        public string? HelpFr { get; set; }
+        public string? PlaceholderEn { get; set; }
+        public string? PlaceholderFr { get; set; }
+
+        // Validation
+        public bool IsRequired { get; set; }
+        public int? MinLength { get; set; }
+        public int? MaxLength { get; set; }
+        public string? Pattern { get; set; }
+        public List<string> ValidationRules { get; set; } = new();
+
+        // Conditional Logic
+        public List<ConditionalRule> ConditionalRules { get; set; } = new();
+
+        // Data Source
+        public int? CodeSetId { get; set; }
+        public List<FieldOption> Options { get; set; } = new();
+
+        // Layout & Styling
+        public int? WidthClass { get; set; }
+        public string? CssClasses { get; set; }
+        public bool IsVisible { get; set; } = true;
+        public bool IsReadOnly { get; set; }
+
+        // Database Mapping
+        public string? ColumnName { get; set; }
+        public string? ColumnType { get; set; }
+
+        // Type Config (will be handled separately)
+        public FieldTypeConfig? TypeConfig { get; set; }
+
+        public FieldWorkingCopy(FormFieldSchema field)
+        {
+            OriginalField = field;
+
+            // Copy all properties
+            Id = field.Id;
+            FieldType = field.FieldType;
+            Order = field.Order;
+            Version = field.Version;
+            ParentId = field.ParentId;
+            Relationship = field.Relationship.ToString();
+
+            LabelEn = field.LabelEn;
+            LabelFr = field.LabelFr;
+            DescriptionEn = field.DescriptionEn;
+            DescriptionFr = field.DescriptionFr;
+            HelpEn = field.HelpEn;
+            HelpFr = field.HelpFr;
+            PlaceholderEn = field.PlaceholderEn;
+            PlaceholderFr = field.PlaceholderFr;
+
+            IsRequired = field.IsRequired;
+            MinLength = field.MinLength;
+            MaxLength = field.MaxLength;
+            Pattern = field.Pattern;
+            ValidationRules = field.ValidationRules?.ToList() ?? new();
+
+            ConditionalRules = field.ConditionalRules?.ToList() ?? new();
+
+            CodeSetId = field.CodeSetId;
+            Options = field.Options?.ToList() ?? new();
+
+            WidthClass = field.WidthClass;
+            CssClasses = field.CssClasses;
+            IsVisible = field.IsVisible;
+            IsReadOnly = field.IsReadOnly;
+
+            ColumnName = field.ColumnName;
+            ColumnType = field.ColumnType;
+
+            TypeConfig = field.TypeConfig;
+        }
+
+        /// <summary>
+        /// Converts working copy back to immutable schema
+        /// </summary>
+        public FormFieldSchema ToSchema()
+        {
+            return new FormFieldSchema
+            {
+                Id = Id,
+                FieldType = FieldType,
+                Order = Order,
+                Version = Version,
+                ParentId = ParentId,
+                Relationship = Enum.Parse<DynamicForms.Core.V2.Enums.RelationshipType>(Relationship),
+
+                LabelEn = LabelEn,
+                LabelFr = LabelFr,
+                DescriptionEn = DescriptionEn,
+                DescriptionFr = DescriptionFr,
+                HelpEn = HelpEn,
+                HelpFr = HelpFr,
+                PlaceholderEn = PlaceholderEn,
+                PlaceholderFr = PlaceholderFr,
+
+                IsRequired = IsRequired,
+                MinLength = MinLength,
+                MaxLength = MaxLength,
+                Pattern = Pattern,
+                ValidationRules = ValidationRules.ToArray(),
+
+                ConditionalRules = ConditionalRules.ToArray(),
+
+                CodeSetId = CodeSetId,
+                Options = Options.ToArray(),
+
+                WidthClass = WidthClass,
+                CssClasses = CssClasses,
+                IsVisible = IsVisible,
+                IsReadOnly = IsReadOnly,
+
+                ColumnName = ColumnName,
+                ColumnType = ColumnType,
+
+                TypeConfig = TypeConfig
+            };
+        }
+    }
+}

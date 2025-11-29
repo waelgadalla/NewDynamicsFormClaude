@@ -1,0 +1,314 @@
+@using DynamicForms.Core.V2.Schemas
+
+@*
+    FieldListItem - Recursive field list item
+
+    Renders a single field with:
+    - Field type icon
+    - Field label and ID
+    - Action buttons (Move Up/Down, Edit, Clone, Delete)
+    - Recursive rendering of child fields
+*@
+
+<div class="field-list-item @GetDepthClass() @GetSelectedClass()" @onclick="HandleClick" @onclick:stopPropagation="true">
+    <!-- Field Header -->
+    <div class="field-item-header">
+        <!-- Expand/Collapse button (if has children) -->
+        @if (HasChildren())
+        {
+            <button type="button"
+                    class="btn-expand"
+                    @onclick="ToggleExpanded"
+                    @onclick:stopPropagation="true"
+                    title="@(IsExpanded ? "Collapse" : "Expand")">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16" class="@(IsExpanded ? "expanded" : "")">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </button>
+        }
+        else
+        {
+            <span class="btn-expand-spacer"></span>
+        }
+
+        <!-- Field Type Icon -->
+        <span class="field-icon" title="@Field.FieldType">
+            @GetFieldIcon()
+        </span>
+
+        <!-- Field Label and ID -->
+        <div class="field-info">
+            <span class="field-label">@GetFieldLabel()</span>
+            <span class="field-id">@Field.Id</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="field-actions">
+            <button type="button"
+                    class="btn-action btn-action-move"
+                    @onclick="() => OnMoveUp.InvokeAsync(Field)"
+                    @onclick:stopPropagation="true"
+                    disabled="@IsFirstSibling()"
+                    title="Move Up">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                </svg>
+            </button>
+
+            <button type="button"
+                    class="btn-action btn-action-move"
+                    @onclick="() => OnMoveDown.InvokeAsync(Field)"
+                    @onclick:stopPropagation="true"
+                    disabled="@IsLastSibling()"
+                    title="Move Down">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+                </svg>
+            </button>
+
+            <button type="button"
+                    class="btn-action btn-action-edit"
+                    @onclick="() => OnEdit.InvokeAsync(Field)"
+                    @onclick:stopPropagation="true"
+                    title="Edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg>
+            </button>
+
+            <button type="button"
+                    class="btn-action btn-action-clone"
+                    @onclick="() => OnClone.InvokeAsync(Field)"
+                    @onclick:stopPropagation="true"
+                    title="Clone">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                </svg>
+            </button>
+
+            <button type="button"
+                    class="btn-action btn-action-delete"
+                    @onclick="() => OnDelete.InvokeAsync(Field)"
+                    @onclick:stopPropagation="true"
+                    title="Delete">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Child Fields (recursive) -->
+    @if (IsExpanded && HasChildren())
+    {
+        <div class="field-children">
+            @foreach (var childField in GetChildFields())
+            {
+                <FieldListItem
+                    Field="@childField"
+                    AllFields="@AllFields"
+                    SelectedFieldId="@SelectedFieldId"
+                    OnSelected="@OnSelected"
+                    OnMoveUp="@OnMoveUp"
+                    OnMoveDown="@OnMoveDown"
+                    OnEdit="@OnEdit"
+                    OnClone="@OnClone"
+                    OnDelete="@OnDelete" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// The field to render
+    /// </summary>
+    [Parameter]
+    public FormFieldSchema Field { get; set; } = null!;
+
+    /// <summary>
+    /// All fields in the module (needed to find children and siblings)
+    /// </summary>
+    [Parameter]
+    public List<FormFieldSchema> AllFields { get; set; } = new();
+
+    /// <summary>
+    /// ID of the currently selected field
+    /// </summary>
+    [Parameter]
+    public string? SelectedFieldId { get; set; }
+
+    /// <summary>
+    /// Event fired when this field is selected
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnSelected { get; set; }
+
+    /// <summary>
+    /// Event callbacks for actions
+    /// </summary>
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnMoveUp { get; set; }
+
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnMoveDown { get; set; }
+
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnClone { get; set; }
+
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnDelete { get; set; }
+
+    // ========================================================================
+    // STATE
+    // ========================================================================
+
+    private bool IsExpanded { get; set; } = true; // Expanded by default
+
+    // ========================================================================
+    // METHODS
+    // ========================================================================
+
+    /// <summary>
+    /// Gets CSS class for depth-based indentation
+    /// </summary>
+    private string GetDepthClass()
+    {
+        var depth = GetDepth();
+        return $"depth-{Math.Min(depth, 5)}"; // Cap at depth-5 for styling
+    }
+
+    /// <summary>
+    /// Gets CSS class if this field is selected
+    /// </summary>
+    private string GetSelectedClass()
+    {
+        return Field.Id == SelectedFieldId ? "selected" : "";
+    }
+
+    /// <summary>
+    /// Calculates the depth of this field in the hierarchy
+    /// </summary>
+    private int GetDepth()
+    {
+        int depth = 0;
+        var currentParentId = Field.ParentId;
+
+        while (!string.IsNullOrEmpty(currentParentId))
+        {
+            depth++;
+            var parent = AllFields.FirstOrDefault(f => f.Id == currentParentId);
+            currentParentId = parent?.ParentId;
+        }
+
+        return depth;
+    }
+
+    /// <summary>
+    /// Checks if this field has children
+    /// </summary>
+    private bool HasChildren()
+    {
+        return AllFields.Any(f => f.ParentId == Field.Id);
+    }
+
+    /// <summary>
+    /// Gets child fields ordered by Order property
+    /// </summary>
+    private List<FormFieldSchema> GetChildFields()
+    {
+        return AllFields
+            .Where(f => f.ParentId == Field.Id)
+            .OrderBy(f => f.Order)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Gets sibling fields (same parent)
+    /// </summary>
+    private List<FormFieldSchema> GetSiblings()
+    {
+        return AllFields
+            .Where(f => f.ParentId == Field.ParentId)
+            .OrderBy(f => f.Order)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Checks if this is the first sibling
+    /// </summary>
+    private bool IsFirstSibling()
+    {
+        var siblings = GetSiblings();
+        return siblings.FirstOrDefault()?.Id == Field.Id;
+    }
+
+    /// <summary>
+    /// Checks if this is the last sibling
+    /// </summary>
+    private bool IsLastSibling()
+    {
+        var siblings = GetSiblings();
+        return siblings.LastOrDefault()?.Id == Field.Id;
+    }
+
+    /// <summary>
+    /// Gets field label (with fallback to ID)
+    /// </summary>
+    private string GetFieldLabel()
+    {
+        return !string.IsNullOrWhiteSpace(Field.LabelEn)
+            ? Field.LabelEn
+            : (!string.IsNullOrWhiteSpace(Field.LabelFr)
+                ? Field.LabelFr
+                : Field.Id);
+    }
+
+    /// <summary>
+    /// Gets icon based on field type
+    /// </summary>
+    private string GetFieldIcon()
+    {
+        return Field.FieldType switch
+        {
+            "TextBox" => "📝",
+            "TextArea" => "📄",
+            "DropDown" => "📋",
+            "DatePicker" => "📅",
+            "FileUpload" => "📎",
+            "CheckBox" => "☑️",
+            "RadioButton" => "🔘",
+            "Section" => "📦",
+            "Tab" => "🗂️",
+            "Panel" => "🎨",
+            "ModalTable" => "📊",
+            "DateRange" => "📆",
+            _ => "❓"
+        };
+    }
+
+    /// <summary>
+    /// Handles field selection
+    /// </summary>
+    private async Task HandleClick()
+    {
+        await OnSelected.InvokeAsync(Field.Id);
+    }
+
+    /// <summary>
+    /// Toggles expanded/collapsed state
+    /// </summary>
+    private void ToggleExpanded()
+    {
+        IsExpanded = !IsExpanded;
+    }
+}

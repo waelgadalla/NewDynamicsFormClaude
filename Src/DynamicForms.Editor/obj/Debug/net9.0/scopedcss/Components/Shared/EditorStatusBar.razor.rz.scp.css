@@ -1,0 +1,367 @@
+/* Editor Status Bar Container */
+.editor-status-bar[b-57g6j9h185] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c3e50;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0.5rem 1.5rem;
+    border-top: 1px solid #1a252f;
+    font-size: 0.85rem;
+    min-height: 35px;
+    position: sticky;
+    bottom: 0;
+    z-index: 1000;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Status Sections */
+.status-section[b-57g6j9h185] {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.status-left[b-57g6j9h185] {
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.status-center[b-57g6j9h185] {
+    flex: 0 0 auto;
+    justify-content: center;
+}
+
+.status-right[b-57g6j9h185] {
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* Status Items */
+.status-item[b-57g6j9h185] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.status-item i[b-57g6j9h185] {
+    font-size: 0.9rem;
+}
+
+.status-item span[b-57g6j9h185] {
+    line-height: 1;
+}
+
+/* Status Divider */
+.status-divider[b-57g6j9h185] {
+    color: rgba(255, 255, 255, 0.3);
+    margin: 0 0.25rem;
+}
+
+/* Status Indicators - Color Coding */
+.status-indicator[b-57g6j9h185] {
+    font-size: 0.6rem;
+}
+
+/* Saved Status (Green) */
+.status-saved[b-57g6j9h185] {
+    color: #2ecc71;
+}
+
+.status-saved .status-indicator[b-57g6j9h185] {
+    color: #2ecc71;
+}
+
+/* Unsaved Status (Orange) */
+.status-unsaved[b-57g6j9h185] {
+    color: #f39c12;
+}
+
+.status-unsaved .status-indicator[b-57g6j9h185] {
+    color: #f39c12;
+    animation: pulse-orange-b-57g6j9h185 2s infinite;
+}
+
+@keyframes pulse-orange-b-57g6j9h185 {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Saving Status */
+.status-saving[b-57g6j9h185] {
+    color: #3498db;
+}
+
+.status-saving .spinner-border-sm[b-57g6j9h185] {
+    width: 0.875rem;
+    height: 0.875rem;
+    border-width: 0.125rem;
+    color: #3498db;
+}
+
+/* Error Status (Red) */
+.status-error[b-57g6j9h185] {
+    color: #e74c3c;
+    font-weight: 500;
+}
+
+.status-error i[b-57g6j9h185] {
+    color: #e74c3c;
+}
+
+/* Valid Status (Green) */
+.status-valid[b-57g6j9h185] {
+    color: #2ecc71;
+}
+
+.status-valid i[b-57g6j9h185] {
+    color: #2ecc71;
+}
+
+/* Help Section */
+.status-help[b-57g6j9h185] {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+}
+
+.status-help kbd[b-57g6j9h185] {
+    display: inline-block;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.75rem;
+    font-family: 'Courier New', monospace;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.25rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0.25rem;
+}
+
+/* Icon Colors */
+.status-item .bi-clock[b-57g6j9h185] {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.status-item .bi-layers[b-57g6j9h185] {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.status-item .bi-calendar-event[b-57g6j9h185] {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.status-item .bi-info-circle[b-57g6j9h185] {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Hover Effects for Interactive Items */
+.status-item:hover[b-57g6j9h185] {
+    color: rgba(255, 255, 255, 1);
+}
+
+/* Animation for Spinner */
+@keyframes spin-b-57g6j9h185 {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner-border[b-57g6j9h185] {
+    animation: spin-b-57g6j9h185 0.75s linear infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .status-center[b-57g6j9h185] {
+        display: none;
+    }
+
+    .status-left[b-57g6j9h185],
+    .status-right[b-57g6j9h185] {
+        flex: 1;
+    }
+}
+
+@media (max-width: 992px) {
+    .editor-status-bar[b-57g6j9h185] {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .status-section[b-57g6j9h185] {
+        gap: 0.5rem;
+    }
+
+    .status-item[b-57g6j9h185] {
+        gap: 0.25rem;
+    }
+
+    .status-item i[b-57g6j9h185] {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .editor-status-bar[b-57g6j9h185] {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .status-help[b-57g6j9h185] {
+        display: none;
+    }
+
+    .status-section[b-57g6j9h185] {
+        gap: 0.375rem;
+    }
+
+    .status-divider[b-57g6j9h185] {
+        display: none;
+    }
+
+    /* Hide less critical info on mobile */
+    .status-right .status-item:not(:first-child)[b-57g6j9h185] {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .editor-status-bar[b-57g6j9h185] {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.375rem;
+        padding: 0.5rem;
+    }
+
+    .status-section[b-57g6j9h185] {
+        justify-content: space-between;
+        width: 100%;
+        gap: 0.25rem;
+    }
+
+    .status-left[b-57g6j9h185],
+    .status-center[b-57g6j9h185],
+    .status-right[b-57g6j9h185] {
+        justify-content: center;
+    }
+
+    .status-center[b-57g6j9h185] {
+        display: flex;
+    }
+
+    /* Show only most important info */
+    .status-item span[b-57g6j9h185] {
+        font-size: 0.7rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .editor-status-bar[b-57g6j9h185] {
+        display: none;
+    }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    .editor-status-bar[b-57g6j9h185] {
+        background-color: #1a252f;
+        border-top-color: #0d1620;
+    }
+
+    .status-help kbd[b-57g6j9h185] {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+}
+
+/* Accessibility */
+.status-item:focus-visible[b-57g6j9h185] {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+}
+
+/* Status Bar Transitions */
+.editor-status-bar[b-57g6j9h185] {
+    transition: background-color 0.3s ease;
+}
+
+/* Pulsing animation for unsaved indicator */
+.status-unsaved .status-indicator[b-57g6j9h185] {
+    animation: pulse-orange-b-57g6j9h185 2s ease-in-out infinite;
+}
+
+/* Success fade-in animation */
+.status-saved[b-57g6j9h185] {
+    animation: fade-in-b-57g6j9h185 0.3s ease-in;
+}
+
+@keyframes fade-in-b-57g6j9h185 {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Error shake animation */
+.status-error[b-57g6j9h185] {
+    animation: shake-b-57g6j9h185 0.5s ease-in-out;
+}
+
+@keyframes shake-b-57g6j9h185 {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-2px);
+    }
+    75% {
+        transform: translateX(2px);
+    }
+}
+
+/* Tooltips for status items */
+.status-item[title]:hover[b-57g6j9h185]::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    pointer-events: none;
+    margin-bottom: 0.5rem;
+}
+
+/* Loading indicator animation */
+@keyframes loading-pulse-b-57g6j9h185 {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.status-saving[b-57g6j9h185] {
+    animation: loading-pulse-b-57g6j9h185 1.5s ease-in-out infinite;
+}

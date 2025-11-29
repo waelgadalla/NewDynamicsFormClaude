@@ -1,0 +1,252 @@
+@page "/field-list-demo"
+@using DynamicForms.Core.V2.Schemas
+@using DynamicForms.Editor.Components.FieldList
+@using DynamicForms.Editor.Components.Properties
+
+<PageTitle>Editor Components Demo</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Field List & Properties Panel Demo</h2>
+            <p class="text-muted">Testing the full editor experience with both panels</p>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="demo-container">
+                <!-- Field List Panel -->
+                <div class="field-list-container">
+                    <FieldListPanel
+                        Fields="@_fields"
+                        SelectedFieldId="@_selectedFieldId"
+                        OnFieldSelected="@HandleFieldSelected"
+                        OnFieldMoveUp="@HandleFieldMoveUp"
+                        OnFieldMoveDown="@HandleFieldMoveDown"
+                        OnFieldEdit="@HandleFieldEdit"
+                        OnFieldClone="@HandleFieldClone"
+                        OnFieldDelete="@HandleFieldDelete"
+                        OnAddField="@HandleAddField" />
+                </div>
+
+                <!-- Properties Panel -->
+                <PropertiesPanel
+                    Field="@_selectedField"
+                    OnFieldChanged="@HandleFieldChanged"
+                    OnCancel="@HandleCancel" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Log -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <strong>Last Action:</strong> @_lastAction
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<FormFieldSchema> _fields = new();
+    private string? _selectedFieldId;
+    private FormFieldSchema? _selectedField;
+    private string _lastAction = "No action yet";
+
+    protected override void OnInitialized()
+    {
+        // Create sample hierarchical field structure
+        _fields = new List<FormFieldSchema>
+        {
+            // Root section
+            new FormFieldSchema
+            {
+                Id = "section_organization",
+                FieldType = "Section",
+                LabelEn = "Organization Information",
+                LabelFr = "Informations sur l'organisation",
+                Order = 1,
+                IsVisible = true
+            },
+
+            // Fields in organization section
+            new FormFieldSchema
+            {
+                Id = "org_name",
+                ParentId = "section_organization",
+                FieldType = "TextBox",
+                LabelEn = "Organization Name",
+                LabelFr = "Nom de l'organisation",
+                Order = 1,
+                IsRequired = true,
+                MaxLength = 200
+            },
+            new FormFieldSchema
+            {
+                Id = "org_type",
+                ParentId = "section_organization",
+                FieldType = "DropDown",
+                LabelEn = "Organization Type",
+                LabelFr = "Type d'organisation",
+                Order = 2,
+                IsRequired = true
+            },
+            new FormFieldSchema
+            {
+                Id = "org_email",
+                ParentId = "section_organization",
+                FieldType = "TextBox",
+                LabelEn = "Email Address",
+                LabelFr = "Adresse courriel",
+                Order = 3,
+                IsRequired = true,
+                Pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+            },
+
+            // Another root section
+            new FormFieldSchema
+            {
+                Id = "section_project",
+                FieldType = "Section",
+                LabelEn = "Project Details",
+                LabelFr = "Détails du projet",
+                Order = 2,
+                IsVisible = true
+            },
+
+            // Fields in project section
+            new FormFieldSchema
+            {
+                Id = "project_title",
+                ParentId = "section_project",
+                FieldType = "TextBox",
+                LabelEn = "Project Title",
+                LabelFr = "Titre du projet",
+                Order = 1,
+                IsRequired = true,
+                MaxLength = 300
+            },
+            new FormFieldSchema
+            {
+                Id = "project_description",
+                ParentId = "section_project",
+                FieldType = "TextArea",
+                LabelEn = "Project Description",
+                LabelFr = "Description du projet",
+                Order = 2,
+                IsRequired = true
+            },
+            new FormFieldSchema
+            {
+                Id = "project_dates",
+                ParentId = "section_project",
+                FieldType = "DateRange",
+                LabelEn = "Project Duration",
+                LabelFr = "Durée du projet",
+                Order = 3,
+                IsRequired = true
+            },
+
+            // Nested subsection
+            new FormFieldSchema
+            {
+                Id = "subsection_budget",
+                ParentId = "section_project",
+                FieldType = "Section",
+                LabelEn = "Budget Information",
+                LabelFr = "Informations budgétaires",
+                Order = 4,
+                IsVisible = true
+            },
+            new FormFieldSchema
+            {
+                Id = "budget_total",
+                ParentId = "subsection_budget",
+                FieldType = "TextBox",
+                LabelEn = "Total Budget",
+                LabelFr = "Budget total",
+                Order = 1,
+                IsRequired = true
+            },
+            new FormFieldSchema
+            {
+                Id = "budget_breakdown",
+                ParentId = "subsection_budget",
+                FieldType = "ModalTable",
+                LabelEn = "Budget Breakdown",
+                LabelFr = "Répartition du budget",
+                Order = 2,
+                IsRequired = false
+            }
+        };
+    }
+
+    private void HandleFieldSelected(string fieldId)
+    {
+        _selectedFieldId = fieldId;
+        _selectedField = _fields.FirstOrDefault(f => f.Id == fieldId);
+        _lastAction = $"Selected: {fieldId}";
+        StateHasChanged();
+    }
+
+    private void HandleFieldMoveUp(FormFieldSchema field)
+    {
+        _lastAction = $"Move Up: {field.Id}";
+        StateHasChanged();
+    }
+
+    private void HandleFieldMoveDown(FormFieldSchema field)
+    {
+        _lastAction = $"Move Down: {field.Id}";
+        StateHasChanged();
+    }
+
+    private void HandleFieldEdit(FormFieldSchema field)
+    {
+        _lastAction = $"Edit: {field.Id}";
+        StateHasChanged();
+    }
+
+    private void HandleFieldClone(FormFieldSchema field)
+    {
+        _lastAction = $"Clone: {field.Id}";
+        StateHasChanged();
+    }
+
+    private void HandleFieldDelete(FormFieldSchema field)
+    {
+        _lastAction = $"Delete: {field.Id}";
+        StateHasChanged();
+    }
+
+    private void HandleAddField()
+    {
+        _lastAction = "Add Field clicked";
+        StateHasChanged();
+    }
+
+    private void HandleFieldChanged(FormFieldSchema updatedField)
+    {
+        _lastAction = $"Applied changes to field: {updatedField.Id}";
+
+        // Update the field in the list
+        var index = _fields.FindIndex(f => f.Id == updatedField.Id);
+        if (index >= 0)
+        {
+            _fields[index] = updatedField;
+            _selectedField = updatedField;
+        }
+
+        StateHasChanged();
+    }
+
+    private void HandleCancel()
+    {
+        _lastAction = "Cancelled editing";
+        _selectedFieldId = null;
+        _selectedField = null;
+        StateHasChanged();
+    }
+}

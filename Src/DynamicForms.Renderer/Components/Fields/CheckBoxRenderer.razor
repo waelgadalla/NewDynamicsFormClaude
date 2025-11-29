@@ -1,0 +1,139 @@
+@inherits FieldRendererBase
+
+<div class="@GetCssClasses("form-check")">
+    <input type="checkbox"
+           id="@GetHtmlId()"
+           class="@GetCheckboxCssClasses()"
+           checked="@GetCheckedValue()"
+           disabled="@IsDisabled"
+           required="@IsRequired()"
+           @onchange="@HandleCheckboxChanged"
+           aria-describedby="@GetAriaDescribedBy()" />
+
+    <label for="@GetHtmlId()" class="@GetCheckboxLabelCssClasses()">
+        @GetLabel()
+    </label>
+
+    @if (ShouldRenderHelpText())
+    {
+        <small id="@GetHelpTextId()" class="form-text text-muted dynamic-field-help d-block">
+            @GetHelpText()
+        </small>
+    }
+
+    @if (ShouldRenderErrors())
+    {
+        <div id="@GetErrorId()" class="invalid-feedback d-block dynamic-field-error">
+            @Errors.First()
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Gets the checked state of the checkbox.
+    /// Converts the current value to a boolean.
+    /// </summary>
+    private bool GetCheckedValue()
+    {
+        if (Value == null)
+            return false;
+
+        try
+        {
+            // Handle if value is already a boolean
+            if (Value is bool boolValue)
+                return boolValue;
+
+            // Try to parse string values
+            if (Value is string strValue)
+            {
+                // Handle common string representations
+                if (bool.TryParse(strValue, out var parsed))
+                    return parsed;
+
+                // Handle "1"/"0" and "yes"/"no"
+                if (strValue.Equals("1", StringComparison.OrdinalIgnoreCase) ||
+                    strValue.Equals("yes", StringComparison.OrdinalIgnoreCase) ||
+                    strValue.Equals("true", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                return false;
+            }
+
+            // Try to convert to boolean
+            return Convert.ToBoolean(Value);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Handles checkbox value changes.
+    /// Converts the checked state to a boolean before invoking the callback.
+    /// </summary>
+    private async Task HandleCheckboxChanged(ChangeEventArgs e)
+    {
+        if (e.Value is bool boolValue)
+        {
+            await HandleValueChanged(boolValue);
+        }
+        else
+        {
+            // Fallback: parse the value
+            var isChecked = e.Value?.ToString()?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+            await HandleValueChanged(isChecked);
+        }
+    }
+
+    /// <summary>
+    /// Gets CSS classes for the checkbox input element.
+    /// Uses Bootstrap's form-check-input instead of form-control.
+    /// </summary>
+    private string GetCheckboxCssClasses()
+    {
+        var classes = new List<string> { "form-check-input", "dynamic-field-input" };
+
+        // Add validation state class
+        if (HasErrors)
+        {
+            classes.Add("is-invalid");
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    /// <summary>
+    /// Gets CSS classes for the checkbox label.
+    /// Uses Bootstrap's form-check-label.
+    /// </summary>
+    private string GetCheckboxLabelCssClasses()
+    {
+        var classes = new List<string> { "form-check-label", "dynamic-field-label" };
+
+        if (IsRequired())
+        {
+            classes.Add("required");
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    /// <summary>
+    /// Builds the aria-describedby attribute value combining help text and error IDs
+    /// </summary>
+    private string? GetAriaDescribedBy()
+    {
+        var ids = new List<string>();
+
+        if (ShouldRenderHelpText())
+            ids.Add(GetHelpTextId());
+
+        if (ShouldRenderErrors())
+            ids.Add(GetErrorId());
+
+        return ids.Count > 0 ? string.Join(" ", ids) : null;
+    }
+}

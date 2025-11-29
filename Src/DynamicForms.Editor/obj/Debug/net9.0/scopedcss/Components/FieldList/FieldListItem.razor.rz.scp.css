@@ -1,0 +1,256 @@
+/* ========================================================================
+   Field List Item - Scoped Styles
+   ======================================================================== */
+
+/* Base Item Container */
+.field-list-item[b-2wwlgglmes] {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Field Item Header */
+.field-item-header[b-2wwlgglmes] {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    margin-bottom: 4px;
+}
+
+.field-item-header:hover[b-2wwlgglmes] {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Selected State */
+.field-list-item.selected .field-item-header[b-2wwlgglmes] {
+    background-color: #e7f3ff;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
+}
+
+.field-list-item.selected .field-item-header:hover[b-2wwlgglmes] {
+    background-color: #d3e7ff;
+}
+
+/* Depth-based Indentation */
+.field-list-item.depth-0 .field-item-header[b-2wwlgglmes] {
+    margin-left: 0;
+}
+
+.field-list-item.depth-1 .field-item-header[b-2wwlgglmes] {
+    margin-left: 20px;
+}
+
+.field-list-item.depth-2 .field-item-header[b-2wwlgglmes] {
+    margin-left: 40px;
+}
+
+.field-list-item.depth-3 .field-item-header[b-2wwlgglmes] {
+    margin-left: 60px;
+}
+
+.field-list-item.depth-4 .field-item-header[b-2wwlgglmes] {
+    margin-left: 80px;
+}
+
+.field-list-item.depth-5 .field-item-header[b-2wwlgglmes] {
+    margin-left: 100px;
+}
+
+/* Visual depth indicator (left border) */
+.field-list-item.depth-1 .field-item-header[b-2wwlgglmes]::before,
+.field-list-item.depth-2 .field-item-header[b-2wwlgglmes]::before,
+.field-list-item.depth-3 .field-item-header[b-2wwlgglmes]::before,
+.field-list-item.depth-4 .field-item-header[b-2wwlgglmes]::before,
+.field-list-item.depth-5 .field-item-header[b-2wwlgglmes]::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 60%;
+    background-color: #dee2e6;
+    border-radius: 1px;
+}
+
+/* Expand/Collapse Button */
+.btn-expand[b-2wwlgglmes] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-expand:hover[b-2wwlgglmes] {
+    background-color: #e9ecef;
+    color: #212529;
+}
+
+.btn-expand svg[b-2wwlgglmes] {
+    transition: transform 0.2s ease;
+}
+
+.btn-expand svg.expanded[b-2wwlgglmes] {
+    transform: rotate(90deg);
+}
+
+.btn-expand-spacer[b-2wwlgglmes] {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Field Type Icon */
+.field-icon[b-2wwlgglmes] {
+    font-size: 16px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Field Info */
+.field-info[b-2wwlgglmes] {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0; /* Allow text truncation */
+}
+
+.field-label[b-2wwlgglmes] {
+    font-size: 14px;
+    font-weight: 500;
+    color: #212529;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.field-id[b-2wwlgglmes] {
+    font-size: 11px;
+    color: #6c757d;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Action Buttons Container */
+.field-actions[b-2wwlgglmes] {
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.field-item-header:hover .field-actions[b-2wwlgglmes],
+.field-list-item.selected .field-actions[b-2wwlgglmes] {
+    opacity: 1;
+}
+
+/* Individual Action Buttons */
+.btn-action[b-2wwlgglmes] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #6c757d;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.btn-action:hover:not(:disabled)[b-2wwlgglmes] {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #212529;
+}
+
+.btn-action:active:not(:disabled)[b-2wwlgglmes] {
+    transform: scale(0.95);
+}
+
+.btn-action:disabled[b-2wwlgglmes] {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Specific Action Button Colors */
+.btn-action-edit:hover:not(:disabled)[b-2wwlgglmes] {
+    background-color: #cfe2ff;
+    border-color: #9ec5fe;
+    color: #0d6efd;
+}
+
+.btn-action-delete:hover:not(:disabled)[b-2wwlgglmes] {
+    background-color: #f8d7da;
+    border-color: #f1aeb5;
+    color: #dc3545;
+}
+
+.btn-action-clone:hover:not(:disabled)[b-2wwlgglmes] {
+    background-color: #d1e7dd;
+    border-color: #a3cfbb;
+    color: #198754;
+}
+
+.btn-action-move:hover:not(:disabled)[b-2wwlgglmes] {
+    background-color: #fff3cd;
+    border-color: #ffe69c;
+    color: #ffc107;
+}
+
+/* Child Fields Container */
+.field-children[b-2wwlgglmes] {
+    margin-top: 4px;
+    position: relative;
+}
+
+/* Connection lines for hierarchy visualization */
+.field-children[b-2wwlgglmes]::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: -4px;
+    bottom: 4px;
+    width: 1px;
+    background-color: #dee2e6;
+}
+
+/* Focus styles for accessibility */
+.btn-action:focus-visible[b-2wwlgglmes],
+.btn-expand:focus-visible[b-2wwlgglmes] {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* Smooth transitions */
+.field-list-item[b-2wwlgglmes],
+.field-item-header[b-2wwlgglmes],
+.btn-action[b-2wwlgglmes],
+.btn-expand[b-2wwlgglmes] {
+    transition-property: background-color, border-color, color, box-shadow, transform;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+}

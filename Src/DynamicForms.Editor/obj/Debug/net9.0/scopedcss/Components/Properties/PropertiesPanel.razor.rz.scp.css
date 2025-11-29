@@ -1,0 +1,199 @@
+/* ========================================================================
+   Properties Panel - Scoped Styles
+   ======================================================================== */
+
+/* Panel Container */
+.properties-panel[b-228gv4u2et] {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 70%;
+    background-color: #ffffff;
+    border-left: 1px solid #dee2e6;
+}
+
+/* Header Section */
+.properties-header[b-228gv4u2et] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.header-content[b-228gv4u2et] {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.properties-title[b-228gv4u2et] {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.field-type-badge[b-228gv4u2et] {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Content Section (Scrollable) */
+.properties-content[b-228gv4u2et] {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+/* Custom scrollbar */
+.properties-content[b-228gv4u2et]::-webkit-scrollbar {
+    width: 10px;
+}
+
+.properties-content[b-228gv4u2et]::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.properties-content[b-228gv4u2et]::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 5px;
+}
+
+.properties-content[b-228gv4u2et]::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Property Section */
+.property-section[b-228gv4u2et] {
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+}
+
+.property-section:last-child[b-228gv4u2et] {
+    margin-bottom: 0;
+}
+
+.section-title[b-228gv4u2et] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.section-icon[b-228gv4u2et] {
+    color: #6c757d;
+}
+
+/* Footer Section */
+.properties-footer[b-228gv4u2et] {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.properties-footer .btn[b-228gv4u2et] {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.properties-footer .btn:disabled[b-228gv4u2et] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Empty State */
+.properties-empty[b-228gv4u2et] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.empty-icon[b-228gv4u2et] {
+    margin-bottom: 24px;
+    color: #adb5bd;
+    opacity: 0.5;
+}
+
+.empty-title[b-228gv4u2et] {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.empty-message[b-228gv4u2et] {
+    margin: 0;
+    font-size: 14px;
+    color: #adb5bd;
+    max-width: 300px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .properties-panel[b-228gv4u2et] {
+        width: 65%;
+    }
+}
+
+@media (max-width: 992px) {
+    .properties-panel[b-228gv4u2et] {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #dee2e6;
+    }
+}
+
+/* Form controls styling within sections */
+.property-section .form-label[b-228gv4u2et] {
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 6px;
+}
+
+.property-section .form-control[b-228gv4u2et],
+.property-section .form-select[b-228gv4u2et] {
+    font-size: 14px;
+}
+
+.property-section .form-text[b-228gv4u2et] {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* Checkbox and switch styling */
+.property-section .form-check-label[b-228gv4u2et] {
+    font-size: 13px;
+    color: #495057;
+}
+
+.property-section .form-switch .form-check-input[b-228gv4u2et] {
+    width: 40px;
+    height: 20px;
+    cursor: pointer;
+}

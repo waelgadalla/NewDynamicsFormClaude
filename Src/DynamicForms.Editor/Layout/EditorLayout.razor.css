@@ -1,0 +1,270 @@
+/* Editor Layout Container */
+.editor-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+/* Editor Toolbar */
+.editor-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-bottom: 2px solid #dee2e6;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    min-height: 60px;
+}
+
+.toolbar-left,
+.toolbar-center,
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.toolbar-left {
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.toolbar-center {
+    flex: 1;
+    justify-content: center;
+}
+
+.toolbar-right {
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 30px;
+    background-color: #dee2e6;
+    margin: 0 0.5rem;
+}
+
+.editor-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.editor-title i {
+    color: #3498db;
+    font-size: 1.2rem;
+}
+
+/* Toolbar Buttons */
+.editor-toolbar .btn {
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.editor-toolbar .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.editor-toolbar .btn i {
+    font-size: 1rem;
+}
+
+/* Editor Content Area */
+.editor-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+}
+
+/* Editor Status Bar */
+.editor-status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c3e50;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0.5rem 1.5rem;
+    border-top: 1px solid #1a252f;
+    font-size: 0.85rem;
+    min-height: 35px;
+    position: sticky;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.status-left,
+.status-center,
+.status-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.status-left {
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.status-center {
+    flex: 1;
+    justify-content: center;
+}
+
+.status-right {
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.status-item i {
+    font-size: 0.9rem;
+}
+
+.status-divider {
+    color: rgba(255, 255, 255, 0.3);
+    margin: 0 0.25rem;
+}
+
+/* Status Icons */
+.status-item .text-success {
+    color: #2ecc71 !important;
+    font-size: 0.6rem;
+}
+
+.status-item .bi-clock,
+.status-item .bi-layers,
+.status-item .bi-info-circle {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Scrollbar Styling */
+.editor-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.editor-content::-webkit-scrollbar-track {
+    background: #e9ecef;
+}
+
+.editor-content::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 5px;
+}
+
+.editor-content::-webkit-scrollbar-thumb:hover {
+    background: #adb5bd;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .toolbar-center {
+        display: none;
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+        flex: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .editor-toolbar {
+        padding: 0.5rem 1rem;
+        flex-wrap: wrap;
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+        gap: 0.25rem;
+    }
+
+    .toolbar-divider {
+        display: none;
+    }
+
+    .editor-toolbar .btn span {
+        display: none;
+    }
+
+    .editor-toolbar .btn {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .editor-content {
+        padding: 1rem;
+    }
+
+    .editor-status-bar {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+
+    .status-center {
+        display: none;
+    }
+
+    .status-left,
+    .status-right {
+        flex: 1;
+    }
+
+    .status-item {
+        gap: 0.25rem;
+    }
+
+    .status-divider {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .editor-toolbar {
+        padding: 0.5rem;
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+        flex-wrap: wrap;
+    }
+
+    .editor-content {
+        padding: 0.75rem;
+    }
+
+    .editor-status-bar {
+        padding: 0.5rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .status-left,
+    .status-right {
+        justify-content: center;
+    }
+
+    .status-right {
+        display: none;
+    }
+}

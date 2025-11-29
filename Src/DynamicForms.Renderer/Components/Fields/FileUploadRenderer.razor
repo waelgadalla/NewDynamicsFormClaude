@@ -1,0 +1,193 @@
+@inherits FieldRendererBase
+
+<div class="@GetCssClasses()">
+    @if (ShouldRenderLabel())
+    {
+        <label for="@GetHtmlId()" class="@GetLabelCssClasses()">
+            @GetLabel()
+        </label>
+    }
+
+    <input type="file"
+           id="@GetHtmlId()"
+           class="@GetInputCssClasses()"
+           accept="@GetAcceptedFileTypes()"
+           multiple="@IsMultipleFilesAllowed()"
+           disabled="@IsDisabled"
+           required="@IsRequired()"
+           @onchange="@HandleFileSelected"
+           aria-describedby="@GetAriaDescribedBy()" />
+
+    @* File constraints info *@
+    @if (GetFileConstraintsInfo() is string constraints)
+    {
+        <small class="form-text text-muted d-block mt-1">
+            @constraints
+        </small>
+    }
+
+    @* Display selected files *@
+    @if (_selectedFiles.Count > 0)
+    {
+        <div class="mt-2">
+            <small class="text-muted">@GetSelectedFilesLabel():</small>
+            <ul class="list-unstyled mb-0 mt-1">
+                @foreach (var file in _selectedFiles)
+                {
+                    <li class="small">
+                        <i class="bi bi-file-earmark"></i> @file.Name
+                        <span class="text-muted">(@FormatFileSize(file.Size))</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (ShouldRenderHelpText())
+    {
+        <small id="@GetHelpTextId()" class="form-text text-muted dynamic-field-help">
+            @GetHelpText()
+        </small>
+    }
+
+    @if (ShouldRenderErrors())
+    {
+        <div id="@GetErrorId()" class="invalid-feedback d-block dynamic-field-error">
+            @Errors.First()
+        </div>
+    }
+</div>
+
+@code {
+    private List<FileInfo> _selectedFiles = new();
+
+    private class FileInfo
+    {
+        public string Name { get; set; } = string.Empty;
+        public long Size { get; set; }
+    }
+
+    /// <summary>
+    /// Gets the accepted file types for the file input.
+    /// Returns comma-separated list of file extensions (e.g., ".pdf,.docx").
+    /// </summary>
+    private string? GetAcceptedFileTypes()
+    {
+        if (Schema.TypeConfig is FileUploadConfig config && config.AllowedExtensions?.Length > 0)
+        {
+            return string.Join(",", config.AllowedExtensions);
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Determines if multiple file selection is allowed.
+    /// </summary>
+    private bool IsMultipleFilesAllowed()
+    {
+        if (Schema.TypeConfig is FileUploadConfig config)
+        {
+            return config.MaxFiles > 1;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Gets file constraints information to display to the user.
+    /// </summary>
+    private string? GetFileConstraintsInfo()
+    {
+        if (Schema.TypeConfig is not FileUploadConfig config)
+            return null;
+
+        var constraints = new List<string>();
+
+        // Add allowed file types
+        if (config.AllowedExtensions?.Length > 0)
+        {
+            var types = string.Join(", ", config.AllowedExtensions);
+            constraints.Add(IsFrench
+                ? $"Types acceptés: {types}"
+                : $"Allowed types: {types}");
+        }
+
+        // Add max file size
+        var maxSize = FormatFileSize(config.MaxFileSizeBytes);
+        constraints.Add(IsFrench
+            ? $"Taille max: {maxSize}"
+            : $"Max size: {maxSize}");
+
+        // Add max files
+        if (config.MaxFiles > 1)
+        {
+            constraints.Add(IsFrench
+                ? $"Max {config.MaxFiles} fichiers"
+                : $"Max {config.MaxFiles} files");
+        }
+
+        return constraints.Count > 0 ? string.Join(" | ", constraints) : null;
+    }
+
+    /// <summary>
+    /// Formats file size in bytes to human-readable format (KB, MB).
+    /// </summary>
+    private string FormatFileSize(long bytes)
+    {
+        if (bytes < 1024)
+            return $"{bytes} B";
+
+        if (bytes < 1024 * 1024)
+            return $"{bytes / 1024.0:F1} KB";
+
+        return $"{bytes / (1024.0 * 1024.0):F1} MB";
+    }
+
+    /// <summary>
+    /// Gets the label for selected files section.
+    /// </summary>
+    private string GetSelectedFilesLabel()
+    {
+        return IsFrench ? "Fichiers sélectionnés" : "Selected files";
+    }
+
+    /// <summary>
+    /// Handles file selection change event.
+    /// Updates the selected files list and invokes the value changed callback.
+    /// </summary>
+    private async Task HandleFileSelected(ChangeEventArgs e)
+    {
+        // Note: This is a simplified version. In a real implementation,
+        // you would use InputFile component and IBrowserFile to access file details.
+        // For now, we'll just handle the change event and pass the value up.
+
+        // Clear selected files list
+        _selectedFiles.Clear();
+
+        // In a real implementation with InputFile component:
+        // - Get files from InputFileChangeEventArgs
+        // - Validate file types and sizes
+        // - Store file references
+        // - Pass files to parent component via OnValueChanged
+
+        // For this basic implementation, we just notify of the change
+        await HandleValueChanged(e.Value);
+    }
+
+    /// <summary>
+    /// Builds the aria-describedby attribute value combining help text and error IDs
+    /// </summary>
+    private string? GetAriaDescribedBy()
+    {
+        var ids = new List<string>();
+
+        if (ShouldRenderHelpText())
+            ids.Add(GetHelpTextId());
+
+        if (ShouldRenderErrors())
+            ids.Add(GetErrorId());
+
+        return ids.Count > 0 ? string.Join(" ", ids) : null;
+    }
+}

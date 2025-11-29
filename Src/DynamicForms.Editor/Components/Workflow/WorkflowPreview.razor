@@ -1,0 +1,473 @@
+@using DynamicForms.Core.V2.Schemas
+@using DynamicForms.Core.V2.Runtime
+@using System.Text.Json
+
+@*
+    WorkflowPreview - Visual preview and navigation of workflow
+
+    Features:
+    - Visual workflow diagram with modules and conditional branches
+    - Interactive navigation through workflow
+    - Conditional logic evaluation
+    - Form rendering for each module
+    - Data collection across all modules
+*@
+
+@if (Workflow != null)
+{
+    <div class="workflow-preview">
+        <!-- Workflow Diagram Header -->
+        <div class="workflow-diagram-section">
+            <h5 class="diagram-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H2zM3 3H2v1h1V3z"/>
+                    <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9z"/>
+                    <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V7zM2 7h1v1H2V7zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5H2zm1 .5H2v1h1v-1z"/>
+                </svg>
+                Workflow Flow
+            </h5>
+
+            <!-- Visual Diagram -->
+            <div class="workflow-diagram">
+                @for (int i = 0; i < _modules.Count; i++)
+                {
+                    var module = _modules[i];
+                    var isCurrentStep = _currentModuleIndex == i;
+                    var isCompleted = _completedModuleIndices.Contains(i);
+                    var isUpcoming = i > _currentModuleIndex;
+
+                    <div class="diagram-step @(isCurrentStep ? "current-step" : "") @(isCompleted ? "completed-step" : "") @(isUpcoming ? "upcoming-step" : "")">
+                        <!-- Module Node -->
+                        <div class="module-node" @onclick="() => NavigateToModule(i)">
+                            <div class="node-number">@(i + 1)</div>
+                            <div class="node-title">@module.TitleEn</div>
+                            @if (isCompleted)
+                            {
+                                <div class="node-status">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                    </svg>
+                                </div>
+                            }
+                            @if (isCurrentStep)
+                            {
+                                <div class="current-indicator"></div>
+                            }
+                        </div>
+
+                        <!-- Branching Logic Display -->
+                        @if (module.Branch != null && i < _modules.Count - 1)
+                        {
+                            <div class="branch-indicator">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 7.293V1.5A.5.5 0 0 1 8 1z"/>
+                                </svg>
+                                <span class="branch-label">Conditional</span>
+                            </div>
+                        }
+                        else if (i < _modules.Count - 1)
+                        {
+                            <!-- Standard Arrow -->
+                            <div class="flow-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                </svg>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Current Module Form -->
+        <div class="workflow-form-section">
+            @if (_currentModule != null)
+            {
+                <div class="form-container">
+                    <!-- Progress Header -->
+                    <div class="form-header">
+                        <div class="progress-info">
+                            <span class="step-indicator">Step @(_currentModuleIndex + 1) of @_modules.Count</span>
+                            <h4 class="module-title">@_currentModule.TitleEn</h4>
+                            @if (!string.IsNullOrEmpty(_currentModule.DescriptionEn))
+                            {
+                                <p class="module-description">@_currentModule.DescriptionEn</p>
+                            }
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: @GetProgressPercentage()%">
+                                    @GetProgressPercentage()%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module Form Fields -->
+                    <div class="form-fields">
+                        @if (_currentModule.Fields != null && _currentModule.Fields.Length > 0)
+                        {
+                            @foreach (var field in _currentModule.Fields)
+                            {
+                                <div class="form-field-group">
+                                    <label class="field-label">
+                                        @field.LabelEn
+                                        @if (field.IsRequired)
+                                        {
+                                            <span class="required-indicator">*</span>
+                                        }
+                                    </label>
+
+                                    @if (!string.IsNullOrEmpty(field.HelpEn))
+                                    {
+                                        <div class="field-help-text">@field.HelpEn</div>
+                                    }
+
+                                    @switch (field.FieldType)
+                                    {
+                                        case "TextBox":
+                                            <input type="text"
+                                                   class="form-control"
+                                                   placeholder="@field.PlaceholderEn"
+                                                   @bind="_formData[field.Id]"
+                                                   required="@field.IsRequired" />
+                                            break;
+
+                                        case "TextArea":
+                                            <textarea class="form-control"
+                                                      rows="4"
+                                                      placeholder="@field.PlaceholderEn"
+                                                      @bind="_formData[field.Id]"
+                                                      required="@field.IsRequired"></textarea>
+                                            break;
+
+                                        case "DropDown":
+                                            <select class="form-select"
+                                                    @bind="_formData[field.Id]"
+                                                    required="@field.IsRequired">
+                                                <option value="">-- Select --</option>
+                                                <option value="Option 1">Option 1</option>
+                                                <option value="Option 2">Option 2</option>
+                                                <option value="Option 3">Option 3</option>
+                                            </select>
+                                            break;
+
+                                        case "CheckBox":
+                                            <div class="form-check">
+                                                <input type="checkbox"
+                                                       class="form-check-input"
+                                                       id="@field.Id"
+                                                       @bind="_formData[field.Id]" />
+                                                <label class="form-check-label" for="@field.Id">
+                                                    @(field.PlaceholderEn ?? "Yes")
+                                                </label>
+                                            </div>
+                                            break;
+
+                                        case "DatePicker":
+                                            {
+                                                var dateValue = _formData.TryGetValue(field.Id, out var val) && val is string strVal ? strVal : string.Empty;
+                                                <input type="date"
+                                                       class="form-control"
+                                                       value="@dateValue"
+                                                       @onchange="e => _formData[field.Id] = e.Value?.ToString() ?? string.Empty"
+                                                       required="@field.IsRequired" />
+                                            }
+                                            break;
+
+                                        default:
+                                            <div class="alert alert-secondary">
+                                                <small>Field type '@field.FieldType' preview not implemented</small>
+                                            </div>
+                                            break;
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                                </svg>
+                                This module has no fields configured.
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Navigation Footer -->
+                    <div class="form-footer">
+                        <div class="navigation-buttons">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    @onclick="NavigatePrevious"
+                                    disabled="@(_currentModuleIndex == 0)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                                </svg>
+                                Previous
+                            </button>
+
+                            @if (_currentModuleIndex < _modules.Count - 1)
+                            {
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        @onclick="NavigateNext">
+                                    Next
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="ms-1" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                    </svg>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button"
+                                        class="btn btn-success"
+                                        @onclick="SubmitWorkflow">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                    </svg>
+                                    Submit Workflow
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Debug Data Panel (Toggle) -->
+        @if (_showDebugData)
+        {
+            <div class="debug-panel">
+                <h6>Collected Data (Debug)</h6>
+                <pre>@JsonSerializer.Serialize(_formData, new JsonSerializerOptions { WriteIndented = true })</pre>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        No workflow provided for preview.
+    </div>
+}
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// The workflow to preview
+    /// </summary>
+    [Parameter]
+    public FormWorkflowSchema? Workflow { get; set; }
+
+    /// <summary>
+    /// List of modules in the workflow with branching info
+    /// </summary>
+    [Parameter]
+    public List<WorkflowModuleInfo>? Modules { get; set; }
+
+    /// <summary>
+    /// Actual module schemas for rendering forms
+    /// </summary>
+    [Parameter]
+    public List<FormModuleSchema>? ModuleSchemas { get; set; }
+
+    /// <summary>
+    /// Event fired when workflow is submitted
+    /// </summary>
+    [Parameter]
+    public EventCallback<Dictionary<string, object>> OnWorkflowSubmit { get; set; }
+
+    // ========================================================================
+    // STATE
+    // ========================================================================
+
+    private List<WorkflowModuleInfo> _modules = new();
+    private List<FormModuleSchema> _moduleSchemas = new();
+    private int _currentModuleIndex = 0;
+    private FormModuleSchema? _currentModule;
+    private Dictionary<string, object> _formData = new();
+    private HashSet<int> _completedModuleIndices = new();
+    private bool _showDebugData = false;
+
+    // ========================================================================
+    // LIFECYCLE
+    // ========================================================================
+
+    protected override void OnParametersSet()
+    {
+        if (Modules != null && Modules.Count > 0)
+        {
+            _modules = Modules;
+        }
+
+        if (ModuleSchemas != null && ModuleSchemas.Count > 0)
+        {
+            _moduleSchemas = ModuleSchemas;
+            _currentModule = _moduleSchemas[_currentModuleIndex];
+            InitializeFormData();
+        }
+    }
+
+    // ========================================================================
+    // METHODS
+    // ========================================================================
+
+    private void InitializeFormData()
+    {
+        // Initialize form data dictionary with empty values for all fields
+        foreach (var module in _moduleSchemas)
+        {
+            if (module.Fields != null)
+            {
+                foreach (var field in module.Fields)
+                {
+                    if (!_formData.ContainsKey(field.Id))
+                    {
+                        _formData[field.Id] = field.FieldType == "CheckBox" ? false : string.Empty;
+                    }
+                }
+            }
+        }
+    }
+
+    private int GetProgressPercentage()
+    {
+        if (_modules.Count == 0) return 0;
+        return (int)(((_currentModuleIndex + 1) / (float)_modules.Count) * 100);
+    }
+
+    private void NavigateToModule(int moduleIndex)
+    {
+        if (moduleIndex >= 0 && moduleIndex < _moduleSchemas.Count)
+        {
+            _currentModuleIndex = moduleIndex;
+            _currentModule = _moduleSchemas[_currentModuleIndex];
+            StateHasChanged();
+        }
+    }
+
+    private void NavigatePrevious()
+    {
+        if (_currentModuleIndex > 0)
+        {
+            _currentModuleIndex--;
+            _currentModule = _moduleSchemas[_currentModuleIndex];
+            StateHasChanged();
+        }
+    }
+
+    private void NavigateNext()
+    {
+        // Mark current module as completed
+        _completedModuleIndices.Add(_currentModuleIndex);
+
+        // Check for conditional branching
+        var currentModuleInfo = GetModuleInfo(_currentModuleIndex);
+        if (currentModuleInfo?.Branch != null)
+        {
+            var nextModuleId = EvaluateBranchCondition(currentModuleInfo.Branch);
+            if (nextModuleId.HasValue)
+            {
+                // Find module by ID
+                var targetIndex = _moduleSchemas.FindIndex(m => m.Id == nextModuleId.Value);
+                if (targetIndex >= 0)
+                {
+                    _currentModuleIndex = targetIndex;
+                    _currentModule = _moduleSchemas[_currentModuleIndex];
+                    StateHasChanged();
+                    return;
+                }
+            }
+        }
+
+        // Default: proceed to next module in sequence
+        if (_currentModuleIndex < _moduleSchemas.Count - 1)
+        {
+            _currentModuleIndex++;
+            _currentModule = _moduleSchemas[_currentModuleIndex];
+            StateHasChanged();
+        }
+    }
+
+    private WorkflowModuleInfo? GetModuleInfo(int moduleIndex)
+    {
+        if (moduleIndex >= 0 && moduleIndex < _modules.Count)
+        {
+            return _modules[moduleIndex];
+        }
+        return null;
+    }
+
+    private int? EvaluateBranchCondition(ConditionalBranch branch)
+    {
+        // Get the field value
+        if (!_formData.TryGetValue(branch.ConditionFieldId, out var fieldValue))
+        {
+            // Field not found, use false path
+            return branch.NextModuleIdIfFalse;
+        }
+
+        var fieldValueStr = fieldValue?.ToString() ?? string.Empty;
+        bool conditionMet = false;
+
+        // Evaluate condition based on operator
+        switch (branch.Operator)
+        {
+            case "Equals":
+                conditionMet = string.Equals(fieldValueStr, branch.Value, StringComparison.OrdinalIgnoreCase);
+                break;
+
+            case "NotEquals":
+                conditionMet = !string.Equals(fieldValueStr, branch.Value, StringComparison.OrdinalIgnoreCase);
+                break;
+
+            case "Contains":
+                conditionMet = fieldValueStr.Contains(branch.Value, StringComparison.OrdinalIgnoreCase);
+                break;
+
+            case "GreaterThan":
+                if (decimal.TryParse(fieldValueStr, out var valueDecimal) && decimal.TryParse(branch.Value, out var compareDecimal))
+                {
+                    conditionMet = valueDecimal > compareDecimal;
+                }
+                break;
+
+            case "LessThan":
+                if (decimal.TryParse(fieldValueStr, out var valueDecimal2) && decimal.TryParse(branch.Value, out var compareDecimal2))
+                {
+                    conditionMet = valueDecimal2 < compareDecimal2;
+                }
+                break;
+
+            case "IsEmpty":
+                conditionMet = string.IsNullOrWhiteSpace(fieldValueStr);
+                break;
+
+            case "IsNotEmpty":
+                conditionMet = !string.IsNullOrWhiteSpace(fieldValueStr);
+                break;
+        }
+
+        // Return appropriate next module based on condition result
+        return conditionMet ? branch.NextModuleIdIfTrue : branch.NextModuleIdIfFalse;
+    }
+
+    private async Task SubmitWorkflow()
+    {
+        // Mark last module as completed
+        _completedModuleIndices.Add(_currentModuleIndex);
+
+        // Fire submit event with collected data
+        await OnWorkflowSubmit.InvokeAsync(_formData);
+
+        // Show debug data
+        _showDebugData = true;
+        StateHasChanged();
+    }
+}

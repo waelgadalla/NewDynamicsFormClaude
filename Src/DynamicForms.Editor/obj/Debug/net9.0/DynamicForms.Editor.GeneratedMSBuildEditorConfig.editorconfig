@@ -1,0 +1,137 @@
+is_global = true
+build_property.TargetFramework = net9.0
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = DynamicForms.Editor
+build_property.RootNamespace = DynamicForms.Editor
+build_property.ProjectDir = C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Properties/BasicPropertiesSection.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQcm9wZXJ0aWVzXEJhc2ljUHJvcGVydGllc1NlY3Rpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Properties/TypeConfigSection.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQcm9wZXJ0aWVzXFR5cGVDb25maWdTZWN0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Pages/Error.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Pages/WorkflowPreviewDemo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya2Zsb3dQcmV2aWV3RGVtby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Routes.razor]
+build_metadata.AdditionalFiles.TargetPath = Um91dGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Component1.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50MS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-nm3uem9cep
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/FieldList/FieldListItem.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xGaWVsZExpc3RcRmllbGRMaXN0SXRlbS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-2wwlgglmes
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/FieldList/FieldListPanel.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xGaWVsZExpc3RcRmllbGRMaXN0UGFuZWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-101tpt0p8a
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/ModuleListItem.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNb2R1bGVMaXN0SXRlbS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-4e4f9rdfh9
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Properties/ConditionalRulesSection.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQcm9wZXJ0aWVzXENvbmRpdGlvbmFsUnVsZXNTZWN0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-be3y7ri06z
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Properties/PropertiesPanel.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQcm9wZXJ0aWVzXFByb3BlcnRpZXNQYW5lbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-228gv4u2et
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Properties/ValidationRulesSection.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQcm9wZXJ0aWVzXFZhbGlkYXRpb25SdWxlc1NlY3Rpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-zrpbb1ory0
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Shared/EditorStatusBar.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaGFyZWRcRWRpdG9yU3RhdHVzQmFyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-57g6j9h185
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Shared/EditorToolbar.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaGFyZWRcRWRpdG9yVG9vbGJhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-vwf24c6jy3
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Workflow/ConditionalBranchEditor.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xXb3JrZmxvd1xDb25kaXRpb25hbEJyYW5jaEVkaXRvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-57cofvgr9b
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Workflow/WorkflowModuleList.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xXb3JrZmxvd1xXb3JrZmxvd01vZHVsZUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-jy7yqtl9kj
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Workflow/WorkflowPreview.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xXb3JrZmxvd1xXb3JrZmxvd1ByZXZpZXcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-rz9s0hkq0p
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Components/Workflow/WorkflowToolbar.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xXb3JrZmxvd1xXb3JrZmxvd1Rvb2xiYXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-wmivt40zyc
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Layout/EditorLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEVkaXRvckxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-9lbwanvcvm
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-6xky0tvqxc
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-7yhgpx0sma
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Pages/Editor/WorkflowEditor.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRWRpdG9yXFdvcmtmbG93RWRpdG9yLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-x43v31x66e
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Pages/FieldListDemo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmllbGRMaXN0RGVtby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-3zmzye8ma9
+
+[C:/Users/waelm/source/repos/waelgadalla/NewDynamicsFormClaude/Src/DynamicForms.Editor/Pages/ModuleList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTW9kdWxlTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-ceql7xutgn

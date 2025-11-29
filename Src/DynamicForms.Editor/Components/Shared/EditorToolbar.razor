@@ -1,0 +1,224 @@
+@* Editor Toolbar Component *@
+
+<div class="editor-toolbar">
+    <!-- Left Section: Primary Actions -->
+    <div class="toolbar-section toolbar-left">
+        <div class="button-group">
+            <button class="btn btn-primary toolbar-btn"
+                    @onclick="HandleSave"
+                    disabled="@(!IsDirty)"
+                    title="Save changes (Ctrl+S)">
+                <i class="bi bi-floppy-fill"></i>
+                <span class="btn-label">Save</span>
+                @if (IsDirty)
+                {
+                    <span class="dirty-indicator"></span>
+                }
+            </button>
+
+            <button class="btn btn-success toolbar-btn"
+                    @onclick="HandlePublish"
+                    title="Publish to production">
+                <i class="bi bi-cloud-upload-fill"></i>
+                <span class="btn-label">Publish</span>
+            </button>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <!-- Undo/Redo Group -->
+        <div class="button-group">
+            <button class="btn btn-outline-secondary toolbar-btn"
+                    @onclick="HandleUndo"
+                    disabled="@(!CanUndo)"
+                    title="Undo (Ctrl+Z)">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                <span class="btn-label">Undo</span>
+                @if (CanUndo && UndoCount > 0)
+                {
+                    <span class="action-count">@UndoCount</span>
+                }
+            </button>
+
+            <button class="btn btn-outline-secondary toolbar-btn"
+                    @onclick="HandleRedo"
+                    disabled="@(!CanRedo)"
+                    title="Redo (Ctrl+Y)">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span class="btn-label">Redo</span>
+                @if (CanRedo && RedoCount > 0)
+                {
+                    <span class="action-count">@RedoCount</span>
+                }
+            </button>
+        </div>
+    </div>
+
+    <!-- Center Section: Optional Title or Context -->
+    <div class="toolbar-section toolbar-center">
+        @if (!string.IsNullOrEmpty(Title))
+        {
+            <div class="editor-title">
+                <i class="bi bi-pencil-square"></i>
+                <span>@Title</span>
+            </div>
+        }
+    </div>
+
+    <!-- Right Section: Import/Export and Additional Actions -->
+    <div class="toolbar-section toolbar-right">
+        <div class="button-group">
+            <button class="btn btn-outline-secondary toolbar-btn"
+                    @onclick="HandleImport"
+                    title="Import JSON schema">
+                <i class="bi bi-upload"></i>
+                <span class="btn-label">Import</span>
+            </button>
+
+            <button class="btn btn-outline-secondary toolbar-btn"
+                    @onclick="HandleExport"
+                    title="Export JSON schema">
+                <i class="bi bi-download"></i>
+                <span class="btn-label">Export</span>
+            </button>
+        </div>
+
+        @if (ShowAdditionalActions)
+        {
+            <div class="toolbar-divider"></div>
+
+            <div class="button-group">
+                <button class="btn btn-outline-secondary toolbar-btn"
+                        @onclick="HandlePreview"
+                        title="Preview form">
+                    <i class="bi bi-eye-fill"></i>
+                    <span class="btn-label">Preview</span>
+                </button>
+
+                <button class="btn btn-outline-secondary toolbar-btn"
+                        @onclick="HandleSettings"
+                        title="Editor settings">
+                    <i class="bi bi-gear-fill"></i>
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Keyboard Shortcuts Info (Hidden, for reference) -->
+<div class="keyboard-shortcuts" style="display: none;">
+    <div class="shortcut-item">
+        <kbd>Ctrl</kbd> + <kbd>S</kbd> - Save
+    </div>
+    <div class="shortcut-item">
+        <kbd>Ctrl</kbd> + <kbd>Z</kbd> - Undo
+    </div>
+    <div class="shortcut-item">
+        <kbd>Ctrl</kbd> + <kbd>Y</kbd> - Redo
+    </div>
+</div>
+
+@code {
+    // Core Parameters
+    [Parameter]
+    public bool CanUndo { get; set; }
+
+    [Parameter]
+    public bool CanRedo { get; set; }
+
+    [Parameter]
+    public bool IsDirty { get; set; }
+
+    [Parameter]
+    public int UndoCount { get; set; }
+
+    [Parameter]
+    public int RedoCount { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public bool ShowAdditionalActions { get; set; } = true;
+
+    // Event Callbacks
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnPublish { get; set; }
+
+    [Parameter]
+    public EventCallback OnUndo { get; set; }
+
+    [Parameter]
+    public EventCallback OnRedo { get; set; }
+
+    [Parameter]
+    public EventCallback OnImport { get; set; }
+
+    [Parameter]
+    public EventCallback OnExport { get; set; }
+
+    [Parameter]
+    public EventCallback OnPreview { get; set; }
+
+    [Parameter]
+    public EventCallback OnSettings { get; set; }
+
+    // Event Handlers
+    private async Task HandleSave()
+    {
+        if (IsDirty)
+        {
+            await OnSave.InvokeAsync();
+        }
+    }
+
+    private async Task HandlePublish()
+    {
+        await OnPublish.InvokeAsync();
+    }
+
+    private async Task HandleUndo()
+    {
+        if (CanUndo)
+        {
+            await OnUndo.InvokeAsync();
+        }
+    }
+
+    private async Task HandleRedo()
+    {
+        if (CanRedo)
+        {
+            await OnRedo.InvokeAsync();
+        }
+    }
+
+    private async Task HandleImport()
+    {
+        await OnImport.InvokeAsync();
+    }
+
+    private async Task HandleExport()
+    {
+        await OnExport.InvokeAsync();
+    }
+
+    private async Task HandlePreview()
+    {
+        await OnPreview.InvokeAsync();
+    }
+
+    private async Task HandleSettings()
+    {
+        await OnSettings.InvokeAsync();
+    }
+
+    protected override void OnInitialized()
+    {
+        // Initialize component
+        base.OnInitialized();
+    }
+}

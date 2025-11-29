@@ -1,0 +1,210 @@
+@using System.Globalization
+@using DynamicForms.Renderer.Components.Fields
+@using DynamicForms.Renderer.Components.Containers
+
+@*
+    DynamicFieldRenderer
+
+    Dynamically renders the appropriate field renderer component based on the field type.
+    This is the core component that enables recursive rendering of form hierarchies.
+
+    Supports all field types:
+    - Input fields: TextBox, TextArea, DropDown, DatePicker, FileUpload, CheckBox
+    - Container fields: Section, Tab, Panel
+*@
+
+@if (ShouldRenderField())
+{
+    @switch (Node.Schema.FieldType.ToLower())
+    {
+        case "textbox":
+            <TextFieldRenderer Node="@Node"
+                             Value="@GetFieldValue()"
+                             Errors="@GetFieldErrors()"
+                             OnValueChanged="@OnValueChanged"
+                             IsDisabled="@GetIsDisabled()"
+                             AdditionalCssClass="@Node.Schema.CssClasses"
+                             Culture="@Culture" />
+            break;
+
+        case "textarea":
+            <TextAreaRenderer Node="@Node"
+                            Value="@GetFieldValue()"
+                            Errors="@GetFieldErrors()"
+                            OnValueChanged="@OnValueChanged"
+                            IsDisabled="@GetIsDisabled()"
+                            AdditionalCssClass="@Node.Schema.CssClasses"
+                            Culture="@Culture" />
+            break;
+
+        case "dropdown":
+            <DropDownRenderer Node="@Node"
+                            Value="@GetFieldValue()"
+                            Errors="@GetFieldErrors()"
+                            OnValueChanged="@OnValueChanged"
+                            IsDisabled="@GetIsDisabled()"
+                            AdditionalCssClass="@Node.Schema.CssClasses"
+                            Culture="@Culture" />
+            break;
+
+        case "datepicker":
+            <DatePickerRenderer Node="@Node"
+                              Value="@GetFieldValue()"
+                              Errors="@GetFieldErrors()"
+                              OnValueChanged="@OnValueChanged"
+                              IsDisabled="@GetIsDisabled()"
+                              AdditionalCssClass="@Node.Schema.CssClasses"
+                              Culture="@Culture" />
+            break;
+
+        case "fileupload":
+            <FileUploadRenderer Node="@Node"
+                              Value="@GetFieldValue()"
+                              Errors="@GetFieldErrors()"
+                              OnValueChanged="@OnValueChanged"
+                              IsDisabled="@GetIsDisabled()"
+                              AdditionalCssClass="@Node.Schema.CssClasses"
+                              Culture="@Culture" />
+            break;
+
+        case "checkbox":
+            <CheckBoxRenderer Node="@Node"
+                            Value="@GetFieldValue()"
+                            Errors="@GetFieldErrors()"
+                            OnValueChanged="@OnValueChanged"
+                            IsDisabled="@GetIsDisabled()"
+                            AdditionalCssClass="@Node.Schema.CssClasses"
+                            Culture="@Culture" />
+            break;
+
+        case "section":
+            <SectionRenderer Node="@Node"
+                           FormData="@FormData"
+                           ValidationErrors="@ValidationErrors"
+                           RenderContext="@RenderContext"
+                           OnFieldValueChanged="@OnFieldValueChanged"
+                           Culture="@Culture" />
+            break;
+
+        case "tab":
+            <TabRenderer Node="@Node"
+                       FormData="@FormData"
+                       ValidationErrors="@ValidationErrors"
+                       RenderContext="@RenderContext"
+                       OnFieldValueChanged="@OnFieldValueChanged"
+                       Culture="@Culture" />
+            break;
+
+        case "panel":
+            <PanelRenderer Node="@Node"
+                         FormData="@FormData"
+                         ValidationErrors="@ValidationErrors"
+                         RenderContext="@RenderContext"
+                         OnFieldValueChanged="@OnFieldValueChanged"
+                         Culture="@Culture" />
+            break;
+
+        default:
+            <div class="alert alert-warning">
+                <strong>Unknown field type:</strong> @Node.Schema.FieldType
+                <br />
+                <small>Field ID: @Node.Schema.Id</small>
+            </div>
+            break;
+    }
+}
+
+@code {
+    /// <summary>
+    /// The form field node to render
+    /// </summary>
+    [Parameter]
+    public required FormFieldNode Node { get; set; }
+
+    /// <summary>
+    /// The form data containing all field values
+    /// </summary>
+    [Parameter]
+    public required FormData FormData { get; set; }
+
+    /// <summary>
+    /// Dictionary of validation errors keyed by field ID
+    /// </summary>
+    [Parameter]
+    public Dictionary<string, List<string>> ValidationErrors { get; set; } = new();
+
+    /// <summary>
+    /// The render context containing visibility and enabled state
+    /// </summary>
+    [Parameter]
+    public RenderContext? RenderContext { get; set; }
+
+    /// <summary>
+    /// Callback invoked when a field value changes.
+    /// Signature: (fieldId, newValue) => Task
+    /// </summary>
+    [Parameter]
+    public EventCallback<(string fieldId, object? value)> OnFieldValueChanged { get; set; }
+
+    /// <summary>
+    /// Current culture for localization
+    /// </summary>
+    [Parameter]
+    public CultureInfo? Culture { get; set; }
+
+    /// <summary>
+    /// Determines if this field should be rendered based on conditional visibility rules.
+    /// </summary>
+    private bool ShouldRenderField()
+    {
+        // Check visibility in RenderContext
+        if (RenderContext != null)
+        {
+            return RenderContext.IsFieldVisible(Node.Schema.Id);
+        }
+
+        // Fallback to schema's IsVisible property
+        return Node.Schema.IsVisible;
+    }
+
+    /// <summary>
+    /// Gets the current value for this field from FormData.
+    /// </summary>
+    private object? GetFieldValue()
+    {
+        return FormData.GetValue(Node.Schema.Id);
+    }
+
+    /// <summary>
+    /// Gets validation errors for this field.
+    /// </summary>
+    private List<string> GetFieldErrors()
+    {
+        if (ValidationErrors.TryGetValue(Node.Schema.Id, out var errors))
+            return errors;
+
+        return new List<string>();
+    }
+
+    /// <summary>
+    /// Determines if this field should be disabled based on render context or schema.
+    /// </summary>
+    private bool GetIsDisabled()
+    {
+        // Check enabled state in RenderContext
+        if (RenderContext != null && !RenderContext.IsFieldEnabled(Node.Schema.Id))
+            return true;
+
+        // Check schema's IsReadOnly property
+        return Node.Schema.IsReadOnly;
+    }
+
+    /// <summary>
+    /// EventCallback adapter that converts EventCallback<object?> to EventCallback<(string, object?)>
+    /// for child field renderers.
+    /// </summary>
+    private EventCallback<object?> OnValueChanged => EventCallback.Factory.Create<object?>(
+        this,
+        async (value) => await OnFieldValueChanged.InvokeAsync((Node.Schema.Id, value))
+    );
+}

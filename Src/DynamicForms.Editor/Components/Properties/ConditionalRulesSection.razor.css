@@ -1,0 +1,85 @@
+/* Conditional Rules Section Styles */
+
+.conditional-rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.conditional-rule-card {
+    padding: 12px;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.rule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.rule-number {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rule-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rule-expression {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 13px;
+}
+
+.rule-expression code {
+    padding: 2px 6px;
+    background-color: #e7f3ff;
+    color: #0d6efd;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.rule-expression strong {
+    color: #6c757d;
+}
+
+.rule-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #495057;
+}
+
+.rule-action strong {
+    color: #0d6efd;
+}
+
+/* Add Rule Form */
+.add-rule-form {
+    padding: 16px;
+    background-color: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 6px;
+    margin-top: 12px;
+}
+
+.add-rule-form h6 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}

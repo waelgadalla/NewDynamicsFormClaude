@@ -20,10 +20,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DynamicForms.Core\DynamicForms.Core.csproj" />
-  </ItemGroup>
-
   <!-- Explicitly include content files for NuGet packaging -->
   <ItemGroup>
     <!-- Include all C# source files -->

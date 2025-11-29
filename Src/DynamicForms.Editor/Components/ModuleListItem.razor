@@ -1,0 +1,126 @@
+@using DynamicForms.Editor.Data.Entities
+
+<tr class="module-row">
+    <td class="module-id">
+        <span class="badge bg-secondary">@Module.ModuleId</span>
+    </td>
+    <td class="module-title">
+        <div class="title-container">
+            <strong>@Module.Title</strong>
+            @if (!string.IsNullOrEmpty(Module.TitleFr))
+            {
+                <small class="text-muted d-block">@Module.TitleFr</small>
+            }
+            @if (!string.IsNullOrEmpty(Module.Description))
+            {
+                <small class="text-muted d-block mt-1">@TruncateText(Module.Description, 80)</small>
+            }
+        </div>
+    </td>
+    <td class="module-status">
+        <span class="badge @GetStatusBadgeClass(Module.Status)">
+            <i class="bi @GetStatusIcon(Module.Status)"></i>
+            <span class="ms-1">@Module.Status</span>
+        </span>
+    </td>
+    <td class="module-version">
+        <span class="version-badge">v@Module.Version</span>
+    </td>
+    <td class="module-modified">
+        <div class="modified-info">
+            <span class="modified-date">@FormatDate(Module.ModifiedAt)</span>
+            <small class="text-muted d-block">@FormatRelativeTime(Module.ModifiedAt)</small>
+            @if (!string.IsNullOrEmpty(Module.ModifiedBy))
+            {
+                <small class="text-muted d-block">
+                    <i class="bi bi-person-fill"></i> @Module.ModifiedBy
+                </small>
+            }
+        </div>
+    </td>
+    <td class="module-actions text-end">
+        <div class="btn-group" role="group">
+            <button class="btn btn-sm btn-outline-primary"
+                    @onclick="() => OnEdit.InvokeAsync(Module.Id)"
+                    title="Edit">
+                <i class="bi bi-pencil-fill"></i>
+                <span class="btn-text">Edit</span>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary"
+                    @onclick="() => OnClone.InvokeAsync(Module.Id)"
+                    title="Clone">
+                <i class="bi bi-files"></i>
+                <span class="btn-text">Clone</span>
+            </button>
+            <button class="btn btn-sm btn-outline-danger"
+                    @onclick="() => OnDelete.InvokeAsync(Module.Id)"
+                    title="Delete">
+                <i class="bi bi-trash-fill"></i>
+                <span class="btn-text">Delete</span>
+            </button>
+        </div>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public EditorFormModule Module { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<int> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnClone { get; set; }
+
+    private string GetStatusBadgeClass(string status) => status switch
+    {
+        "Draft" => "bg-warning text-dark",
+        "Published" => "bg-success",
+        "Archived" => "bg-secondary",
+        _ => "bg-secondary"
+    };
+
+    private string GetStatusIcon(string status) => status switch
+    {
+        "Draft" => "bi-pencil-square",
+        "Published" => "bi-cloud-check-fill",
+        "Archived" => "bi-archive-fill",
+        _ => "bi-circle-fill"
+    };
+
+    private string FormatDate(DateTime date)
+    {
+        return date.ToString("MMM dd, yyyy HH:mm");
+    }
+
+    private string FormatRelativeTime(DateTime date)
+    {
+        var timeSpan = DateTime.UtcNow - date;
+
+        if (timeSpan.TotalMinutes < 1)
+            return "Just now";
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} minutes ago";
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hours ago";
+        if (timeSpan.TotalDays < 7)
+            return $"{(int)timeSpan.TotalDays} days ago";
+        if (timeSpan.TotalDays < 30)
+            return $"{(int)(timeSpan.TotalDays / 7)} weeks ago";
+        if (timeSpan.TotalDays < 365)
+            return $"{(int)(timeSpan.TotalDays / 30)} months ago";
+
+        return $"{(int)(timeSpan.TotalDays / 365)} years ago";
+    }
+
+    private string TruncateText(string text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
+            return text;
+
+        return text.Substring(0, maxLength) + "...";
+    }
+}

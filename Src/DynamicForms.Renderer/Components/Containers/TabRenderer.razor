@@ -1,0 +1,234 @@
+@inherits FieldRendererBase
+
+@*
+    TabRenderer
+
+    Renders a tabbed container using Bootstrap 5 tabs.
+    Each child node becomes a separate tab panel.
+    Recursively renders all child fields within each tab.
+*@
+
+<div class="@GetTabContainerCssClasses()">
+    @if (!string.IsNullOrWhiteSpace(GetLabel()))
+    {
+        <h5 class="dynamic-tab-title mb-3">@GetLabel()</h5>
+    }
+
+    @if (Node.Children.Count > 0)
+    {
+        @* Tab Navigation Headers *@
+        <ul class="nav nav-tabs" id="@GetTabNavId()" role="tablist">
+            @foreach (var (childNode, index) in GetOrderedChildren().Select((n, i) => (n, i)))
+            {
+                <li class="nav-item" role="presentation">
+                    <button class="@GetTabNavButtonClass(index)"
+                            id="@GetTabButtonId(childNode)"
+                            data-bs-toggle="tab"
+                            data-bs-target="#@GetTabPaneId(childNode)"
+                            type="button"
+                            role="tab"
+                            aria-controls="@GetTabPaneId(childNode)"
+                            aria-selected="@(index == 0 ? "true" : "false")">
+                        @GetTabLabel(childNode)
+                    </button>
+                </li>
+            }
+        </ul>
+
+        @* Tab Content Panels *@
+        <div class="tab-content dynamic-tab-content" id="@GetTabContentId()">
+            @foreach (var (childNode, index) in GetOrderedChildren().Select((n, i) => (n, i)))
+            {
+                <div class="@GetTabPaneClass(index)"
+                     id="@GetTabPaneId(childNode)"
+                     role="tabpanel"
+                     aria-labelledby="@GetTabButtonId(childNode)"
+                     tabindex="0">
+
+                    <div class="p-3">
+                        @* Tab description if available *@
+                        @if (!string.IsNullOrWhiteSpace(GetTabDescription(childNode)))
+                        {
+                            <p class="text-muted mb-3">@GetTabDescription(childNode)</p>
+                        }
+
+                        @* Render tab's child fields *@
+                        @if (childNode.Children.Count > 0)
+                        {
+                            <div class="row g-3">
+                                @foreach (var grandchildNode in childNode.Children.OrderBy(c => c.Schema.Order))
+                                {
+                                    <div class="@GetChildColumnClass(grandchildNode)">
+                                        <DynamicFieldRenderer Node="@grandchildNode"
+                                                            FormData="@FormData"
+                                                            ValidationErrors="@ValidationErrors"
+                                                            RenderContext="@RenderContext"
+                                                            OnFieldValueChanged="@OnFieldValueChanged"
+                                                            Culture="@Culture" />
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">
+                                <em>@GetEmptyTabMessage()</em>
+                            </p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted mb-0">
+            <em>@GetEmptyMessage()</em>
+        </p>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// The form data containing all field values
+    /// </summary>
+    [Parameter]
+    public required FormData FormData { get; set; }
+
+    /// <summary>
+    /// Dictionary of validation errors keyed by field ID
+    /// </summary>
+    [Parameter]
+    public Dictionary<string, List<string>> ValidationErrors { get; set; } = new();
+
+    /// <summary>
+    /// The render context containing visibility and enabled state
+    /// </summary>
+    [Parameter]
+    public RenderContext? RenderContext { get; set; }
+
+    /// <summary>
+    /// Callback invoked when a field value changes
+    /// </summary>
+    [Parameter]
+    public EventCallback<(string fieldId, object? value)> OnFieldValueChanged { get; set; }
+
+    /// <summary>
+    /// Gets CSS classes for the tab container
+    /// </summary>
+    private string GetTabContainerCssClasses()
+    {
+        var classes = new List<string> { "dynamic-tab-container", "mb-4" };
+
+        if (!string.IsNullOrWhiteSpace(Node.Schema.CssClasses))
+            classes.Add(Node.Schema.CssClasses);
+
+        return string.Join(" ", classes);
+    }
+
+    /// <summary>
+    /// Gets the ID for the tab navigation
+    /// </summary>
+    private string GetTabNavId()
+    {
+        return $"tab-nav-{Node.Schema.Id}";
+    }
+
+    /// <summary>
+    /// Gets the ID for the tab content container
+    /// </summary>
+    private string GetTabContentId()
+    {
+        return $"tab-content-{Node.Schema.Id}";
+    }
+
+    /// <summary>
+    /// Gets the ID for a specific tab button
+    /// </summary>
+    private string GetTabButtonId(FormFieldNode childNode)
+    {
+        return $"tab-button-{childNode.Schema.Id}";
+    }
+
+    /// <summary>
+    /// Gets the ID for a specific tab pane
+    /// </summary>
+    private string GetTabPaneId(FormFieldNode childNode)
+    {
+        return $"tab-pane-{childNode.Schema.Id}";
+    }
+
+    /// <summary>
+    /// Gets CSS class for tab navigation button
+    /// </summary>
+    private string GetTabNavButtonClass(int index)
+    {
+        return index == 0 ? "nav-link active" : "nav-link";
+    }
+
+    /// <summary>
+    /// Gets CSS class for tab pane
+    /// </summary>
+    private string GetTabPaneClass(int index)
+    {
+        return index == 0 ? "tab-pane fade show active" : "tab-pane fade";
+    }
+
+    /// <summary>
+    /// Gets children ordered by their Order property
+    /// </summary>
+    private IEnumerable<FormFieldNode> GetOrderedChildren()
+    {
+        return Node.Children.OrderBy(c => c.Schema.Order);
+    }
+
+    /// <summary>
+    /// Gets the localized label for a tab
+    /// </summary>
+    private string GetTabLabel(FormFieldNode childNode)
+    {
+        if (IsFrench && !string.IsNullOrWhiteSpace(childNode.Schema.LabelFr))
+            return childNode.Schema.LabelFr;
+
+        if (!string.IsNullOrWhiteSpace(childNode.Schema.LabelEn))
+            return childNode.Schema.LabelEn;
+
+        return childNode.Schema.Id;
+    }
+
+    /// <summary>
+    /// Gets the localized description for a tab
+    /// </summary>
+    private string? GetTabDescription(FormFieldNode childNode)
+    {
+        if (IsFrench && !string.IsNullOrWhiteSpace(childNode.Schema.DescriptionFr))
+            return childNode.Schema.DescriptionFr;
+
+        return childNode.Schema.DescriptionEn;
+    }
+
+    /// <summary>
+    /// Gets the Bootstrap column class for a child field based on its WidthClass
+    /// </summary>
+    private string GetChildColumnClass(FormFieldNode childNode)
+    {
+        var widthClass = childNode.Schema.WidthClass ?? 12; // Default to full width
+        return $"col-md-{widthClass}";
+    }
+
+    /// <summary>
+    /// Gets the message to display when tab container has no tabs
+    /// </summary>
+    private string GetEmptyMessage()
+    {
+        return IsFrench ? "Aucun onglet configuré" : "No tabs configured";
+    }
+
+    /// <summary>
+    /// Gets the message to display when a tab has no fields
+    /// </summary>
+    private string GetEmptyTabMessage()
+    {
+        return IsFrench ? "Aucun champ dans cet onglet" : "No fields in this tab";
+    }
+}

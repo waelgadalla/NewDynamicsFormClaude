@@ -1,0 +1,148 @@
+@inherits FieldRendererBase
+
+<div class="@GetCssClasses()">
+    @if (ShouldRenderLabel())
+    {
+        <label for="@GetHtmlId()" class="@GetLabelCssClasses()">
+            @GetLabel()
+        </label>
+    }
+
+    <input type="date"
+           id="@GetHtmlId()"
+           class="@GetInputCssClasses()"
+           value="@GetDateValueAsString()"
+           min="@GetMinDate()"
+           max="@GetMaxDate()"
+           disabled="@IsDisabled"
+           required="@IsRequired()"
+           @onchange="@HandleDateChanged"
+           aria-describedby="@GetAriaDescribedBy()" />
+
+    @if (ShouldRenderHelpText())
+    {
+        <small id="@GetHelpTextId()" class="form-text text-muted dynamic-field-help">
+            @GetHelpText()
+        </small>
+    }
+
+    @if (ShouldRenderErrors())
+    {
+        <div id="@GetErrorId()" class="invalid-feedback d-block dynamic-field-error">
+            @Errors.First()
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Gets the current date value formatted for HTML date input (yyyy-MM-dd).
+    /// Returns empty string if value is null or invalid.
+    /// </summary>
+    private string GetDateValueAsString()
+    {
+        if (Value == null)
+            return string.Empty;
+
+        try
+        {
+            DateTime dateValue;
+
+            // Handle if value is already a DateTime
+            if (Value is DateTime dt)
+            {
+                dateValue = dt;
+            }
+            // Try to parse if it's a string
+            else if (DateTime.TryParse(Value.ToString(), out var parsedDate))
+            {
+                dateValue = parsedDate;
+            }
+            else
+            {
+                return string.Empty;
+            }
+
+            // Format as yyyy-MM-dd for HTML date input
+            return dateValue.ToString("yyyy-MM-dd");
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
+    /// <summary>
+    /// Gets the minimum allowed date from TypeConfig.
+    /// Returns null if no minimum is configured.
+    /// </summary>
+    private string? GetMinDate()
+    {
+        if (Schema.TypeConfig is DateRangeConfig config && config.MinDate.HasValue)
+        {
+            return config.MinDate.Value.ToString("yyyy-MM-dd");
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gets the maximum allowed date from TypeConfig.
+    /// Returns null if no maximum is configured.
+    /// </summary>
+    private string? GetMaxDate()
+    {
+        if (Schema.TypeConfig is DateRangeConfig config && config.MaxDate.HasValue)
+        {
+            return config.MaxDate.Value.ToString("yyyy-MM-dd");
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Handles date value changes from the input element.
+    /// Converts the string value to DateTime before invoking the callback.
+    /// </summary>
+    private async Task HandleDateChanged(ChangeEventArgs e)
+    {
+        if (e.Value == null || string.IsNullOrWhiteSpace(e.Value.ToString()))
+        {
+            await HandleValueChanged(null);
+            return;
+        }
+
+        try
+        {
+            // Parse the date string (yyyy-MM-dd format)
+            if (DateTime.TryParse(e.Value.ToString(), out var dateValue))
+            {
+                await HandleValueChanged(dateValue);
+            }
+            else
+            {
+                await HandleValueChanged(null);
+            }
+        }
+        catch
+        {
+            await HandleValueChanged(null);
+        }
+    }
+
+    /// <summary>
+    /// Builds the aria-describedby attribute value combining help text and error IDs
+    /// </summary>
+    private string? GetAriaDescribedBy()
+    {
+        var ids = new List<string>();
+
+        if (ShouldRenderHelpText())
+            ids.Add(GetHelpTextId());
+
+        if (ShouldRenderErrors())
+            ids.Add(GetErrorId());
+
+        return ids.Count > 0 ? string.Join(" ", ids) : null;
+    }
+}

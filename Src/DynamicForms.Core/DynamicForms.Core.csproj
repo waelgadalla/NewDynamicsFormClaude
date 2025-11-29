@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <PackageId>DynamicForms.Core</PackageId>
     <Description>Core entities and interfaces for JSON-based dynamic form processing. Enables building flexible, multilingual forms for government and enterprise applications.</Description>
     <PackageTags>$(BasePackageTags);core;interfaces;entities</PackageTags>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>

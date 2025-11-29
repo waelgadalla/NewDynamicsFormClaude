@@ -1,0 +1,37 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Renderer\\wwwroot\\background.png",
+      "PackagePath": "staticwebassets\\background.png"
+    },
+    {
+      "Id": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Renderer\\wwwroot\\css\\dynamicforms.css",
+      "PackagePath": "staticwebassets\\css\\dynamicforms.css"
+    },
+    {
+      "Id": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Renderer\\wwwroot\\exampleJsInterop.js",
+      "PackagePath": "staticwebassets\\exampleJsInterop.js"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.DynamicForms.Renderer.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.DynamicForms.Renderer.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.build.DynamicForms.Renderer.props",
+      "PackagePath": "build\\DynamicForms.Renderer.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildMultiTargeting.DynamicForms.Renderer.props",
+      "PackagePath": "buildMultiTargeting\\DynamicForms.Renderer.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildTransitive.DynamicForms.Renderer.props",
+      "PackagePath": "buildTransitive\\DynamicForms.Renderer.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

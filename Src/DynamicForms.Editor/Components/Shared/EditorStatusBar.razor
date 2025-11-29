@@ -1,0 +1,187 @@
+@implements IDisposable
+@inject IJSRuntime JSRuntime
+
+<div class="editor-status-bar">
+    <!-- Left Section: Save Status -->
+    <div class="status-section status-left">
+        @if (IsSaving)
+        {
+            <span class="status-item status-saving">
+                <span class="spinner-border spinner-border-sm" role="status"></span>
+                <span class="ms-2">Saving...</span>
+            </span>
+        }
+        else if (IsDirty)
+        {
+            <span class="status-item status-unsaved">
+                <i class="bi bi-circle-fill status-indicator"></i>
+                <span>Unsaved changes</span>
+            </span>
+        }
+        else
+        {
+            <span class="status-item status-saved">
+                <i class="bi bi-check-circle-fill status-indicator"></i>
+                <span>All changes saved</span>
+            </span>
+        }
+
+        @if (LastSaved.HasValue && !IsSaving)
+        {
+            <span class="status-divider">|</span>
+            <span class="status-item">
+                <i class="bi bi-clock"></i>
+                <span>@GetLastSavedText()</span>
+            </span>
+        }
+    </div>
+
+    <!-- Center Section: Statistics -->
+    <div class="status-section status-center">
+        <span class="status-item">
+            <i class="bi bi-layers"></i>
+            <span>@FieldCount @(FieldCount == 1 ? "field" : "fields")</span>
+        </span>
+
+        @if (ErrorCount > 0)
+        {
+            <span class="status-divider">|</span>
+            <span class="status-item status-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>@ErrorCount @(ErrorCount == 1 ? "error" : "errors")</span>
+            </span>
+        }
+        else
+        {
+            <span class="status-divider">|</span>
+            <span class="status-item status-valid">
+                <i class="bi bi-shield-check"></i>
+                <span>No errors</span>
+            </span>
+        }
+    </div>
+
+    <!-- Right Section: Metadata -->
+    <div class="status-section status-right">
+        <span class="status-item">
+            <i class="bi bi-calendar-event"></i>
+            <span>Modified @GetRelativeTime(LastModified)</span>
+        </span>
+
+        @if (ShowHelp)
+        {
+            <span class="status-divider">|</span>
+            <span class="status-item status-help">
+                <i class="bi bi-info-circle"></i>
+                <span>Press <kbd>F1</kbd> for help</span>
+            </span>
+        }
+    </div>
+</div>
+
+@code {
+    // Parameters
+    [Parameter]
+    public DateTime? LastSaved { get; set; }
+
+    [Parameter]
+    public DateTime LastModified { get; set; }
+
+    [Parameter]
+    public bool IsDirty { get; set; }
+
+    [Parameter]
+    public bool IsSaving { get; set; }
+
+    [Parameter]
+    public int FieldCount { get; set; }
+
+    [Parameter]
+    public int ErrorCount { get; set; }
+
+    [Parameter]
+    public bool ShowHelp { get; set; } = true;
+
+    [Parameter]
+    public string? CustomMessage { get; set; }
+
+    // Private fields
+    private Timer? updateTimer;
+    private string lastSavedRelativeTime = string.Empty;
+    private string lastModifiedRelativeTime = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        // Set up timer to update relative time every 30 seconds
+        updateTimer = new Timer(async _ =>
+        {
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+    }
+
+    protected override void OnParametersSet()
+    {
+        UpdateRelativeTimes();
+    }
+
+    private void UpdateRelativeTimes()
+    {
+        if (LastSaved.HasValue)
+        {
+            lastSavedRelativeTime = GetRelativeTime(LastSaved.Value);
+        }
+
+        lastModifiedRelativeTime = GetRelativeTime(LastModified);
+    }
+
+    private string GetLastSavedText()
+    {
+        if (!LastSaved.HasValue)
+            return string.Empty;
+
+        var timeAgo = GetRelativeTime(LastSaved.Value);
+        return $"Auto-saved {timeAgo}";
+    }
+
+    private string GetRelativeTime(DateTime dateTime)
+    {
+        var timeSpan = DateTime.UtcNow - dateTime.ToUniversalTime();
+
+        if (timeSpan.TotalSeconds < 10)
+            return "just now";
+        if (timeSpan.TotalSeconds < 60)
+            return $"{(int)timeSpan.TotalSeconds} seconds ago";
+        if (timeSpan.TotalMinutes < 2)
+            return "1 minute ago";
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} minutes ago";
+        if (timeSpan.TotalHours < 2)
+            return "1 hour ago";
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hours ago";
+        if (timeSpan.TotalDays < 2)
+            return "1 day ago";
+        if (timeSpan.TotalDays < 7)
+            return $"{(int)timeSpan.TotalDays} days ago";
+        if (timeSpan.TotalDays < 14)
+            return "1 week ago";
+        if (timeSpan.TotalDays < 30)
+            return $"{(int)(timeSpan.TotalDays / 7)} weeks ago";
+        if (timeSpan.TotalDays < 60)
+            return "1 month ago";
+        if (timeSpan.TotalDays < 365)
+            return $"{(int)(timeSpan.TotalDays / 30)} months ago";
+        if (timeSpan.TotalDays < 730)
+            return "1 year ago";
+
+        return $"{(int)(timeSpan.TotalDays / 365)} years ago";
+    }
+
+    public void Dispose()
+    {
+        updateTimer?.Dispose();
+    }
+}

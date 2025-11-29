@@ -1,0 +1,234 @@
+@using static DynamicForms.Editor.Components.Properties.PropertiesPanel
+
+@*
+    BasicPropertiesSection - Edit core field properties
+
+    Handles:
+    - Field ID
+    - English/French labels
+    - English/French descriptions
+    - English/French help text
+    - English/French placeholders
+    - Display order
+    - Width class (grid column span)
+    - CSS classes
+    - Visibility
+    - Read-only state
+*@
+
+@if (WorkingCopy != null)
+{
+    <!-- Field ID -->
+    <div class="mb-3">
+        <label class="form-label">Field ID <span class="text-danger">*</span></label>
+        <input type="text"
+               class="form-control font-monospace"
+               @bind="WorkingCopy.Id"
+               @bind:after="NotifyChanged"
+               placeholder="e.g., org_name"
+               required />
+        <div class="form-text">Unique identifier (lowercase, underscores allowed)</div>
+    </div>
+
+    <!-- English Label -->
+    <div class="mb-3">
+        <label class="form-label">Label (English) <span class="text-danger">*</span></label>
+        <input type="text"
+               class="form-control"
+               @bind="WorkingCopy.LabelEn"
+               @bind:after="NotifyChanged"
+               placeholder="e.g., Organization Name"
+               required />
+    </div>
+
+    <!-- French Label -->
+    <div class="mb-3">
+        <label class="form-label">Label (French)</label>
+        <input type="text"
+               class="form-control"
+               @bind="WorkingCopy.LabelFr"
+               @bind:after="NotifyChanged"
+               placeholder="e.g., Nom de l'organisation" />
+    </div>
+
+    <!-- Description Row (EN/FR) -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Description (English)</label>
+            <textarea class="form-control"
+                      @bind="WorkingCopy.DescriptionEn"
+                      @bind:after="NotifyChanged"
+                      rows="2"
+                      placeholder="Brief description..."></textarea>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Description (French)</label>
+            <textarea class="form-control"
+                      @bind="WorkingCopy.DescriptionFr"
+                      @bind:after="NotifyChanged"
+                      rows="2"
+                      placeholder="Brève description..."></textarea>
+        </div>
+    </div>
+
+    <!-- Help Text Row (EN/FR) -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Help Text (English)</label>
+            <input type="text"
+                   class="form-control"
+                   @bind="WorkingCopy.HelpEn"
+                   @bind:after="NotifyChanged"
+                   placeholder="Tooltip text..." />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Help Text (French)</label>
+            <input type="text"
+                   class="form-control"
+                   @bind="WorkingCopy.HelpFr"
+                   @bind:after="NotifyChanged"
+                   placeholder="Texte d'aide..." />
+        </div>
+    </div>
+
+    <!-- Placeholder Row (EN/FR) -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Placeholder (English)</label>
+            <input type="text"
+                   class="form-control"
+                   @bind="WorkingCopy.PlaceholderEn"
+                   @bind:after="NotifyChanged"
+                   placeholder="e.g., Enter organization name..." />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Placeholder (French)</label>
+            <input type="text"
+                   class="form-control"
+                   @bind="WorkingCopy.PlaceholderFr"
+                   @bind:after="NotifyChanged"
+                   placeholder="e.g., Entrez le nom de l'organisation..." />
+        </div>
+    </div>
+
+    <!-- Display Order & Width -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Display Order</label>
+            <input type="number"
+                   class="form-control"
+                   @bind="WorkingCopy.Order"
+                   @bind:after="NotifyChanged"
+                   min="1"
+                   step="1" />
+            <div class="form-text">Order relative to siblings</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Width (Grid Columns)</label>
+            <select class="form-select"
+                    @bind="WorkingCopy.WidthClass"
+                    @bind:after="NotifyChanged">
+                <option value="">Default (Full Width)</option>
+                <option value="12">12 - Full Width</option>
+                <option value="6">6 - Half Width</option>
+                <option value="4">4 - One Third</option>
+                <option value="3">3 - One Quarter</option>
+                <option value="8">8 - Two Thirds</option>
+                <option value="9">9 - Three Quarters</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- CSS Classes -->
+    <div class="mb-3">
+        <label class="form-label">Custom CSS Classes</label>
+        <input type="text"
+               class="form-control font-monospace"
+               @bind="WorkingCopy.CssClasses"
+               @bind:after="NotifyChanged"
+               placeholder="e.g., custom-field highlight" />
+        <div class="form-text">Space-separated CSS class names</div>
+    </div>
+
+    <!-- Visibility & Read-Only Switches -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="form-check form-switch">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="isVisible"
+                       @bind="WorkingCopy.IsVisible"
+                       @bind:after="NotifyChanged" />
+                <label class="form-check-label" for="isVisible">
+                    Visible
+                </label>
+            </div>
+            <div class="form-text">Show this field in the form</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="form-check form-switch">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="isReadOnly"
+                       @bind="WorkingCopy.IsReadOnly"
+                       @bind:after="NotifyChanged" />
+                <label class="form-check-label" for="isReadOnly">
+                    Read Only
+                </label>
+            </div>
+            <div class="form-text">Prevent user editing</div>
+        </div>
+    </div>
+
+    <!-- Database Mapping (Optional) -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Database Column Name</label>
+            <input type="text"
+                   class="form-control font-monospace"
+                   @bind="WorkingCopy.ColumnName"
+                   @bind:after="NotifyChanged"
+                   placeholder="e.g., OrganizationName" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Column Type</label>
+            <select class="form-select"
+                    @bind="WorkingCopy.ColumnType"
+                    @bind:after="NotifyChanged">
+                <option value="">Auto-detect</option>
+                <option value="NVARCHAR">NVARCHAR (Text)</option>
+                <option value="INT">INT (Integer)</option>
+                <option value="DATETIME2">DATETIME2 (Date/Time)</option>
+                <option value="BIT">BIT (Boolean)</option>
+                <option value="DECIMAL">DECIMAL (Decimal)</option>
+            </select>
+        </div>
+    </div>
+}
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// Working copy of the field being edited
+    /// </summary>
+    [Parameter]
+    public FieldWorkingCopy? WorkingCopy { get; set; }
+
+    /// <summary>
+    /// Event fired when any property changes
+    /// </summary>
+    [Parameter]
+    public EventCallback OnPropertyChanged { get; set; }
+
+    // ========================================================================
+    // METHODS
+    // ========================================================================
+
+    private async Task NotifyChanged()
+    {
+        await OnPropertyChanged.InvokeAsync();
+    }
+}

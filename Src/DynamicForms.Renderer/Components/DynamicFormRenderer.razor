@@ -1,0 +1,442 @@
+@using System.Globalization
+@using DynamicForms.Core.V2.Schemas
+@using DynamicForms.Core.V2.Runtime
+@using DynamicForms.Core.V2.Services
+@using DynamicForms.Core.V2.Validation
+@using DynamicForms.Renderer.Models
+@using DynamicForms.Renderer.Services
+
+@inject IFormHierarchyService HierarchyService
+@inject IFormValidationService ValidationService
+@inject ConditionalLogicEngine ConditionalLogic
+
+@*
+    DynamicFormRenderer
+
+    The main form renderer component that ties everything together.
+    Renders a complete dynamic form from a FormModuleSchema.
+
+    Features:
+    - Builds form hierarchy from schema
+    - Initializes form data
+    - Evaluates conditional logic
+    - Renders all fields recursively
+    - Validates on submit
+    - Handles form submission and cancellation
+*@
+
+@if (_isLoading)
+{
+    <div class="dynamic-form-loading">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">@GetLoadingMessage()</span>
+        </div>
+        <p class="mt-2">@GetLoadingMessage()</p>
+    </div>
+}
+else if (_loadError != null)
+{
+    <div class="alert alert-danger">
+        <h5 class="alert-heading">@GetErrorTitle()</h5>
+        <p>@_loadError</p>
+    </div>
+}
+else if (_runtime != null)
+{
+    <div class="@GetFormCssClasses()">
+        @* Form Title and Description *@
+        @if (!string.IsNullOrWhiteSpace(GetFormTitle()))
+        {
+            <div class="dynamic-form-header mb-4">
+                <h3 class="dynamic-form-title">@GetFormTitle()</h3>
+                @if (!string.IsNullOrWhiteSpace(GetFormDescription()))
+                {
+                    <p class="text-muted">@GetFormDescription()</p>
+                }
+            </div>
+        }
+
+        @* Validation Summary *@
+        @if (_validationErrors.Count > 0 && _showValidationSummary)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <h5 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    @GetValidationSummaryTitle()
+                </h5>
+                <ul class="mb-0">
+                    @foreach (var fieldErrors in _validationErrors)
+                    {
+                        foreach (var error in fieldErrors.Value)
+                        {
+                            <li>@error</li>
+                        }
+                    }
+                </ul>
+                <button type="button" class="btn-close" @onclick="() => _showValidationSummary = false"></button>
+            </div>
+        }
+
+        @* Form Fields *@
+        <div class="dynamic-form-fields">
+            @foreach (var rootNode in GetOrderedRootNodes())
+            {
+                <DynamicFieldRenderer Node="@rootNode"
+                                    FormData="@_formData"
+                                    ValidationErrors="@_validationErrors"
+                                    RenderContext="@_renderContext"
+                                    OnFieldValueChanged="@HandleFieldValueChanged"
+                                    Culture="@Culture" />
+            }
+        </div>
+
+        @* Form Actions *@
+        @if (!ReadOnly)
+        {
+            <div class="dynamic-form-actions">
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="HandleSubmit"
+                        disabled="@_isSubmitting">
+                    @if (_isSubmitting)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    }
+                    @GetSubmitButtonText()
+                </button>
+
+                @if (OnCancel.HasDelegate)
+                {
+                    <button type="button"
+                            class="btn btn-secondary"
+                            @onclick="HandleCancel"
+                            disabled="@_isSubmitting">
+                        @GetCancelButtonText()
+                    </button>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// The form module schema to render (required)
+    /// </summary>
+    [Parameter]
+    public required FormModuleSchema Schema { get; set; }
+
+    /// <summary>
+    /// Initial form data to populate the form
+    /// </summary>
+    [Parameter]
+    public FormData? InitialData { get; set; }
+
+    /// <summary>
+    /// Callback invoked when form is submitted and valid
+    /// </summary>
+    [Parameter]
+    public EventCallback<FormData> OnSubmit { get; set; }
+
+    /// <summary>
+    /// Callback invoked when cancel button is clicked
+    /// </summary>
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    /// <summary>
+    /// Whether the form is read-only (hides submit/cancel buttons)
+    /// </summary>
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+    /// <summary>
+    /// Additional CSS classes to apply to the form container
+    /// </summary>
+    [Parameter]
+    public string? CssClass { get; set; }
+
+    /// <summary>
+    /// Current culture for localization
+    /// </summary>
+    [Parameter]
+    public CultureInfo? Culture { get; set; }
+
+    // ========================================================================
+    // STATE
+    // ========================================================================
+
+    private FormModuleRuntime? _runtime;
+    private FormData _formData = new();
+    private RenderContext? _renderContext;
+    private Dictionary<string, List<string>> _validationErrors = new();
+    private bool _isLoading = true;
+    private bool _isSubmitting = false;
+    private bool _showValidationSummary = false;
+    private string? _loadError = null;
+
+    // ========================================================================
+    // LIFECYCLE
+    // ========================================================================
+
+    /// <summary>
+    /// Initializes the form when parameters are set
+    /// </summary>
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _loadError = null;
+
+        try
+        {
+            // Build hierarchy from schema
+            _runtime = await HierarchyService.BuildHierarchyAsync(Schema);
+
+            // Initialize FormData
+            if (InitialData != null)
+            {
+                _formData = InitialData.Clone();
+            }
+            else
+            {
+                _formData = new FormData();
+            }
+
+            // Create RenderContext
+            _renderContext = new RenderContext(_runtime, _formData);
+
+            // Evaluate initial conditional logic
+            EvaluateConditionalLogic();
+
+            _isLoading = false;
+        }
+        catch (Exception ex)
+        {
+            _loadError = $"Failed to load form: {ex.Message}";
+            _isLoading = false;
+        }
+    }
+
+    // ========================================================================
+    // EVENT HANDLERS
+    // ========================================================================
+
+    /// <summary>
+    /// Handles field value changes
+    /// </summary>
+    private Task HandleFieldValueChanged((string fieldId, object? value) change)
+    {
+        // Update FormData
+        _formData.SetValue(change.fieldId, change.value);
+
+        // Clear validation errors for this field
+        if (_validationErrors.ContainsKey(change.fieldId))
+        {
+            _validationErrors.Remove(change.fieldId);
+        }
+
+        // Re-evaluate conditional logic
+        EvaluateConditionalLogic();
+
+        // Trigger re-render
+        StateHasChanged();
+
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Handles form submission
+    /// </summary>
+    private async Task HandleSubmit()
+    {
+        if (_runtime == null || _isSubmitting)
+            return;
+
+        _isSubmitting = true;
+        _validationErrors.Clear();
+        _showValidationSummary = false;
+
+        try
+        {
+            // Validate form
+            var validationResult = await ValidationService.ValidateModuleAsync(
+                _runtime,
+                _formData.GetAllValues());
+
+            if (!validationResult.IsValid)
+            {
+                // Group errors by field ID
+                _validationErrors = validationResult.Errors
+                    .GroupBy(e => e.FieldId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.Message).ToList());
+
+                _showValidationSummary = true;
+                StateHasChanged();
+                return;
+            }
+
+            // Invoke submit callback
+            if (OnSubmit.HasDelegate)
+            {
+                await OnSubmit.InvokeAsync(_formData);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Add general error
+            _validationErrors["_general"] = new List<string> { $"Submission failed: {ex.Message}" };
+            _showValidationSummary = true;
+        }
+        finally
+        {
+            _isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Handles cancel button click
+    /// </summary>
+    private Task HandleCancel()
+    {
+        if (OnCancel.HasDelegate)
+        {
+            return OnCancel.InvokeAsync();
+        }
+        return Task.CompletedTask;
+    }
+
+    // ========================================================================
+    // HELPERS
+    // ========================================================================
+
+    /// <summary>
+    /// Evaluates conditional logic and updates RenderContext
+    /// </summary>
+    private void EvaluateConditionalLogic()
+    {
+        if (_runtime == null || _renderContext == null)
+            return;
+
+        var (visibilityStates, enabledStates) =
+            ConditionalLogic.EvaluateAllConditionsComplete(_runtime, _formData);
+
+        _renderContext.UpdateVisibilityStates(visibilityStates);
+        _renderContext.UpdateEnabledStates(enabledStates);
+    }
+
+    /// <summary>
+    /// Gets root nodes ordered by Order property
+    /// </summary>
+    private IEnumerable<FormFieldNode> GetOrderedRootNodes()
+    {
+        if (_runtime == null)
+            return Enumerable.Empty<FormFieldNode>();
+
+        return _runtime.RootFields.OrderBy(n => n.Schema.Order);
+    }
+
+    /// <summary>
+    /// Gets CSS classes for the form container
+    /// </summary>
+    private string GetFormCssClasses()
+    {
+        var classes = new List<string> { "dynamic-form-container" };
+
+        if (!string.IsNullOrWhiteSpace(CssClass))
+            classes.Add(CssClass);
+
+        if (ReadOnly)
+            classes.Add("readonly");
+
+        return string.Join(" ", classes);
+    }
+
+    /// <summary>
+    /// Gets the localized form title
+    /// </summary>
+    private string? GetFormTitle()
+    {
+        if (Schema == null)
+            return null;
+
+        if (IsFrench && !string.IsNullOrWhiteSpace(Schema.TitleFr))
+            return Schema.TitleFr;
+
+        return Schema.TitleEn;
+    }
+
+    /// <summary>
+    /// Gets the localized form description
+    /// </summary>
+    private string? GetFormDescription()
+    {
+        if (Schema == null)
+            return null;
+
+        if (IsFrench && !string.IsNullOrWhiteSpace(Schema.DescriptionFr))
+            return Schema.DescriptionFr;
+
+        return Schema.DescriptionEn;
+    }
+
+    /// <summary>
+    /// Gets whether the current culture is French
+    /// </summary>
+    private bool IsFrench
+    {
+        get
+        {
+            var currentCulture = Culture ?? CultureInfo.CurrentUICulture;
+            return currentCulture.TwoLetterISOLanguageName.Equals("fr", StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    /// <summary>
+    /// Gets the submit button text
+    /// </summary>
+    private string GetSubmitButtonText()
+    {
+        return IsFrench ? "Soumettre" : "Submit";
+    }
+
+    /// <summary>
+    /// Gets the cancel button text
+    /// </summary>
+    private string GetCancelButtonText()
+    {
+        return IsFrench ? "Annuler" : "Cancel";
+    }
+
+    /// <summary>
+    /// Gets the loading message
+    /// </summary>
+    private string GetLoadingMessage()
+    {
+        return IsFrench ? "Chargement du formulaire..." : "Loading form...";
+    }
+
+    /// <summary>
+    /// Gets the error title
+    /// </summary>
+    private string GetErrorTitle()
+    {
+        return IsFrench ? "Erreur de chargement" : "Loading Error";
+    }
+
+    /// <summary>
+    /// Gets the validation summary title
+    /// </summary>
+    private string GetValidationSummaryTitle()
+    {
+        return IsFrench
+            ? "Veuillez corriger les erreurs suivantes:"
+            : "Please correct the following errors:";
+    }
+}

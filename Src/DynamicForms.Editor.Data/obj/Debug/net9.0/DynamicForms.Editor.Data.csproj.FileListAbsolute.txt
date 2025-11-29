@@ -1,0 +1,15 @@
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\bin\Debug\net9.0\DynamicForms.Editor.Data.deps.json
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\bin\Debug\net9.0\DynamicForms.Editor.Data.runtimeconfig.json
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\bin\Debug\net9.0\DynamicForms.Editor.Data.dll
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\bin\Debug\net9.0\DynamicForms.Editor.Data.pdb
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\DynamicForms.Editor.Data.csproj.AssemblyReference.cache
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\DynamicForms.Editor.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\DynamicForms.Editor.Data.AssemblyInfoInputs.cache
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\DynamicForms.Editor.Data.AssemblyInfo.cs
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\DynamicForms.Editor.Data.csproj.CoreCompileInputs.cache
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\DynamicForms.Editor.Data.sourcelink.json
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\DynamicForms.Editor.Data.dll
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\refint\DynamicForms.Editor.Data.dll
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\DynamicForms.Editor.Data.pdb
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\DynamicForms.Editor.Data.genruntimeconfig.cache
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor.Data\obj\Debug\net9.0\ref\DynamicForms.Editor.Data.dll

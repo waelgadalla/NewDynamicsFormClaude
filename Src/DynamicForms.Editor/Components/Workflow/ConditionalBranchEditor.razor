@@ -1,0 +1,443 @@
+@using DynamicForms.Core.V2.Schemas
+
+@*
+    ConditionalBranchEditor - Editor for defining conditional workflow transitions
+
+    Features:
+    - Define field-based conditions
+    - Specify next module for true/false branches
+    - Multiple conditions with AND logic
+    - Visual branching path display
+*@
+
+@if (WorkflowModule != null)
+{
+    <div class="conditional-branch-editor">
+        <!-- Header -->
+        <div class="editor-header">
+            <h5 class="editor-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05z"/>
+                </svg>
+                Conditional Branching
+            </h5>
+            <span class="module-badge">@WorkflowModule.TitleEn</span>
+        </div>
+
+        <!-- Branching Status -->
+        <div class="branching-status">
+            @if (_workingBranch != null)
+            {
+                <div class="alert alert-info mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                    <strong>Branching Active:</strong> This module will evaluate conditions to determine the next step
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                    No branching configured. Flow will proceed to next module in sequence.
+                </div>
+            }
+        </div>
+
+        <!-- Condition Editor -->
+        <div class="condition-section">
+            <h6 class="section-title">Condition</h6>
+            <p class="section-description">Define when this branch should be taken (all conditions must be met)</p>
+
+            <div class="form-group mb-3">
+                <label class="form-label">Field to Check</label>
+                <select class="form-select" @bind="_workingCondition.FieldId">
+                    <option value="">-- Select a field --</option>
+                    @foreach (var field in AvailableFields ?? new List<FormFieldSchema>())
+                    {
+                        <option value="@field.Id">@field.LabelEn (@field.Id)</option>
+                    }
+                </select>
+                <div class="form-text">Select a field from the current module to evaluate</div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label">Operator</label>
+                <select class="form-select" @bind="_workingCondition.Operator">
+                    <option value="Equals">Equals</option>
+                    <option value="NotEquals">Not Equals</option>
+                    <option value="Contains">Contains</option>
+                    <option value="GreaterThan">Greater Than</option>
+                    <option value="LessThan">Less Than</option>
+                    <option value="IsEmpty">Is Empty</option>
+                    <option value="IsNotEmpty">Is Not Empty</option>
+                </select>
+            </div>
+
+            @if (_workingCondition.Operator != "IsEmpty" && _workingCondition.Operator != "IsNotEmpty")
+            {
+                <div class="form-group mb-3">
+                    <label class="form-label">Value to Compare</label>
+                    <input type="text"
+                           class="form-control"
+                           @bind="_workingCondition.Value"
+                           placeholder="Enter value to compare against" />
+                    <div class="form-text">The value to compare the field against</div>
+                </div>
+            }
+        </div>
+
+        <!-- Branching Paths -->
+        <div class="branching-paths-section">
+            <h6 class="section-title">Branching Paths</h6>
+
+            <!-- True Path -->
+            <div class="branch-path true-path">
+                <div class="path-header">
+                    <div class="path-icon success">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                        </svg>
+                    </div>
+                    <span class="path-label">When Condition is TRUE</span>
+                </div>
+                <div class="path-body">
+                    <label class="form-label">Go to Module:</label>
+                    <select class="form-select" @bind="_workingCondition.NextModuleIdIfTrue">
+                        <option value="">-- Continue to next in sequence --</option>
+                        @foreach (var module in AvailableModules ?? new List<WorkflowModuleInfo>())
+                        {
+                            @if (module.ModuleId != WorkflowModule.ModuleId)
+                            {
+                                <option value="@module.ModuleId">
+                                    Step @(module.Order + 1): @module.TitleEn
+                                </option>
+                            }
+                        }
+                    </select>
+                    @if (_workingCondition.NextModuleIdIfTrue.HasValue)
+                    {
+                        var targetModule = AvailableModules?.FirstOrDefault(m => m.ModuleId == _workingCondition.NextModuleIdIfTrue.Value);
+                        if (targetModule != null)
+                        {
+                            <div class="path-preview mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                </svg>
+                                Jump to <strong>@targetModule.TitleEn</strong>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="path-preview mt-2 text-muted">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                            Continue to next module in workflow
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- False Path -->
+            <div class="branch-path false-path">
+                <div class="path-header">
+                    <div class="path-icon danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </div>
+                    <span class="path-label">When Condition is FALSE</span>
+                </div>
+                <div class="path-body">
+                    <label class="form-label">Go to Module:</label>
+                    <select class="form-select" @bind="_workingCondition.NextModuleIdIfFalse">
+                        <option value="">-- Continue to next in sequence --</option>
+                        @foreach (var module in AvailableModules ?? new List<WorkflowModuleInfo>())
+                        {
+                            @if (module.ModuleId != WorkflowModule.ModuleId)
+                            {
+                                <option value="@module.ModuleId">
+                                    Step @(module.Order + 1): @module.TitleEn
+                                </option>
+                            }
+                        }
+                    </select>
+                    @if (_workingCondition.NextModuleIdIfFalse.HasValue)
+                    {
+                        var targetModule = AvailableModules?.FirstOrDefault(m => m.ModuleId == _workingCondition.NextModuleIdIfFalse.Value);
+                        if (targetModule != null)
+                        {
+                            <div class="path-preview mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                </svg>
+                                Jump to <strong>@targetModule.TitleEn</strong>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="path-preview mt-2 text-muted">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                            Continue to next module in workflow
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Flow Preview -->
+        @if (_workingBranch != null)
+        {
+            <div class="flow-preview-section">
+                <h6 class="section-title">Flow Preview</h6>
+                <div class="flow-diagram">
+                    <div class="flow-node current-node">
+                        <div class="node-content">
+                            <strong>Current Module</strong>
+                            <div>@WorkflowModule.TitleEn</div>
+                        </div>
+                    </div>
+
+                    <div class="flow-branches">
+                        <!-- True Branch -->
+                        <div class="flow-branch true-branch">
+                            <div class="branch-condition">
+                                ✓ If <code>@_workingCondition.FieldId</code>
+                                @GetOperatorText(_workingCondition.Operator)
+                                @if (!string.IsNullOrEmpty(_workingCondition.Value))
+                                {
+                                    <code>@_workingCondition.Value</code>
+                                }
+                            </div>
+                            <div class="branch-arrow">→</div>
+                            <div class="flow-node target-node">
+                                @if (_workingCondition.NextModuleIdIfTrue.HasValue)
+                                {
+                                    var target = AvailableModules?.FirstOrDefault(m => m.ModuleId == _workingCondition.NextModuleIdIfTrue.Value);
+                                    <div class="node-content">
+                                        <strong>@(target?.TitleEn ?? "Unknown")</strong>
+                                        <div class="text-muted">Step @((target?.Order ?? -1) + 1)</div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="node-content text-muted">
+                                        <strong>Next Module</strong>
+                                        <div>Sequential</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- False Branch -->
+                        <div class="flow-branch false-branch">
+                            <div class="branch-condition">
+                                ✗ Otherwise
+                            </div>
+                            <div class="branch-arrow">→</div>
+                            <div class="flow-node target-node">
+                                @if (_workingCondition.NextModuleIdIfFalse.HasValue)
+                                {
+                                    var target = AvailableModules?.FirstOrDefault(m => m.ModuleId == _workingCondition.NextModuleIdIfFalse.Value);
+                                    <div class="node-content">
+                                        <strong>@(target?.TitleEn ?? "Unknown")</strong>
+                                        <div class="text-muted">Step @((target?.Order ?? -1) + 1)</div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="node-content text-muted">
+                                        <strong>Next Module</strong>
+                                        <div>Sequential</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="editor-footer">
+            <div class="button-group">
+                @if (_workingBranch != null)
+                {
+                    <button type="button" class="btn btn-outline-danger" @onclick="RemoveBranching">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                        Remove Branching
+                    </button>
+                }
+                <button type="button" class="btn btn-secondary" @onclick="HandleCancel">
+                    Cancel
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="HandleSave"
+                        disabled="@(!IsValid())">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                    </svg>
+                    Save Branching
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// The workflow module being edited
+    /// </summary>
+    [Parameter]
+    public WorkflowModuleInfo? WorkflowModule { get; set; }
+
+    /// <summary>
+    /// Available fields in the current module for condition selection
+    /// </summary>
+    [Parameter]
+    public List<FormFieldSchema>? AvailableFields { get; set; }
+
+    /// <summary>
+    /// Available modules in the workflow for next module selection
+    /// </summary>
+    [Parameter]
+    public List<WorkflowModuleInfo>? AvailableModules { get; set; }
+
+    /// <summary>
+    /// Event fired when branching is saved
+    /// </summary>
+    [Parameter]
+    public EventCallback<ConditionalBranch?> OnBranchChanged { get; set; }
+
+    /// <summary>
+    /// Event fired when editing is cancelled
+    /// </summary>
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    // ========================================================================
+    // STATE
+    // ========================================================================
+
+    private ConditionalBranch? _workingBranch;
+    private WorkingCondition _workingCondition = new();
+
+    private class WorkingCondition
+    {
+        public string FieldId { get; set; } = string.Empty;
+        public string Operator { get; set; } = "Equals";
+        public string Value { get; set; } = string.Empty;
+        public int? NextModuleIdIfTrue { get; set; }
+        public int? NextModuleIdIfFalse { get; set; }
+    }
+
+    // ========================================================================
+    // LIFECYCLE
+    // ========================================================================
+
+    protected override void OnParametersSet()
+    {
+        if (WorkflowModule?.Branch != null)
+        {
+            // Load existing branch
+            _workingBranch = WorkflowModule.Branch;
+            _workingCondition = new WorkingCondition
+            {
+                FieldId = _workingBranch.ConditionFieldId,
+                Operator = _workingBranch.Operator,
+                Value = _workingBranch.Value,
+                NextModuleIdIfTrue = _workingBranch.NextModuleIdIfTrue,
+                NextModuleIdIfFalse = _workingBranch.NextModuleIdIfFalse
+            };
+        }
+        else
+        {
+            // Start with empty branch
+            _workingBranch = null;
+            _workingCondition = new WorkingCondition();
+        }
+    }
+
+    // ========================================================================
+    // METHODS
+    // ========================================================================
+
+    private bool IsValid()
+    {
+        // Must have a field selected
+        if (string.IsNullOrWhiteSpace(_workingCondition.FieldId))
+            return false;
+
+        // If operator requires a value, must have one
+        if (_workingCondition.Operator != "IsEmpty" && _workingCondition.Operator != "IsNotEmpty")
+        {
+            if (string.IsNullOrWhiteSpace(_workingCondition.Value))
+                return false;
+        }
+
+        return true;
+    }
+
+    private string GetOperatorText(string operatorValue)
+    {
+        return operatorValue switch
+        {
+            "Equals" => "equals",
+            "NotEquals" => "does not equal",
+            "Contains" => "contains",
+            "GreaterThan" => "is greater than",
+            "LessThan" => "is less than",
+            "IsEmpty" => "is empty",
+            "IsNotEmpty" => "is not empty",
+            _ => operatorValue
+        };
+    }
+
+    // ========================================================================
+    // EVENT HANDLERS
+    // ========================================================================
+
+    private async Task HandleSave()
+    {
+        if (!IsValid()) return;
+
+        var branch = new ConditionalBranch(
+            ConditionFieldId: _workingCondition.FieldId.Trim(),
+            Operator: _workingCondition.Operator,
+            Value: _workingCondition.Value?.Trim() ?? string.Empty,
+            NextModuleIdIfTrue: _workingCondition.NextModuleIdIfTrue,
+            NextModuleIdIfFalse: _workingCondition.NextModuleIdIfFalse
+        );
+
+        await OnBranchChanged.InvokeAsync(branch);
+    }
+
+    private async Task RemoveBranching()
+    {
+        _workingBranch = null;
+        _workingCondition = new WorkingCondition();
+        await OnBranchChanged.InvokeAsync(null);
+    }
+
+    private async Task HandleCancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+}

@@ -1,0 +1,155 @@
+@using DynamicForms.Core.V2.Schemas
+
+@*
+    FieldListPanel - Hierarchical field list display
+
+    Displays all fields in a tree structure with action buttons.
+    Shows root fields and delegates to FieldListItem for recursive rendering.
+*@
+
+<div class="field-list-panel">
+    <!-- Header -->
+    <div class="field-list-header">
+        <h5 class="field-list-title">Fields</h5>
+        <span class="field-count badge bg-secondary">@GetFieldCount()</span>
+    </div>
+
+    <!-- Scrollable field list area -->
+    <div class="field-list-scroll">
+        @if (Fields.Any())
+        {
+            <div class="field-list-items">
+                @foreach (var field in GetRootFields())
+                {
+                    <FieldListItem
+                        Field="@field"
+                        AllFields="@Fields"
+                        SelectedFieldId="@SelectedFieldId"
+                        OnSelected="@OnFieldSelected"
+                        OnMoveUp="@OnFieldMoveUp"
+                        OnMoveDown="@OnFieldMoveDown"
+                        OnEdit="@OnFieldEdit"
+                        OnClone="@OnFieldClone"
+                        OnDelete="@OnFieldDelete" />
+                }
+            </div>
+        }
+        else
+        {
+            <div class="field-list-empty">
+                <div class="empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z"/>
+                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+                    </svg>
+                </div>
+                <p class="empty-message">No fields yet</p>
+                <p class="empty-hint">Click "Add Field" below to start building your form</p>
+            </div>
+        }
+    </div>
+
+    <!-- Footer with Add Field button -->
+    <div class="field-list-footer">
+        <button type="button"
+                class="btn btn-sm btn-outline-primary w-100"
+                @onclick="HandleAddField">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+            </svg>
+            Add Field
+        </button>
+    </div>
+</div>
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// List of all fields in the module (flat list, hierarchy built at runtime)
+    /// </summary>
+    [Parameter]
+    public List<FormFieldSchema> Fields { get; set; } = new();
+
+    /// <summary>
+    /// ID of the currently selected field (null if none selected)
+    /// </summary>
+    [Parameter]
+    public string? SelectedFieldId { get; set; }
+
+    /// <summary>
+    /// Event fired when a field is selected
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnFieldSelected { get; set; }
+
+    /// <summary>
+    /// Event fired when user clicks Move Up button
+    /// </summary>
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnFieldMoveUp { get; set; }
+
+    /// <summary>
+    /// Event fired when user clicks Move Down button
+    /// </summary>
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnFieldMoveDown { get; set; }
+
+    /// <summary>
+    /// Event fired when user clicks Edit button
+    /// </summary>
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnFieldEdit { get; set; }
+
+    /// <summary>
+    /// Event fired when user clicks Clone button
+    /// </summary>
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnFieldClone { get; set; }
+
+    /// <summary>
+    /// Event fired when user clicks Delete button
+    /// </summary>
+    [Parameter]
+    public EventCallback<FormFieldSchema> OnFieldDelete { get; set; }
+
+    /// <summary>
+    /// Event fired when user clicks Add Field button
+    /// </summary>
+    [Parameter]
+    public EventCallback OnAddField { get; set; }
+
+    // ========================================================================
+    // METHODS
+    // ========================================================================
+
+    /// <summary>
+    /// Gets only the root-level fields (no parent)
+    /// </summary>
+    private List<FormFieldSchema> GetRootFields()
+    {
+        return Fields
+            .Where(f => string.IsNullOrEmpty(f.ParentId))
+            .OrderBy(f => f.Order)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Gets the total field count for display
+    /// </summary>
+    private string GetFieldCount()
+    {
+        var count = Fields.Count;
+        return count == 1 ? "1 field" : $"{count} fields";
+    }
+
+    /// <summary>
+    /// Handles Add Field button click
+    /// </summary>
+    private async Task HandleAddField()
+    {
+        await OnAddField.InvokeAsync();
+    }
+}

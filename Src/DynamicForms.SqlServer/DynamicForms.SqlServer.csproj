@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DynamicForms.Core\DynamicForms.Core.csproj" />
     <ProjectReference Include="..\DynamicForms.EntityFramework\DynamicForms.EntityFramework.csproj" />
   </ItemGroup>
 

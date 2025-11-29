@@ -9,10 +9,10 @@
   },
   "project": {
     "restore": {
-      "projectUniqueName": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\src\\DynamicForms.RazorPages\\DynamicForms.RazorPages.csproj",
-      "projectPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\src\\DynamicForms.RazorPages\\DynamicForms.RazorPages.csproj",
+      "projectUniqueName": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.RazorPages\\DynamicForms.RazorPages.csproj",
+      "projectPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.RazorPages\\DynamicForms.RazorPages.csproj",
       "packagesPath": "C:\\Users\\waelm\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\src\\DynamicForms.RazorPages\\obj\\",
+      "outputPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.RazorPages\\obj\\",
       "projectStyle": "PackageReference",
       "UsingMicrosoftNETSdk": false,
       "fallbackFolders": [
