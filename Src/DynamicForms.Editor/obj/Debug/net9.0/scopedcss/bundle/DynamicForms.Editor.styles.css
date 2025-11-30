@@ -3584,6 +3584,104 @@ main[b-6xky0tvqxc] {
         padding: 0.85rem;
     }
 }
+/* _content/DynamicForms.Editor/Pages/Editor/ModuleEditor.razor.rz.scp.css */
+/* ==========================================================================
+   ModuleEditor Page Styles
+   ========================================================================== */
+
+.module-editor[b-r7ykvyvhf8] {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f8f9fa;
+}
+
+/* Main Content Area */
+.module-content[b-r7ykvyvhf8] {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Properties Panel (Right Side) */
+.module-properties-panel[b-r7ykvyvhf8] {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-left: 1px solid #dee2e6;
+    overflow-y: auto;
+}
+
+/* Empty State for Properties Panel */
+.properties-empty[b-r7ykvyvhf8] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.properties-empty .empty-icon[b-r7ykvyvhf8] {
+    margin-bottom: 1.5rem;
+    color: #adb5bd;
+}
+
+.properties-empty .empty-title[b-r7ykvyvhf8] {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.properties-empty .empty-message[b-r7ykvyvhf8] {
+    font-size: 0.9375rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Loading State */
+.module-loading[b-r7ykvyvhf8] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .module-content[b-r7ykvyvhf8] {
+        flex-direction: column;
+    }
+
+    .module-properties-panel[b-r7ykvyvhf8] {
+        border-left: none;
+        border-top: 1px solid #dee2e6;
+        max-height: 50vh;
+    }
+}
+
+@media (max-width: 576px) {
+    .properties-empty[b-r7ykvyvhf8] {
+        padding: 2rem 1rem;
+    }
+
+    .properties-empty .empty-icon svg[b-r7ykvyvhf8] {
+        width: 48px;
+        height: 48px;
+    }
+
+    .properties-empty .empty-title[b-r7ykvyvhf8] {
+        font-size: 1.125rem;
+    }
+
+    .properties-empty .empty-message[b-r7ykvyvhf8] {
+        font-size: 0.875rem;
+    }
+}
 /* _content/DynamicForms.Editor/Pages/Editor/WorkflowEditor.razor.rz.scp.css */
 /* ==========================================================================
    WorkflowEditor Page Styles

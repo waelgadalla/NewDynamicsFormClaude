@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DynamicForms.Editor.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09ced122e10c72fd894f4b16503eaf68e840d8db")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e2d12880a9899020ccbaf09c6bf45b1e8b41637b")]
 [assembly: System.Reflection.AssemblyProductAttribute("DynamicForms.Editor.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DynamicForms.Editor.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

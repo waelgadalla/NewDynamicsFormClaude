@@ -3,7 +3,35 @@
   "WorkspaceRootPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{EF07F169-6C05-975C-1668-0BBE0BEDF02F}|..\\DynamicForms.Editor\\DynamicForms.Editor.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.editor\\pages\\fieldlistdemo.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF07F169-6C05-975C-1668-0BBE0BEDF02F}|..\\DynamicForms.Editor\\DynamicForms.Editor.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.editor\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF07F169-6C05-975C-1668-0BBE0BEDF02F}|..\\DynamicForms.Editor\\DynamicForms.Editor.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.editor\\pages\\modulelist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF07F169-6C05-975C-1668-0BBE0BEDF02F}|..\\DynamicForms.Editor\\DynamicForms.Editor.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.editor\\pages\\fieldlistdemo.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF07F169-6C05-975C-1668-0BBE0BEDF02F}|..\\DynamicForms.Editor\\DynamicForms.Editor.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.editor\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF07F169-6C05-975C-1668-0BBE0BEDF02F}|..\\DynamicForms.Editor\\DynamicForms.Editor.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.editor\\routes.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF07F169-6C05-975C-1668-0BBE0BEDF02F}|..\\DynamicForms.Editor\\DynamicForms.Editor.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.editor\\publish_service_summary.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF07F169-6C05-975C-1668-0BBE0BEDF02F}|..\\DynamicForms.Editor\\DynamicForms.Editor.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.editor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\DynamicForms.Editor\\Pages\\Editor.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:DynamicForms.Editor\\Pages\\Editor.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -16,12 +44,129 @@
           "SelectedChildIndex": 1,
           "Children": [
             {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Editor.razor",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\DynamicForms.Editor\\Pages\\Editor.razor",
+              "RelativeDocumentMoniker": "DynamicForms.Editor\\Pages\\Editor.razor",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\DynamicForms.Editor\\Pages\\Editor.razor",
+              "RelativeToolTip": "DynamicForms.Editor\\Pages\\Editor.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-29T18:47:31.111Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FieldListDemo.razor",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\FieldListDemo.razor",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Pages\\FieldListDemo.razor",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\FieldListDemo.razor",
+              "RelativeToolTip": "..\\DynamicForms.Editor\\Pages\\FieldListDemo.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-29T18:21:32.72Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FieldListDemo.razor.css",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\FieldListDemo.razor.css",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Pages\\FieldListDemo.razor.css",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\FieldListDemo.razor.css",
+              "RelativeToolTip": "..\\DynamicForms.Editor\\Pages\\FieldListDemo.razor.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-29T18:21:31.496Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Routes.razor",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Routes.razor",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Routes.razor",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Routes.razor",
+              "RelativeToolTip": "..\\DynamicForms.Editor\\Routes.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-29T18:20:13.194Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "App.razor",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\App.razor",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\App.razor",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\App.razor",
+              "RelativeToolTip": "..\\DynamicForms.Editor\\App.razor",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAIwBMAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-29T18:20:02.594Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ModuleList.razor",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\ModuleList.razor",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Pages\\ModuleList.razor",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\ModuleList.razor",
+              "RelativeToolTip": "..\\DynamicForms.Editor\\Pages\\ModuleList.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGMAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-29T17:42:51.51Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Home.razor",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Pages\\Home.razor",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\Home.razor",
+              "RelativeToolTip": "..\\DynamicForms.Editor\\Pages\\Home.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-29T17:41:33.051Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PUBLISH_SERVICE_SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\PUBLISH_SERVICE_SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\PUBLISH_SERVICE_SUMMARY.md",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\PUBLISH_SERVICE_SUMMARY.md",
+              "RelativeToolTip": "..\\DynamicForms.Editor\\PUBLISH_SERVICE_SUMMARY.md",
+              "ViewState": "AgIAAG8CAAAAAAAAAAAQwI4CAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-11-29T17:41:24.253Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 7,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Program.cs",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Program.cs",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Program.cs",
+              "RelativeToolTip": "..\\DynamicForms.Editor\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-29T17:40:46.334Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "Microsoft.NET.TargetFrameworkInference.targets",
               "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets",

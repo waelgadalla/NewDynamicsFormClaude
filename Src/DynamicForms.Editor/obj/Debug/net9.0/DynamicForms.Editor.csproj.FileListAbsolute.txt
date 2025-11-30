@@ -188,6 +188,7 @@ C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.E
 C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\obj\Debug\net9.0\scopedcss\Pages\Editor\WorkflowEditor.razor.rz.scp.css
 C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\obj\Debug\net9.0\scopedcss\Components\Workflow\ConditionalBranchEditor.razor.rz.scp.css
 C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\obj\Debug\net9.0\scopedcss\Components\Workflow\WorkflowPreview.razor.rz.scp.css
-C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\obj\Debug\net9.0\compressed\x8dmnomjiw-pv8u8uu61g.gz
-C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\obj\Debug\net9.0\compressed\r30pivzmim-pv8u8uu61g.gz
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\obj\Debug\net9.0\scopedcss\Pages\Editor\ModuleEditor.razor.rz.scp.css
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\obj\Debug\net9.0\compressed\x8dmnomjiw-lbh511s04t.gz
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\obj\Debug\net9.0\compressed\r30pivzmim-lbh511s04t.gz
 C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Editor\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

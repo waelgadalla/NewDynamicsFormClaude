@@ -1,0 +1,335 @@
+@page "/editor/module/{ModuleId:int?}"
+@using DynamicForms.Core.V2.Schemas
+@using DynamicForms.Editor.Services.State
+@using DynamicForms.Editor.Services.Operations
+@using DynamicForms.Editor.Components.FieldList
+@using DynamicForms.Editor.Components.Properties
+@using DynamicForms.Editor.Components.Shared
+@inject EditorStateService StateService
+@inject UndoRedoService UndoRedoService
+@inject AutoSaveService AutoSaveService
+@inject FormBuilderService FormBuilderService
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<PageTitle>@GetPageTitle()</PageTitle>
+
+<div class="module-editor">
+    <!-- Toolbar -->
+    <EditorToolbar
+        CanUndo="@UndoRedoService.CanUndo"
+        CanRedo="@UndoRedoService.CanRedo"
+        IsDirty="@StateService.IsDirty"
+        OnSave="HandleSaveAsync"
+        OnPublish="HandlePublishAsync"
+        OnUndo="HandleUndoAsync"
+        OnRedo="HandleRedoAsync"
+        OnImport="HandleImportAsync"
+        OnExport="HandleExportAsync" />
+
+    <!-- Main Content Area -->
+    <div class="module-content">
+        @if (StateService.CurrentModule != null)
+        {
+            <!-- Left: Field List Panel -->
+            <FieldListPanel
+                Fields="@GetFieldsList()"
+                SelectedFieldId="@_selectedFieldId"
+                OnFieldSelected="@HandleFieldSelected"
+                OnFieldMoveUp="@HandleFieldMoveUpAsync"
+                OnFieldMoveDown="@HandleFieldMoveDownAsync"
+                OnFieldEdit="@HandleFieldEdit"
+                OnFieldClone="@HandleFieldCloneAsync"
+                OnFieldDelete="@HandleFieldDeleteAsync"
+                OnAddField="@HandleAddFieldAsync" />
+
+            <!-- Right: Properties Panel -->
+            <div class="module-properties-panel">
+                @if (_selectedField != null)
+                {
+                    <PropertiesPanel
+                        Field="@_selectedField"
+                        OnFieldChanged="@HandleFieldChangedAsync"
+                        OnCancel="@HandleCancelEdit" />
+                }
+                else
+                {
+                    <div class="properties-empty">
+                        <div class="empty-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/>
+                            </svg>
+                        </div>
+                        <h5 class="empty-title">No Field Selected</h5>
+                        <p class="empty-message">Select a field from the list to edit its properties</p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="module-loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading module...</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Status Bar -->
+    <EditorStatusBar
+        LastSaved="@AutoSaveService.LastAutoSave"
+        LastModified="@StateService.LastModified"
+        IsDirty="@StateService.IsDirty"
+        IsSaving="@AutoSaveService.IsSaving"
+        FieldCount="@GetFieldCount()"
+        ErrorCount="0" />
+</div>
+
+@code {
+    // ========================================================================
+    // PARAMETERS
+    // ========================================================================
+
+    /// <summary>
+    /// Module ID from route (null for new module)
+    /// </summary>
+    [Parameter]
+    public int? ModuleId { get; set; }
+
+    // ========================================================================
+    // STATE
+    // ========================================================================
+
+    private string? _selectedFieldId;
+    private FormFieldSchema? _selectedField;
+
+    // ========================================================================
+    // LIFECYCLE
+    // ========================================================================
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Subscribe to state changes
+        StateService.StateChanged += OnStateChanged;
+        UndoRedoService.StackChanged += OnStackChanged;
+        AutoSaveService.AutoSaveCompleted += OnAutoSaveCompleted;
+
+        // Load existing module or create new
+        if (ModuleId.HasValue)
+        {
+            var module = await LoadModuleAsync(ModuleId.Value);
+            if (module != null)
+            {
+                StateService.LoadModule(module);
+            }
+        }
+        else
+        {
+            // Create new blank module
+            var newModule = new FormModuleSchema
+            {
+                Id = 0,
+                TitleEn = "New Module",
+                TitleFr = "Nouveau module",
+                Fields = Array.Empty<FormFieldSchema>()
+            };
+            StateService.LoadModule(newModule);
+        }
+
+        // Start auto-save
+        await AutoSaveService.StartAsync();
+    }
+
+    // ========================================================================
+    // EVENT HANDLERS - Toolbar
+    // ========================================================================
+
+    private async Task HandleSaveAsync()
+    {
+        await AutoSaveService.SaveNowAsync();
+        // TODO: Show toast notification
+    }
+
+    private async Task HandlePublishAsync()
+    {
+        // TODO: Validate before publish
+        // TODO: Confirm publish
+        // TODO: Publish module
+        // TODO: Show success message
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleUndoAsync()
+    {
+        // TODO: Implement undo
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleRedoAsync()
+    {
+        // TODO: Implement redo
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleImportAsync()
+    {
+        // TODO: Implement import
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleExportAsync()
+    {
+        // TODO: Implement export
+        await Task.CompletedTask;
+    }
+
+    // ========================================================================
+    // EVENT HANDLERS - Field List
+    // ========================================================================
+
+    private void HandleFieldSelected(string fieldId)
+    {
+        _selectedFieldId = fieldId;
+        _selectedField = GetFieldsList().FirstOrDefault(f => f.Id == fieldId);
+        StateHasChanged();
+    }
+
+    private async Task HandleFieldMoveUpAsync(FormFieldSchema field)
+    {
+        if (StateService.CurrentModule == null) return;
+
+        await FormBuilderService.MoveFieldUpAsync(field.Id);
+    }
+
+    private async Task HandleFieldMoveDownAsync(FormFieldSchema field)
+    {
+        if (StateService.CurrentModule == null) return;
+
+        await FormBuilderService.MoveFieldDownAsync(field.Id);
+    }
+
+    private void HandleFieldEdit(FormFieldSchema field)
+    {
+        _selectedFieldId = field.Id;
+        _selectedField = field;
+        StateHasChanged();
+    }
+
+    private async Task HandleFieldCloneAsync(FormFieldSchema field)
+    {
+        if (StateService.CurrentModule == null) return;
+
+        await FormBuilderService.CloneFieldAsync(field.Id);
+    }
+
+    private async Task HandleFieldDeleteAsync(FormFieldSchema field)
+    {
+        if (StateService.CurrentModule == null) return;
+
+        // TODO: Add confirmation dialog
+        await FormBuilderService.DeleteFieldAsync(field.Id);
+
+        // Clear selection if deleted field was selected
+        if (_selectedFieldId == field.Id)
+        {
+            _selectedFieldId = null;
+            _selectedField = null;
+        }
+    }
+
+    private async Task HandleAddFieldAsync()
+    {
+        if (StateService.CurrentModule == null) return;
+
+        // Create new field
+        var newField = new FormFieldSchema
+        {
+            Id = $"field_{Guid.NewGuid().ToString("N").Substring(0, 8)}",
+            FieldType = "TextBox",
+            LabelEn = "New Field",
+            LabelFr = "Nouveau champ"
+        };
+
+        await FormBuilderService.AddFieldAsync(newField, parentId: null);
+
+        // Select the newly added field
+        _selectedFieldId = newField.Id;
+        _selectedField = newField;
+    }
+
+    // ========================================================================
+    // EVENT HANDLERS - Properties Panel
+    // ========================================================================
+
+    private async Task HandleFieldChangedAsync(FormFieldSchema updatedField)
+    {
+        if (StateService.CurrentModule == null) return;
+
+        await FormBuilderService.UpdateFieldAsync(updatedField);
+
+        // Update local selection
+        _selectedField = updatedField;
+    }
+
+    private void HandleCancelEdit()
+    {
+        _selectedFieldId = null;
+        _selectedField = null;
+        StateHasChanged();
+    }
+
+    // ========================================================================
+    // HELPER METHODS
+    // ========================================================================
+
+    private List<FormFieldSchema> GetFieldsList()
+    {
+        if (StateService.CurrentModule == null || StateService.CurrentModule.Fields == null)
+            return new List<FormFieldSchema>();
+
+        return StateService.CurrentModule.Fields.ToList();
+    }
+
+    private int GetFieldCount()
+    {
+        return GetFieldsList().Count;
+    }
+
+    private string GetPageTitle()
+    {
+        var title = StateService.CurrentModule?.TitleEn ?? "New Module";
+        return $"{title} - Module Editor";
+    }
+
+    private async Task<FormModuleSchema?> LoadModuleAsync(int moduleId)
+    {
+        // TODO: Load from repository
+        await Task.CompletedTask;
+        return null;
+    }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnStackChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnAutoSaveCompleted(object? sender, AutoSaveEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        StateService.StateChanged -= OnStateChanged;
+        UndoRedoService.StackChanged -= OnStackChanged;
+        AutoSaveService.AutoSaveCompleted -= OnAutoSaveCompleted;
+        AutoSaveService.Stop();
+    }
+}

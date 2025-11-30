@@ -1,0 +1,108 @@
+@page "/editor"
+@using DynamicForms.Core.V2.Schemas
+@inject NavigationManager Navigation
+
+<PageTitle>Form Editor</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="row">
+    <div class="col-12">
+         <h2>Form Editor</h2>
+      <p class="text-muted">Choose an option to start editing</p>
+    </div>
+    </div>
+
+    <div class="row mt-4">
+  <div class="col-md-6">
+       <div class="card">
+ <div class="card-body">
+        <h5 class="card-title">
+       <i class="bi bi-plus-circle text-success"></i> Create New Workflow
+                </h5>
+       <p class="card-text">
+  Start from scratch and create a new workflow with multiple modules.
+    </p>
+ <button class="btn btn-success" @onclick="CreateNewWorkflow">
+            <i class="bi bi-plus"></i> New Workflow
+        </button>
+                </div>
+  </div>
+</div>
+
+        <div class="col-md-6">
+    <div class="card">
+       <div class="card-body">
+            <h5 class="card-title">
+         <i class="bi bi-folder-open text-primary"></i> Open Existing Workflow
+   </h5>
+      <p class="card-text">
+        Select an existing workflow to continue editing.
+         </p>
+     <a href="/modules" class="btn btn-primary">
+       <i class="bi bi-list"></i> Browse Workflows
+ </a>
+      </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+     <div class="card">
+     <div class="card-body">
+         <h5 class="card-title">
+     <i class="bi bi-hammer text-info"></i> Component Demos
+      </h5>
+  <p class="card-text">
+            View demo pages for editor components and features.
+          </p>
+           <div class="btn-group" role="group">
+         <a href="/field-list-demo" class="btn btn-outline-info">
+                <i class="bi bi-list-nested"></i> Field List Demo
+      </a>
+        <a href="/workflow-preview-demo" class="btn btn-outline-info">
+       <i class="bi bi-eye"></i> Workflow Preview Demo
+                </a>
+              </div>
+        </div>
+         </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        margin-bottom: 1rem;
+        transition: transform 0.2s;
+        height: 100%;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+ box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .card-text {
+        color: #666;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-group {
+        gap: 0.5rem;
+        display: flex;
+        flex-wrap: wrap;
+ }
+</style>
+
+@code {
+    private void CreateNewWorkflow()
+    {
+        // Navigate to workflow editor without an ID (new workflow)
+        Navigation.NavigateTo("/editor/workflow");
+    }
+}
