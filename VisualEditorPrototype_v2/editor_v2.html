@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Editor V2 - Enterprise</title>
+    <link rel="stylesheet" href="css/editor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <div style="background:var(--primary); color:white; padding:4px 8px; border-radius:4px; font-weight:700;">DF</div>
+                <span style="font-weight:600; font-size:0.9rem;">Grant Application Workflow</span>
+            </div>
+            <div style="height:20px; width:1px; background:var(--border);"></div>
+            <div class="flex items-center gap-2 text-sm">
+                <span class="text-dim">Module:</span>
+                <select class="prop-control" style="width:auto; padding:0.25rem 0.5rem;">
+                    <option>01_Applicant_Info</option>
+                    <option>02_Project_Details</option>
+                    <option>03_Budget</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <span class="validation-status status-error">
+                <i class="fa-solid fa-circle-exclamation"></i> 2 Issues
+            </span>
+            <button class="btn btn-ghost btn-icon" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
+            <button class="btn btn-ghost btn-icon" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
+            <button class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+            <button class="btn btn-accent btn-sm"><i class="fa-solid fa-play"></i> Preview</button>
+        </div>
+    </header>
+
+    <!-- BODY -->
+    <div class="app-body">
+        
+        <!-- LEFT SIDEBAR: STRUCTURE & LIBRARY -->
+        <aside class="sidebar-left">
+            <div class="sidebar-tabs">
+                <div class="sidebar-tab active">Structure</div>
+                <div class="sidebar-tab">Library</div>
+                <div class="sidebar-tab">Templates</div>
+            </div>
+            
+            <!-- Tree View -->
+            <div class="sidebar-content">
+                <div class="tree-node" data-id="sec_1">
+                    <i class="fa-regular fa-folder-open tree-icon"></i> Applicant Info
+                </div>
+                
+                <div class="tree-node active" data-id="field_1">
+                    <span class="tree-indent"></span>
+                    <i class="fa-solid fa-font tree-icon"></i> Org Name
+                </div>
+                
+                <div class="tree-node" data-id="field_2">
+                    <span class="tree-indent"></span>
+                    <i class="fa-solid fa-envelope tree-icon"></i> Contact Email
+                </div>
+                
+                <div class="tree-node" data-id="grp_1">
+                    <span class="tree-indent"></span>
+                    <i class="fa-regular fa-square-plus tree-icon"></i> Address Block
+                </div>
+                
+                <div class="tree-node" data-id="field_3">
+                    <span class="tree-indent"></span><span class="tree-indent"></span>
+                    <i class="fa-solid fa-location-dot tree-icon"></i> Street
+                </div>
+                
+                 <div class="tree-node" data-id="field_4">
+                    <span class="tree-indent"></span><span class="tree-indent"></span>
+                    <i class="fa-solid fa-city tree-icon"></i> City
+                </div>
+
+                <div class="tree-node" data-id="sec_2">
+                    <i class="fa-regular fa-folder tree-icon"></i> Project Description
+                </div>
+            </div>
+            
+            <div class="p-4 border-t">
+                <button class="btn w-full"><i class="fa-solid fa-plus"></i> Add New Field</button>
+            </div>
+        </aside>
+
+        <!-- MAIN CANVAS -->
+        <main class="main-canvas">
+            <div class="canvas-toolbar">
+                <div class="breadcrumb-bar" style="border:none; padding:0;">
+                    <div class="crumb"><i class="fa-solid fa-house"></i> Root</div>
+                    <div class="crumb">Applicant Info</div>
+                </div>
+                <div class="flex gap-2 text-xs text-dim">
+                    <span>View: <strong>Edit</strong></span>
+                    <span>|</span>
+                    <span>Locale: <strong>EN</strong></span>
+                </div>
+            </div>
+
+            <div class="canvas-scroll-area">
+                <div class="form-sheet">
+                    
+                    <!-- Section 1 -->
+                    <div class="section-block" id="sec_1" data-type="Section">
+                        <div class="section-label">Section: Applicant Info</div>
+                        
+                        <!-- Field 1 -->
+                        <div class="field-wrapper" id="field_1" data-type="TextBox">
+                            <div class="field-actions-bar">
+                                <button class="field-action-btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+                                <button class="field-action-btn" title="Duplicate"><i class="fa-regular fa-copy"></i></button>
+                                <button class="field-action-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            <label class="form-label">Organization Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" placeholder="Legal name of organization" readonly>
+                            <div class="form-hint">As it appears on incorporation documents.</div>
+                        </div>
+
+                        <!-- Field 2 (Selected) -->
+                        <div class="field-wrapper selected" id="field_2" data-type="EmailBox">
+                            <div class="field-actions-bar">
+                                <button class="field-action-btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+                                <button class="field-action-btn" title="Duplicate"><i class="fa-regular fa-copy"></i></button>
+                                <button class="field-action-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            <label class="form-label">Contact Email <span class="required">*</span></label>
+                            <input type="email" class="form-input" value="contact@example.com" readonly>
+                        </div>
+
+                        <!-- Group (Address) -->
+                        <div class="section-block" style="background:#f8fafc; border-color:#e2e8f0;" id="grp_1" data-type="Group">
+                            <div class="section-label">Group: Address Block</div>
+                            
+                            <div class="flex gap-4">
+                                <div class="field-wrapper" style="flex:2;" id="field_3" data-type="TextBox">
+                                    <label class="form-label">Street Address</label>
+                                    <input type="text" class="form-input" readonly>
+                                </div>
+                                <div class="field-wrapper" style="flex:1;" id="field_4" data-type="TextBox">
+                                    <label class="form-label">City</label>
+                                    <input type="text" class="form-input" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Section 2 (Collapsed/Empty) -->
+                    <div class="section-block" id="sec_2" data-type="Section">
+                        <div class="section-label">Section: Project Description</div>
+                        <div style="text-align:center; color:#94a3b8; font-size:0.85rem; padding:1rem; border:1px dashed #e2e8f0;">
+                            Empty Section. Drag fields here from Library.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR: INSPECTOR -->
+        <aside class="sidebar-right">
+            <div class="inspector-header">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold" id="inspector-title">EmailBox</h3>
+                        <span class="field-id-display" id="inspector-id">field_2</span>
+                    </div>
+                    <div class="text-xs text-dim">v1.2</div>
+                </div>
+            </div>
+
+            <div class="prop-tabs">
+                <div class="prop-tab active" data-target="general">General</div>
+                <div class="prop-tab" data-target="validation">Validation</div>
+                <div class="prop-tab" data-target="logic">Logic</div>
+                <div class="prop-tab" data-target="data">Data</div>
+            </div>
+
+            <div class="prop-content">
+                
+                <!-- GENERAL TAB -->
+                <div class="prop-section" id="panel-general">
+                    <div class="prop-row">
+                        <label>Label (English)</label>
+                        <input type="text" name="label_en" class="prop-control" value="Contact Email">
+                    </div>
+                    <div class="prop-row">
+                        <label>Label (French)</label>
+                        <input type="text" name="label_fr" class="prop-control" value="Courriel de contact">
+                    </div>
+                    <div class="prop-row">
+                        <label>Help Text</label>
+                        <textarea class="prop-control" rows="2">Primary contact for this application.</textarea>
+                    </div>
+                    <div class="prop-row">
+                        <label>Parent Container</label>
+                        <select class="prop-control">
+                            <option value="sec_1">Applicant Info (Section)</option>
+                            <option value="grp_1">Address Block (Group)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- VALIDATION TAB -->
+                <div class="prop-section" id="panel-validation" style="display:none;">
+                    <div class="prop-row flex justify-between items-center">
+                        <label style="margin:0;">Is Required?</label>
+                        <div class="toggle-switch active">
+                            <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                        </div>
+                    </div>
+                    <div class="prop-row">
+                        <label>Required Message (EN)</label>
+                        <input type="text" class="prop-control" value="Email is required.">
+                    </div>
+                    
+                    <div style="height:1px; background:var(--border); margin:1rem 0;"></div>
+
+                    <div class="prop-row">
+                        <label>Pattern (Regex)</label>
+                        <select class="prop-control">
+                            <option>Email Address (Standard)</option>
+                            <option>Government Email (*.gc.ca)</option>
+                            <option>Custom...</option>
+                        </select>
+                    </div>
+                     <div class="prop-row">
+                        <label>Custom Regex</label>
+                        <input type="text" class="prop-control" value="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" style="font-family:monospace;">
+                    </div>
+                </div>
+
+                <!-- LOGIC TAB -->
+                <div class="prop-section" id="panel-logic" style="display:none;">
+                    <div class="mb-4">
+                        <button class="btn btn-sm w-full"><i class="fa-solid fa-plus"></i> Add Rule</button>
+                    </div>
+                    
+                    <div class="logic-card">
+                        <div class="logic-header">
+                            <span>Visibility Rule</span>
+                            <button class="btn-ghost text-xs"><i class="fa-solid fa-pen"></i></button>
+                        </div>
+                        <div class="logic-statement">
+                            <strong>IF</strong> [Org Type] == 'Non-Profit'<br>
+                            <strong>THEN</strong> Show
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DATA TAB -->
+                <div class="prop-section" id="panel-data" style="display:none;">
+                    <div class="prop-row">
+                        <label>Database Column</label>
+                        <input type="text" class="prop-control" value="ContactEmail">
+                    </div>
+                    <div class="prop-row">
+                        <label>Data Type</label>
+                        <select class="prop-control" disabled>
+                            <option>NVARCHAR(255)</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="js/editor.js"></script>
+</body>
+</html>

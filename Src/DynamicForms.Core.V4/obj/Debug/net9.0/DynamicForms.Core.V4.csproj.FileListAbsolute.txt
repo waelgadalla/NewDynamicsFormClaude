@@ -1,0 +1,13 @@
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\DynamicForms.Core.V4.csproj.AssemblyReference.cache
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\DynamicForms.Core.V4.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\DynamicForms.Core.V4.AssemblyInfoInputs.cache
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\DynamicForms.Core.V4.AssemblyInfo.cs
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\DynamicForms.Core.V4.csproj.CoreCompileInputs.cache
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\DynamicForms.Core.V4.sourcelink.json
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\bin\Debug\net9.0\DynamicForms.Core.V4.deps.json
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\bin\Debug\net9.0\DynamicForms.Core.V4.dll
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\bin\Debug\net9.0\DynamicForms.Core.V4.pdb
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\DynamicForms.Core.V4.dll
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\refint\DynamicForms.Core.V4.dll
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\DynamicForms.Core.V4.pdb
+C:\Users\waelm\source\repos\waelgadalla\NewDynamicsFormClaude\Src\DynamicForms.Core.V4\obj\Debug\net9.0\ref\DynamicForms.Core.V4.dll

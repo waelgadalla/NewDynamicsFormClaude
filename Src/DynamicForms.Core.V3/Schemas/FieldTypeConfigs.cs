@@ -1,62 +1,110 @@
-using System.Text.Json.Serialization;
-
 namespace DynamicForms.Core.V3.Schemas;
 
 /// <summary>
-/// Abstract base class for type-specific field configurations.
-/// Uses polymorphic JSON serialization for strongly-typed field type settings.
+/// Base class for type-specific configuration.
 /// </summary>
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
-[JsonDerivedType(typeof(TextAreaConfig), "textArea")]
-[JsonDerivedType(typeof(FileUploadConfig), "fileUpload")]
-[JsonDerivedType(typeof(DateRangeConfig), "dateRange")]
-[JsonDerivedType(typeof(ModalTableConfig), "modalTable")]
-public abstract record FieldTypeConfig;
+public abstract record FieldTypeConfig { }
 
 /// <summary>
-/// Configuration for text area fields
+/// Configuration for an Autocomplete / Typeahead field.
+/// Used for selecting from large datasets via API.
 /// </summary>
-/// <param name="Rows">Number of visible text rows (default: 4)</param>
-public record TextAreaConfig(
-    int Rows = 4
-) : FieldTypeConfig;
+public record AutoCompleteConfig : FieldTypeConfig
+{
+    /// <summary>
+    /// The API endpoint to query for results.
+    /// Example: "/api/v1/species/search"
+    /// </summary>
+    public required string DataSourceUrl { get; init; }
+
+    /// <summary>
+    /// The query parameter name to send to the API.
+    /// Default: "q" -> /api...?q=searchTerm
+    /// </summary>
+    public string QueryParameter { get; init; } = "q";
+
+    /// <summary>
+    /// Minimum characters required before triggering a search.
+    /// </summary>
+    public int MinCharacters { get; init; } = 3;
+
+    /// <summary>
+    /// The property name in the API response object to use as the saved value.
+    /// Example: "Id" or "Code"
+    /// </summary>
+    public required string ValueField { get; init; }
+
+    /// <summary>
+    /// The property name in the API response object to display in the input.
+    /// Example: "Name"
+    /// </summary>
+    public required string DisplayField { get; init; }
+
+    /// <summary>
+    /// Optional Handlebars-style template for the dropdown list items.
+    /// Example: "{{Name}} <span class='text-muted'>({{ScientificName}})</span>"
+    /// </summary>
+    public string? ItemTemplate { get; init; }
+}
 
 /// <summary>
-/// Configuration for file upload fields
+/// Configuration for a DataGrid / Repeater field.
+/// Allows users to add multiple rows of structured data (e.g. Line Items).
 /// </summary>
-/// <param name="AllowedExtensions">Array of allowed file extensions (e.g., [".pdf", ".docx"])</param>
-/// <param name="MaxFileSizeBytes">Maximum file size in bytes (default: 10 MB)</param>
-/// <param name="MaxFiles">Maximum number of files that can be uploaded (default: 1)</param>
-/// <param name="RequireVirusScan">Whether uploaded files must be virus scanned (default: true)</param>
-public record FileUploadConfig(
-    string[] AllowedExtensions,
-    long MaxFileSizeBytes = 10_485_760,
-    int MaxFiles = 1,
-    bool RequireVirusScan = true
-) : FieldTypeConfig;
+public record DataGridConfig : FieldTypeConfig
+{
+    /// <summary>
+    /// Allows adding new rows.
+    /// </summary>
+    public bool AllowAdd { get; init; } = true;
+
+    /// <summary>
+    /// Allows editing existing rows.
+    /// </summary>
+    public bool AllowEdit { get; init; } = true;
+
+    /// <summary>
+    /// Allows deleting rows.
+    /// </summary>
+    public bool AllowDelete { get; init; } = true;
+
+    /// <summary>
+    /// Maximum number of rows allowed. Null = unlimited.
+    /// </summary>
+    public int? MaxRows { get; init; }
+
+    /// <summary>
+    /// How the editor should appear.
+    /// "Modal" = Popup dialog.
+    /// "Inline" = Edit directly in the table row.
+    /// </summary>
+    public string EditorMode { get; init; } = "Modal"; // "Modal" | "Inline"
+
+    /// <summary>
+    /// The definitions of the fields that make up a single row.
+    /// These form the columns of the grid and the inputs of the editor.
+    /// </summary>
+    public FormFieldSchema[] Columns { get; init; } = Array.Empty<FormFieldSchema>();
+}
 
 /// <summary>
-/// Configuration for date range fields with validation constraints
+/// Configuration for File Upload fields.
 /// </summary>
-/// <param name="MinDate">Minimum allowed date (null = no minimum)</param>
-/// <param name="MaxDate">Maximum allowed date (null = no maximum)</param>
-/// <param name="AllowFutureDates">Whether dates in the future are allowed (default: true)</param>
-/// <param name="DateFormat">Display format for dates (default: "yyyy-MM-dd")</param>
-public record DateRangeConfig(
-    DateTime? MinDate = null,
-    DateTime? MaxDate = null,
-    bool AllowFutureDates = true,
-    string DateFormat = "yyyy-MM-dd"
-) : FieldTypeConfig;
+public record FileUploadConfig : FieldTypeConfig
+{
+    public string[] AllowedExtensions { get; init; } = Array.Empty<string>();
+    public long MaxFileSizeBytes { get; init; } = 10 * 1024 * 1024; // 10MB
+    public bool AllowMultiple { get; init; }
+    public bool ScanRequired { get; init; } = true;
+}
 
 /// <summary>
-/// Configuration for modal table fields (multi-row data entry)
+/// Configuration for Date/Time fields.
 /// </summary>
-/// <param name="ModalFields">Array of field schemas that appear in the modal dialog</param>
-/// <param name="MaxRecords">Maximum number of records that can be added (null = unlimited)</param>
-/// <param name="AllowDuplicates">Whether duplicate records are allowed (default: false)</param>
-public record ModalTableConfig(
-    FormFieldSchema[] ModalFields,
-    int? MaxRecords = null,
-    bool AllowDuplicates = false
-) : FieldTypeConfig;
+public record DateConfig : FieldTypeConfig
+{
+    public bool AllowFuture { get; init; } = true;
+    public bool AllowPast { get; init; } = true;
+    public string? MinDate { get; init; } // ISO 8601 or "Now", "Now+30d"
+    public string? MaxDate { get; init; }
+}

@@ -285,5 +285,61 @@ public record FormFieldSchema
         };
     }
 
+    /// <summary>
+    /// Creates a dropdown field that references a CodeSet
+    /// </summary>
+    /// <param name="id">Unique field identifier</param>
+    /// <param name="labelEn">English label</param>
+    /// <param name="codeSetId">ID of the CodeSet to use for options</param>
+    /// <param name="labelFr">French label (optional)</param>
+    /// <param name="isRequired">Whether the field is required</param>
+    /// <param name="order">Display order</param>
+    /// <returns>Configured FormFieldSchema for a CodeSet-based dropdown</returns>
+    public static FormFieldSchema CreateDropDownFromCodeSet(
+        string id,
+        string labelEn,
+        int codeSetId,
+        string? labelFr = null,
+        bool isRequired = false,
+        int order = 1)
+    {
+        return new FormFieldSchema
+        {
+            Id = id,
+            FieldType = "DropDown",
+            LabelEn = labelEn,
+            LabelFr = labelFr,
+            CodeSetId = codeSetId,
+            IsRequired = isRequired,
+            Order = order
+        };
+    }
+
+    #endregion
+
+    #region Helper Methods
+
+    /// <summary>
+    /// Checks if this field requires CodeSet resolution (has CodeSetId but no Options)
+    /// </summary>
+    /// <returns>True if CodeSet needs to be resolved, false otherwise</returns>
+    public bool RequiresCodeSetResolution()
+    {
+        return CodeSetId.HasValue && (Options == null || Options.Length == 0);
+    }
+
+    /// <summary>
+    /// Checks if this field is a selection type that can use options
+    /// </summary>
+    /// <returns>True if field supports options/CodeSets</returns>
+    public bool SupportsOptions()
+    {
+        return FieldType switch
+        {
+            "DropDown" or "RadioButtonList" or "CheckBoxList" => true,
+            _ => false
+        };
+    }
+
     #endregion
 }

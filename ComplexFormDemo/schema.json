@@ -1,0 +1,172 @@
+{
+  "Id": 2025,
+  "TitleEn": "Community Development Grant Application",
+  "DescriptionEn": "Use this form to apply for funding for community-led initiatives. Please ensure all fields are completed accurately.",
+  "Version": 3.0,
+  "Fields": [
+    {
+      "Id": "sec_contact",
+      "FieldType": "Section",
+      "LabelEn": "Contact Information",
+      "Order": 10
+    },
+    {
+      "Id": "applicant_name",
+      "ParentId": "sec_contact",
+      "FieldType": "TextBox",
+      "LabelEn": "Applicant Full Name",
+      "Validation": {
+        "IsRequired": true,
+        "MinLength": 2
+      },
+      "Order": 11
+    },
+    {
+      "Id": "org_type",
+      "ParentId": "sec_contact",
+      "FieldType": "DropDown",
+      "LabelEn": "Organization Type",
+      "Validation": { "IsRequired": true },
+      "Options": [
+        { "Value": "", "TextEn": "-- Select Type --" },
+        { "Value": "individual", "TextEn": "Individual" },
+        { "Value": "non_profit", "TextEn": "Non-Profit Organization" },
+        { "Value": "business", "TextEn": "Private Business" }
+      ],
+      "Order": 12
+    },
+    {
+      "Id": "biz_reg_num",
+      "ParentId": "sec_contact",
+      "FieldType": "TextBox",
+      "LabelEn": "Business Registration Number (9 Digits)",
+      "Validation": {
+        "IsRequired": true,
+        "Pattern": "^\\d{9}$",
+        "PatternMessageEn": "Please enter exactly 9 digits."
+      },
+      "ConditionalRules": [
+        {
+          "TargetFieldId": "org_type",
+          "Operator": "Equals",
+          "Value": "business",
+          "Action": "Show"
+        }
+      ],
+      "Order": 13
+    },
+    {
+      "Id": "charity_reg_num",
+      "ParentId": "sec_contact",
+      "FieldType": "TextBox",
+      "LabelEn": "Charity Registration Number",
+      "Validation": { "IsRequired": true },
+      "ConditionalRules": [
+        {
+          "TargetFieldId": "org_type",
+          "Operator": "Equals",
+          "Value": "non_profit",
+          "Action": "Show"
+        }
+      ],
+      "Order": 14
+    },
+    {
+      "Id": "sec_project",
+      "FieldType": "Section",
+      "LabelEn": "Project Details",
+      "Order": 20
+    },
+    {
+      "Id": "proj_title",
+      "ParentId": "sec_project",
+      "FieldType": "TextBox",
+      "LabelEn": "Project Title",
+      "Validation": { "IsRequired": true, "MaxLength": 100 },
+      "Order": 21
+    },
+    {
+      "Id": "proj_desc",
+      "ParentId": "sec_project",
+      "FieldType": "TextArea",
+      "LabelEn": "Project Description",
+      "Validation": { "IsRequired": true, "MinLength": 50 },
+      "Order": 22
+    },
+    {
+      "Id": "proj_dates_group",
+      "ParentId": "sec_project",
+      "FieldType": "Group",
+      "LabelEn": "Timeline",
+      "CssClasses": "grid-2-col",
+      "Order": 23
+    },
+    {
+      "Id": "start_date",
+      "ParentId": "proj_dates_group",
+      "FieldType": "DatePicker",
+      "LabelEn": "Start Date",
+      "Validation": { "IsRequired": true },
+      "Order": 24
+    },
+    {
+      "Id": "end_date",
+      "ParentId": "proj_dates_group",
+      "FieldType": "DatePicker",
+      "LabelEn": "End Date",
+      "Validation": { "IsRequired": true },
+      "Order": 25
+    },
+    {
+      "Id": "sec_funding",
+      "FieldType": "Section",
+      "LabelEn": "Funding Request",
+      "Order": 30
+    },
+    {
+      "Id": "req_amount",
+      "ParentId": "sec_funding",
+      "FieldType": "Number",
+      "LabelEn": "Requested Amount ($)",
+      "Validation": {
+          "IsRequired": true,
+          "MinValue": 1000,
+          "MaxValue": 50000
+      },
+      "Order": 31
+    },
+    {
+        "Id": "has_other_funding",
+        "ParentId": "sec_funding",
+        "FieldType": "RadioButtonList",
+        "LabelEn": "Do you have other funding sources?",
+        "Options": [
+            { "Value": "yes", "TextEn": "Yes" },
+            { "Value": "no", "TextEn": "No" }
+        ],
+        "Order": 32
+    },
+    {
+        "Id": "other_funding_desc",
+        "ParentId": "sec_funding",
+        "FieldType": "TextArea",
+        "LabelEn": "Please list other sources",
+        "ConditionalRules": [
+            {
+                "TargetFieldId": "has_other_funding",
+                "Operator": "Equals",
+                "Value": "yes",
+                "Action": "Show"
+            }
+        ],
+        "Order": 33
+    },
+    {
+        "Id": "terms_check",
+        "FieldType": "Checkbox",
+        "LabelEn": "I agree to the terms and conditions",
+        "Validation": { "IsRequired": true },
+        "Order": 100
+    }
+  ]
+}

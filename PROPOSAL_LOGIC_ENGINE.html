@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Logic Engine - Design Proposal</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --text: #334155;
+            --bg: #f8fafc;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        h1, h2, h3 { color: var(--primary); }
+        h1 { border-bottom: 3px solid var(--accent); padding-bottom: 0.5rem; }
+        h2 { margin-top: 2rem; border-left: 4px solid var(--accent); padding-left: 1rem; }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        code {
+            font-family: 'Consolas', monospace;
+            background: #e2e8f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #be185d;
+        }
+        
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-open { background: #dcfce7; color: #166534; }
+        .badge-safe { background: #dbeafe; color: #1e40af; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f1f5f9; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <h1>Enterprise Logic Engine Proposal</h1>
+    <p><strong>Target:</strong> DynamicForms.Core.V3 | <strong>Context:</strong> Canadian Government / Enterprise</p>
+
+    <div class="card">
+        <h2>1. The Core Concept: "One Engine, Many Uses"</h2>
+        <p>
+            Instead of building separate logic for "Field Visibility", "Validation", and "Workflow Branching", we define a single 
+            <strong>Logic Rule Schema</strong>. This schema is data-driven and can be evaluated by a common service.
+        </p>
+        <p>
+            <strong>The Standard: JSON Logic</strong><br>
+            <span class="badge badge-open">Open Source</span> <span class="badge badge-safe">MIT License</span>
+        </p>
+        <p>
+            JSON Logic is a pure data format for writing rules. It has <strong>zero dependencies</strong>. 
+            You do not need to install a 3rd party library if you don't want to; the "engine" is just a recursive function 
+            you can write in 50 lines of C# or JavaScript. It is completely safe for government use.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>2. The Schema Definition</h2>
+        <p>We replace the simple <code>ConditionalRule</code> list with this robust structure.</p>
+
+        <h3>C# Record Definition</h3>
+        <pre><code>public record LogicRule
+{
+    /// &lt;summary&gt;Unique ID for the rule&lt;/summary&gt;
+    public string Id { get; init; }
+
+    /// &lt;summary&gt;Human-readable name (e.g. "Hide Budget if Grant &lt; 5k")&lt;/summary&gt;
+    public string Name { get; init; }
+
+    /// &lt;summary&gt;
+    /// The Trigger: A JSON Logic expression that evaluates to TRUE or FALSE.
+    /// &lt;/summary&gt;
+    public JsonElement Condition { get; init; }
+
+    /// &lt;summary&gt;
+    /// The Action: What to do when Condition is TRUE.
+    /// &lt;/summary&gt;
+    public RuleAction Action { get; init; }
+    
+    /// &lt;summary&gt;
+    /// The Target: Which field, section, or step is affected.
+    /// &lt;/summary&gt;
+    public string TargetId { get; init; }
+}
+
+public enum RuleAction
+{
+    Show,       // Visibility
+    Hide,
+    Enable,     // Read-only state
+    Disable,
+    SetRequired,// Validation
+    SkipStep    // Workflow
+}</code></pre>
+    </div>
+
+    <div class="card">
+        <h2>3. Scenarios & Examples</h2>
+
+        <h3>Scenario A: Simple Field Visibility</h3>
+        <p><em>"Show the 'Business Number' field ONLY IF 'Organization Type' is 'Business'."</em></p>
+        <pre><code>{
+  "Id": "rule_show_biz_num",
+  "TargetId": "field_biz_num",
+  "Action": "Show",
+  "Condition": {
+    "==": [ { "var": "field_org_type" }, "Business" ]
+  }
+}</code></pre>
+
+        <h3>Scenario B: Complex Enterprise Logic</h3>
+        <p><em>"Show 'Parental Consent' IF User is under 18 AND (Province is ON or Province is QC)."</em></p>
+        <pre><code>{
+  "Id": "rule_parent_consent",
+  "TargetId": "sec_parent_consent",
+  "Action": "Show",
+  "Condition": {
+    "and": [
+      { "<": [ { "var": "applicant_age" }, 18 ] },
+      { "or": [
+          { "==": [ { "var": "province" }, "ON" ] },
+          { "==": [ { "var": "province" }, "QC" ] }
+      ]}
+    ]
+  }
+}</code></pre>
+
+        <h3>Scenario C: Cross-Step Workflow Branching</h3>
+        <p><em>"Skip the 'Financial Review' step IF the 'Total Request' (from Step 1) is less than $10,000."</em></p>
+        <pre><code>{
+  "Id": "rule_skip_financial",
+  "TargetId": "step_financial_review",
+  "Action": "SkipStep",
+  "Condition": {
+    "<": [ { "var": "Step1.total_request_amt" }, 10000 ]
+  }
+}</code></pre>
+    </div>
+
+    <div class="card">
+        <h2>4. Implementation Details (No Dependencies)</h2>
+        <p>
+            You do not need a heavy nuget package. Here is the pseudo-code for the 
+            <strong>Logic Evaluator</strong>. It traverses the JSON tree recursively.
+        </p>
+
+        <pre><code>public bool Evaluate(JsonElement rule, Dictionary&lt;string, object&gt; data)
+{
+    // 1. Handle Data Access
+    if (IsVar(rule)) {
+        var fieldName = rule.GetProperty("var").GetString();
+        return data[fieldName];
+    }
+
+    // 2. Handle Operators
+    if (rule.TryGetProperty("==", out var args)) {
+        var left = Evaluate(args[0], data);
+        var right = Evaluate(args[1], data);
+        return left == right;
+    }
+    
+    if (rule.TryGetProperty("and", out var conditions)) {
+        foreach(var cond in conditions.EnumerateArray()) {
+            if (!Evaluate(cond, data)) return false;
+        }
+        return true;
+    }
+
+    // ... Add >, <, OR, NOT as needed
+    return false;
+}</code></pre>
+    </div>
+
+    <div class="card">
+        <h2>5. Implementation Roadmap</h2>
+        
+        <table>
+            <tr>
+                <th>Phase</th>
+                <th>Goal</th>
+                <th>Details</th>
+            </tr>
+            <tr>
+                <td><strong>Phase 1: Schema (Now)</strong></td>
+                <td>Define Structure</td>
+                <td>
+                    Update <code>ConditionalRule</code> in V3 to match the Trigger/Action/Target model.
+                    Do not write the evaluator yet. just ensure the JSON can be saved.
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Phase 2: UI</strong></td>
+                <td>Visual Editor</td>
+                <td>
+                    In the Blazor Editor, create a "Rule Builder" UI. 
+                    Do not make users write JSON. Give them dropdowns: 
+                    <code>[Field] [Operator] [Value]</code>.
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Phase 3: Engine</strong></td>
+                <td>Execution</td>
+                <td>
+                    Write the C# Service (<code>LogicEvaluatorService</code>) to run rules on the server.
+                    Write the JS Adapter to run rules in the browser (for instant feedback).
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

@@ -25,6 +25,22 @@ public class FormFieldNode
     public List<FormFieldNode> Children { get; } = new();
 
     /// <summary>
+    /// Resolved options from CodeSet (if field uses CodeSetId).
+    /// Populated during hierarchy building when CodeSet is resolved.
+    /// </summary>
+    public FieldOption[]? ResolvedOptions { get; set; }
+
+    /// <summary>
+    /// Gets the effective options for this field (resolved CodeSet or inline options)
+    /// </summary>
+    /// <returns>Array of FieldOptions, or null if field doesn't support options</returns>
+    public FieldOption[]? GetEffectiveOptions()
+    {
+        // Priority: ResolvedOptions from CodeSet, then Schema.Options
+        return ResolvedOptions ?? Schema.Options;
+    }
+
+    /// <summary>
     /// Computed depth level in the hierarchy (0 = root, 1 = first level child, etc.)
     /// </summary>
     public int Level => Parent?.Level + 1 ?? 0;

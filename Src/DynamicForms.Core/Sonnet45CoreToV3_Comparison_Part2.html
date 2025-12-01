@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DynamicForms.Core vs V3 Comparison - Part 2: Porting Strategy</title>
+    <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   line-height: 1.6;
+   max-width: 1400px;
+         margin: 0 auto;
+  padding: 20px;
+    background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 50%, #fc00ff 100%);
+      color: #333;
+ }
+.container {
+background: white;
+     padding: 40px;
+     border-radius: 10px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        h1 {
+      color: #fc5c7d;
+  border-bottom: 4px solid #fc00ff;
+padding-bottom: 15px;
+  font-size: 2.8em;
+ text-align: center;
+        }
+   h2 {
+       color: #6a82fb;
+    margin-top: 35px;
+            font-size: 2em;
+     border-left: 6px solid #fc00ff;
+       padding-left: 15px;
+}
+   h3 {
+ color: #fc00ff;
+ margin-top: 25px;
+font-size: 1.4em;
+        }
+   .port-section {
+          background: #d1fae5;
+ border-left: 5px solid #10b981;
+  padding: 25px;
+    margin: 20px 0;
+     border-radius: 8px;
+        }
+    .implementation-box {
+  background: #e0e7ff;
+border-left: 5px solid #4f46e5;
+        padding: 25px;
+  margin: 20px 0;
+       border-radius: 8px;
+     }
+      .recommendation-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+   padding: 30px;
+ border-radius: 10px;
+margin: 30px 0;
+       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+ }
+        table {
+     width: 100%;
+       border-collapse: collapse;
+  margin: 20px 0;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+  th, td {
+      padding: 14px;
+   text-align: left;
+ border-bottom: 1px solid #e5e7eb;
+     }
+        th {
+  background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
+   color: white;
+ font-weight: 600;
+        }
+      tr:hover {
+            background: #f3f4f6;
+        }
+        .badge {
+       display: inline-block;
+            padding: 6px 14px;
+            border-radius: 15px;
+    font-size: 0.85em;
+  font-weight: bold;
+  margin-right: 8px;
+        }
+ .badge-critical { background: #ef4444; color: white; }
+     .badge-high { background: #f59e0b; color: white; }
+      .badge-medium { background: #3b82f6; color: white; }
+        .badge-low { background: #10b981; color: white; }
+        code {
+          background: #f3f4f6;
+          padding: 3px 8px;
+   border-radius: 4px;
+            font-family: 'Courier New', monospace;
+       font-size: 0.9em;
+    color: #fc00ff;
+        }
+ pre {
+  background: #1e293b;
+  color: #e2e8f0;
+            padding: 20px;
+     border-radius: 8px;
+   overflow-x: auto;
+            border-left: 4px solid #fc00ff;
+      }
+        ul {
+  margin: 10px 0;
+     padding-left: 30px;
+        }
+        li {
+      margin: 10px 0;
+        }
+   .step {
+            background: #fef3c7;
+ border-left: 4px solid #f59e0b;
+     padding: 15px;
+      margin: 15px 0;
+ border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+  <h1>?? DynamicForms.Core to V3 Porting Guide</h1>
+        <p style="text-align: center; font-size: 1.3em; color: #6b7280; font-style: italic;">
+     Part 2: Detailed Porting Recommendations & Implementation Strategy
+      </p>
+
+   <h2>?? Priority 1: Field Templates (CRITICAL)</h2>
+
+ <div class="port-section">
+          <h3><span class="badge badge-critical">CRITICAL</span> Why Port This Feature?</h3>
+            <ul>
+        <li><strong>User Experience:</strong> Dramatically speeds up form creation</li>
+      <li><strong>Consistency:</strong> Ensures standard field patterns across forms</li>
+        <li><strong>Discoverability:</strong> Helps users learn common field patterns</li>
+    <li><strong>Productivity:</strong> Reduces form creation time by 60-80%</li>
+    </ul>
+        </div>
+
+      <div class="implementation-box">
+            <h3>Implementation Plan</h3>
+            
+     <div class="step">
+  <h4>Step 1: Create FieldTemplateSchema</h4>
+        <pre>namespace DynamicForms.Core.V3.Schemas;
+
+/// <summary>
+/// Pre-built field template for quick insertion
+/// </summary>
+public record FieldTemplateSchema
+{
+    /// <summary>
+    /// Unique template identifier
+    /// </summary>
+    public required string Id { get; init; }
+    
+    /// <summary>
+    /// English template name
+    /// </summary>
+    public required string NameEn { get; init; }
+    
+    /// <summary>
+    /// French template name
+    /// </summary>
+    public string? NameFr { get; init; }
+    
+    /// <summary>
+    /// English description
+    /// </summary>
+    public string? DescriptionEn { get; init; }
+    
+    /// <summary>
+    /// French description
+    /// </summary>
+    public string? DescriptionFr { get; init; }
+    
+    /// <summary>
+    /// Template category (Contact, Address, Financial, etc.)
+    /// </summary>
+    public required string Category { get; init; }
+    
+    /// <summary>
+    /// Icon class for UI display (e.g., "bi-person", "bi-geo-alt")
+    /// </summary>
+    public string Icon { get; init; } = "bi-file-text";
+    
+    /// <summary>
+    /// Array of fields in this template
+    /// </summary>
+    public FormFieldSchema[] Fields { get; init; } = Array.Empty&lt;FormFieldSchema&gt;();
+    
+    /// <summary>
+    /// Tags for searchability
+    /// </summary>
+    public string[]? Tags { get; init; }
+}</pre>
+   </div>
+
+            <div class="step">
+     <h4>Step 2: Create IFieldTemplateProvider</h4>
+<pre>namespace DynamicForms.Core.V3.Services;
+
+/// <summary>
+/// Provider interface for field templates
+/// </summary>
+public interface IFieldTemplateProvider
+{
+  /// <summary>
+    /// Get all available templates
+    /// </summary>
+    Task&lt;FieldTemplateSchema[]&gt; GetAllTemplatesAsync(
+  CancellationToken ct = default);
+    
+    /// <summary>
+    /// Get template by ID
+    /// </summary>
+    Task&lt;FieldTemplateSchema?&gt; GetTemplateByIdAsync(
+        string templateId,
+  CancellationToken ct = default);
+    
+    /// <summary>
+    /// Get templates by category
+    /// </summary>
+    Task&lt;FieldTemplateSchema[]&gt; GetTemplatesByCategoryAsync(
+     string category,
+        CancellationToken ct = default);
+    
+    /// <summary>
+  /// Search templates by keyword
+    /// </summary>
+    Task&lt;FieldTemplateSchema[]&gt; SearchTemplatesAsync(
+        string keyword,
+  CancellationToken ct = default);
+}</pre>
+   </div>
+
+   <div class="step">
+      <h4>Step 3: Create InMemoryFieldTemplateProvider</h4>
+           <pre>namespace DynamicForms.Core.V3.Services;
+
+public class InMemoryFieldTemplateProvider : IFieldTemplateProvider
+{
+    private readonly Dictionary&lt;string, FieldTemplateSchema&gt; _templates = new();
+  private readonly ILogger&lt;InMemoryFieldTemplateProvider&gt; _logger;
+
+    public InMemoryFieldTemplateProvider(
+        ILogger&lt;InMemoryFieldTemplateProvider&gt; logger)
+    {
+  _logger = logger;
+        InitializeBuiltInTemplates();
+    }
+
+    private void InitializeBuiltInTemplates()
+ {
+        // Contact Information Template
+        RegisterTemplate(new FieldTemplateSchema
+        {
+    Id = "contact_info",
+     NameEn = "Contact Information",
+            NameFr = "Informations de contact",
+            Category = "Contact",
+     Icon = "bi-person",
+       Tags = new[] { "contact", "email", "phone" },
+            Fields = new[]
+  {
+         FormFieldSchema.CreateTextField(
+             "first_name", "First Name", "Prénom", 
+        isRequired: true, order: 1),
+        FormFieldSchema.CreateTextField(
+        "last_name", "Last Name", "Nom", 
+        isRequired: true, order: 2),
+    FormFieldSchema.CreateTextField(
+     "email", "Email", "Courriel", 
+            isRequired: true, order: 3) with {
+                Validation = new FieldValidationConfig {
+             IsRequired = true,
+  CustomRuleIds = new[] { "email" }
+              }
+      },
+         FormFieldSchema.CreateTextField(
+       "phone", "Phone Number", "Numéro de téléphone", 
+        order: 4)
+         }
+        });
+
+        // Address Template
+        RegisterTemplate(new FieldTemplateSchema
+        {
+ Id = "address",
+            NameEn = "Address",
+            NameFr = "Adresse",
+            Category = "Geographic",
+     Icon = "bi-geo-alt",
+            Tags = new[] { "address", "location", "postal" },
+    Fields = new[]
+            {
+       FormFieldSchema.CreateTextField(
+                    "street_address", "Street Address", 
+           "Adresse civique", isRequired: true, order: 1),
+        FormFieldSchema.CreateTextField(
+       "city", "City", "Ville", 
+   isRequired: true, order: 2),
+             FormFieldSchema.CreateDropDown(
+     "province", "Province/Territory", 
+              Array.Empty&lt;FieldOption&gt;(), 
+     "Province/Territoire", isRequired: true, order: 3) with {
+     CodeSetId = 1 // Canadian provinces
+       },
+       FormFieldSchema.CreateTextField(
+                  "postal_code", "Postal Code", "Code postal", 
+        isRequired: true, order: 4)
+            }
+   });
+
+        // Add more templates...
+  }
+
+    public void RegisterTemplate(FieldTemplateSchema template)
+    {
+        _templates[template.Id] = template;
+        _logger.LogInformation("Registered template: {TemplateId}", 
+  template.Id);
+}
+
+    public Task&lt;FieldTemplateSchema[]&gt; GetAllTemplatesAsync(
+        CancellationToken ct = default)
+    {
+     return Task.FromResult(_templates.Values.ToArray());
+  }
+
+    public Task&lt;FieldTemplateSchema?&gt; GetTemplateByIdAsync(
+        string templateId,
+      CancellationToken ct = default)
+    {
+  _templates.TryGetValue(templateId, out var template);
+      return Task.FromResult(template);
+    }
+
+    public Task&lt;FieldTemplateSchema[]&gt; GetTemplatesByCategoryAsync(
+        string category,
+        CancellationToken ct = default)
+    {
+        var templates = _templates.Values
+            .Where(t => t.Category.Equals(
+                category, StringComparison.OrdinalIgnoreCase))
+     .ToArray();
+        return Task.FromResult(templates);
+    }
+
+    public Task&lt;FieldTemplateSchema[]&gt; SearchTemplatesAsync(
+    string keyword,
+   CancellationToken ct = default)
+    {
+        var templates = _templates.Values
+            .Where(t => t.NameEn.Contains(keyword, 
+    StringComparison.OrdinalIgnoreCase) ||
+          (t.Tags?.Any(tag => tag.Contains(keyword, 
+  StringComparison.OrdinalIgnoreCase)) ?? false))
+          .ToArray();
+        return Task.FromResult(templates);
+    }
+}</pre>
+ </div>
+
+            <div class="step">
+        <h4>Step 4: Register in ServiceCollectionExtensions</h4>
+       <pre>public static IServiceCollection AddFieldTemplates(
+    this IServiceCollection services)
+{
+    services.AddSingleton&lt;IFieldTemplateProvider, 
+        InMemoryFieldTemplateProvider&gt;();
+    return services;
+}
+
+// Usage
+builder.Services.AddDynamicFormsV3()
+    .AddFieldTemplates();</pre>
+    </div>
+        </div>
+
+<h2>?? Priority 2: Draft System (CRITICAL)</h2>
+
+    <div class="port-section">
+   <h3><span class="badge badge-critical">CRITICAL</span> Why Port This Feature?</h3>
+  <ul>
+ <li><strong>Data Loss Prevention:</strong> Auto-save prevents lost work</li>
+  <li><strong>Security:</strong> Server-side storage (no localStorage)</li>
+ <li><strong>Multi-Device:</strong> Resume editing from any device</li>
+     <li><strong>Compliance:</strong> Enterprise audit requirements</li>
+            </ul>
+        </div>
+
+        <div class="implementation-box">
+       <h3>Implementation Plan</h3>
+    
+         <div class="step">
+         <h4>Step 1: Create DraftSchema</h4>
+  <pre>namespace DynamicForms.Core.V3.Schemas;
+
+/// <summary>
+/// Represents a temporary draft of a form module
+/// </summary>
+public record DraftSchema
+{
+    /// <summary>
+    /// Unique draft identifier
+    /// </summary>
+    public int Id { get; init; }
+    
+    /// <summary>
+    /// User ID who owns this draft
+    /// </summary>
+    public required string UserId { get; init; }
+    
+    /// <summary>
+    /// Module ID being edited
+    /// </summary>
+    public required int ModuleId { get; init; }
+    
+    /// <summary>
+    /// Serialized FormModuleSchema JSON
+    /// </summary>
+    public required string DraftDataJson { get; init; }
+    
+    /// <summary>
+    /// When draft was created (UTC)
+ /// </summary>
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+    
+    /// <summary>
+    /// When draft was last updated (UTC)
+    /// </summary>
+    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
+    
+    /// <summary>
+    /// When draft expires (UTC)
+    /// </summary>
+    public DateTime ExpiresAt { get; init; }
+    
+    /// <summary>
+    /// Draft description/notes
+    /// </summary>
+    public string? Description { get; init; }
+}</pre>
+   </div>
+
+            <div class="step">
+           <h4>Step 2: Create IDraftRepository</h4>
+                <pre>namespace DynamicForms.Core.V3.Services;
+
+public interface IDraftRepository
+{
+  Task&lt;DraftSchema?&gt; GetDraftAsync(
+      string userId, 
+int moduleId, 
+    CancellationToken ct = default);
+    
+Task&lt;DraftSchema[]&gt; GetUserDraftsAsync(
+        string userId, 
+        CancellationToken ct = default);
+    
+    Task&lt;int&gt; SaveDraftAsync(
+        DraftSchema draft, 
+  CancellationToken ct = default);
+    
+    Task&lt;bool&gt; DeleteDraftAsync(
+        int draftId, 
+        CancellationToken ct = default);
+    
+ Task&lt;int&gt; DeleteExpiredDraftsAsync(
+        CancellationToken ct = default);
+}</pre>
+            </div>
+
+            <div class="step">
+         <h4>Step 3: Create InMemoryDraftRepository (for testing)</h4>
+<pre>public class InMemoryDraftRepository : IDraftRepository
+{
+    private readonly Dictionary&lt;int, DraftSchema&gt; _drafts = new();
+    private int _nextId = 1;
+
+    public Task&lt;DraftSchema?&gt; GetDraftAsync(
+        string userId, int moduleId, CancellationToken ct = default)
+    {
+ var draft = _drafts.Values
+    .FirstOrDefault(d => d.UserId == userId && 
+     d.ModuleId == moduleId);
+        return Task.FromResult(draft);
+    }
+
+    public Task&lt;DraftSchema[]&gt; GetUserDraftsAsync(
+   string userId, CancellationToken ct = default)
+ {
+        var drafts = _drafts.Values
+.Where(d => d.UserId == userId)
+  .OrderByDescending(d => d.UpdatedAt)
+            .ToArray();
+        return Task.FromResult(drafts);
+    }
+
+    public Task&lt;int&gt; SaveDraftAsync(
+  DraftSchema draft, CancellationToken ct = default)
+    {
+        var id = draft.Id == 0 ? _nextId++ : draft.Id;
+        var updatedDraft = draft with { 
+   Id = id, 
+ UpdatedAt = DateTime.UtcNow 
+        };
+        _drafts[id] = updatedDraft;
+        return Task.FromResult(id);
+  }
+
+    public Task&lt;bool&gt; DeleteDraftAsync(
+        int draftId, CancellationToken ct = default)
+{
+        return Task.FromResult(_drafts.Remove(draftId));
+    }
+
+    public Task&lt;int&gt; DeleteExpiredDraftsAsync(
+        CancellationToken ct = default)
+    {
+    var now = DateTime.UtcNow;
+        var expired = _drafts.Where(kvp => kvp.Value.ExpiresAt &lt; now)
+           .Select(kvp => kvp.Key)
+      .ToList();
+        foreach (var key in expired)
+     _drafts.Remove(key);
+        return Task.FromResult(expired.Count);
+    }
+}</pre>
+  </div>
+
+            <div class="step">
+     <h4>Step 4: Create EF Core Implementation (optional)</h4>
+                <pre>// Create separate DynamicForms.Core.V3.Data project
+public class Draft
+{
+  [Key]
+  public int Id { get; set; }
+    
+    [Required, MaxLength(450)]
+    public string UserId { get; set; }
+    
+    [Required]
+    public int ModuleId { get; set; }
+    
+    [Required, Column(TypeName = "nvarchar(max)")]
+    public string DraftDataJson { get; set; }
+    
+    [Required]
+    public DateTime CreatedAt { get; set; }
+    
+    [Required]
+    public DateTime UpdatedAt { get; set; }
+    
+    [Required]
+    public DateTime ExpiresAt { get; set; }
+    
+    public string? Description { get; set; }
+}</pre>
+   </div>
+  </div>
+
+        <h2>?? Priority 3: Advanced Conditional Rules (HIGH)</h2>
+
+<div class="port-section">
+            <h3><span class="badge badge-high">HIGH</span> Enhance Conditional Logic</h3>
+   <ul>
+   <li>Current V3: Simple <code>ConditionalRule</code> (one field, one operator)</li>
+    <li>Original Core: <code>ConditionalRulesV4</code> (complex AND/OR expressions)</li>
+                <li><strong>Recommendation:</strong> Port the advanced V4 model</li>
+      </ul>
+        </div>
+
+        <div class="implementation-box">
+      <h3>Proposed Enhancement</h3>
+      <pre>namespace DynamicForms.Core.V3.Schemas;
+
+/// <summary>
+/// Advanced conditional rule with complex expressions
+/// </summary>
+public record AdvancedConditionalRule
+{
+    /// <summary>
+    /// Logical operator combining conditions (AND, OR)
+    /// </summary>
+    public LogicalOperator Operator { get; init; } = LogicalOperator.And;
+    
+    /// <summary>
+    /// Array of conditions to evaluate
+    /// </summary>
+    public ConditionExpression[] Conditions { get; init; } 
+  = Array.Empty&lt;ConditionExpression&gt;();
+    
+  /// <summary>
+    /// Action to perform when conditions are met
+    /// </summary>
+    public string Action { get; init; } = "show";
+}
+
+public record ConditionExpression
+{
+    public required string FieldId { get; init; }
+    public required string Operator { get; init; }
+    public string? Value { get; init; }
+}
+
+public enum LogicalOperator
+{
+And,
+    Or,
+    Not
+}
+
+// Usage Example:
+var rule = new AdvancedConditionalRule
+{
+    Operator = LogicalOperator.And,
+    Conditions = new[]
+    {
+        new ConditionExpression 
+   { 
+            FieldId = "org_type", 
+            Operator = "equals", 
+  Value = "nonprofit" 
+   },
+        new ConditionExpression 
+  { 
+            FieldId = "annual_revenue", 
+      Operator = "lessThan", 
+            Value = "1000000" 
+        }
+    },
+    Action = "show"
+};</pre>
+   </div>
+
+        <h2>?? Implementation Roadmap</h2>
+
+        <table>
+    <thead>
+         <tr>
+            <th>Feature</th>
+  <th>Priority</th>
+     <th>Effort</th>
+     <th>Timeline</th>
+         <th>Dependencies</th>
+     </tr>
+      </thead>
+            <tbody>
+     <tr>
+       <td><strong>Field Templates</strong></td>
+ <td><span class="badge badge-critical">CRITICAL</span></td>
+      <td>2-3 days</td>
+     <td>Week 1</td>
+        <td>None</td>
+      </tr>
+     <tr>
+        <td><strong>Draft System (In-Memory)</strong></td>
+     <td><span class="badge badge-critical">CRITICAL</span></td>
+    <td>2-3 days</td>
+          <td>Week 1</td>
+            <td>None</td>
+       </tr>
+    <tr>
+           <td><strong>Draft System (EF Core)</strong></td>
+         <td><span class="badge badge-high">HIGH</span></td>
+   <td>3-4 days</td>
+        <td>Week 2</td>
+         <td>Draft schema</td>
+         </tr>
+  <tr>
+   <td><strong>Advanced Conditional Rules</strong></td>
+        <td><span class="badge badge-high">HIGH</span></td>
+     <td>4-5 days</td>
+      <td>Week 3</td>
+     <td>None</td>
+     </tr>
+  <tr>
+    <td><strong>Advanced Visibility Controls</strong></td>
+ <td><span class="badge badge-medium">MEDIUM</span></td>
+           <td>1-2 days</td>
+         <td>Week 3</td>
+  <td>None</td>
+     </tr>
+                <tr>
+         <td><strong>Template Categories</strong></td>
+  <td><span class="badge badge-medium">MEDIUM</span></td>
+   <td>2 days</td>
+ <td>Week 4</td>
+                <td>Field templates</td>
+         </tr>
+            </tbody>
+      </table>
+
+ <div class="recommendation-box">
+    <h2 style="color: white; margin-top: 0;">?? Final Porting Recommendations</h2>
+            
+  <h3 style="color: white;">Phase 1: Essential Features (Week 1-2)</h3>
+        <ol style="font-size: 1.1em;">
+         <li><strong>Field Templates System</strong>
+            <ul>
+         <li>Create FieldTemplateSchema (immutable record)</li>
+          <li>Create IFieldTemplateProvider interface</li>
+         <li>Implement InMemoryFieldTemplateProvider</li>
+  <li>Add 5-10 built-in templates</li>
+       </ul>
+  </li>
+  <li><strong>Draft System (In-Memory)</strong>
+          <ul>
+        <li>Create DraftSchema (immutable record)</li>
+          <li>Create IDraftRepository interface</li>
+       <li>Implement InMemoryDraftRepository</li>
+             <li>Add auto-expiration logic</li>
+          </ul>
+        </li>
+       </ol>
+
+      <h3 style="color: white;">Phase 2: Enhanced Features (Week 3-4)</h3>
+     <ol style="font-size: 1.1em;" start="3">
+     <li><strong>EF Core Draft Repository</strong>
+         <ul>
+    <li>Create DynamicForms.Core.V3.Data project</li>
+           <li>Add Draft entity</li>
+            <li>Implement EfCoreDraftRepository</li>
+            </ul>
+           </li>
+ <li><strong>Advanced Conditional Rules</strong>
+          <ul>
+      <li>Replace ConditionalRule with AdvancedConditionalRule</li>
+ <li>Support AND/OR/NOT operators</li>
+          <li>Add condition evaluator service</li>
+         </ul>
+        </li>
+          </ol>
+
+            <h3 style="color: white;">Phase 3: Optional Features (Week 5+)</h3>
+        <ol style="font-size: 1.1em;" start="5">
+     <li>Advanced visibility controls (IsVisibleInEditor, IsVisibleInDisplay)</li>
+             <li>Template categories and search</li>
+          <li>Custom template persistence</li>
+            </ol>
+
+<h3 style="color: white; margin-top: 30px;">DO NOT Port:</h3>
+            <ul style="font-size: 1.1em;">
+     <li>? <strong>Species Autocomplete</strong> - Too domain-specific</li>
+     <li>? <strong>Direct EF Core entities in Core.V3</strong> - Violates immutability principle</li>
+  <li>? <strong>TextResource/FieldDatabase nested objects</strong> - V3's flat structure is better</li>
+            </ul>
+   </div>
+
+     <p style="text-align: center; margin-top: 40px; color: #999;">
+      <strong>Continue to Part 3:</strong> Code Examples & Migration Checklist ?
+    </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Forms V3 - Complex Demo</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        
+        h1 { margin-top: 0; color: var(--primary); }
+        h2 { font-size: 1.2rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-top: 2rem; }
+        
+        .form-field { margin-bottom: 1.5rem; transition: all 0.3s ease; }
+        .form-field.hidden { display: none; }
+        
+        label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .required-mark { color: var(--danger); }
+        
+        input[type="text"], input[type="email"], input[type="date"], input[type="number"], select, textarea {
+            width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
+        
+        .error-msg { color: var(--danger); font-size: 0.85rem; margin-top: 0.25rem; display: none; }
+        .form-field.invalid input { border-color: var(--danger); }
+        .form-field.invalid .error-msg { display: block; }
+        
+        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        
+        .btn { background: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 1rem; cursor: pointer; }
+        .btn:hover { opacity: 0.9; }
+        
+        /* Radio/Checkbox groups */
+        .radio-group label { display: inline-flex; align-items: center; margin-right: 1rem; font-weight: 400; }
+        .radio-group input { width: auto; margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="form-title">Loading Form...</h1>
+    <p id="form-desc"></p>
+    
+    <form id="dynamic-form" novalidate>
+        <div id="form-container"></div>
+        
+        <div style="margin-top: 2rem; text-align: right;">
+            <button type="submit" class="btn">Submit Application</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // --- EMBEDDED SCHEMA (Avoids CORS issues on local file opening) ---
+    const schema = {
+      "Id": 2025,
+      "TitleEn": "Community Development Grant Application",
+      "DescriptionEn": "Use this form to apply for funding for community-led initiatives. Please ensure all fields are completed accurately.",
+      "Version": 3.0,
+      "Fields": [
+        {
+          "Id": "sec_contact",
+          "FieldType": "Section",
+          "LabelEn": "Contact Information",
+          "Order": 10
+        },
+        {
+          "Id": "applicant_name",
+          "ParentId": "sec_contact",
+          "FieldType": "TextBox",
+          "LabelEn": "Applicant Full Name",
+          "Validation": {
+            "IsRequired": true,
+            "MinLength": 2
+          },
+          "Order": 11
+        },
+        {
+          "Id": "org_type",
+          "ParentId": "sec_contact",
+          "FieldType": "DropDown",
+          "LabelEn": "Organization Type",
+          "Validation": { "IsRequired": true },
+          "Options": [
+            { "Value": "", "TextEn": "-- Select Type --" },
+            { "Value": "individual", "TextEn": "Individual" },
+            { "Value": "non_profit", "TextEn": "Non-Profit Organization" },
+            { "Value": "business", "TextEn": "Private Business" }
+          ],
+          "Order": 12
+        },
+        {
+          "Id": "biz_reg_num",
+          "ParentId": "sec_contact",
+          "FieldType": "TextBox",
+          "LabelEn": "Business Registration Number (9 Digits)",
+          "Validation": {
+            "IsRequired": true,
+            "Pattern": "^\\d{9}$",
+            "PatternMessageEn": "Please enter exactly 9 digits."
+          },
+          "ConditionalRules": [
+            {
+              "TargetFieldId": "org_type",
+              "Operator": "Equals",
+              "Value": "business",
+              "Action": "Show"
+            }
+          ],
+          "Order": 13
+        },
+        {
+          "Id": "charity_reg_num",
+          "ParentId": "sec_contact",
+          "FieldType": "TextBox",
+          "LabelEn": "Charity Registration Number",
+          "Validation": { "IsRequired": true },
+          "ConditionalRules": [
+            {
+              "TargetFieldId": "org_type",
+              "Operator": "Equals",
+              "Value": "non_profit",
+              "Action": "Show"
+            }
+          ],
+          "Order": 14
+        },
+        {
+          "Id": "sec_project",
+          "FieldType": "Section",
+          "LabelEn": "Project Details",
+          "Order": 20
+        },
+        {
+          "Id": "proj_title",
+          "ParentId": "sec_project",
+          "FieldType": "TextBox",
+          "LabelEn": "Project Title",
+          "Validation": { "IsRequired": true, "MaxLength": 100 },
+          "Order": 21
+        },
+        {
+          "Id": "proj_desc",
+          "ParentId": "sec_project",
+          "FieldType": "TextArea",
+          "LabelEn": "Project Description",
+          "Validation": { "IsRequired": true, "MinLength": 50 },
+          "Order": 22
+        },
+        {
+          "Id": "proj_dates_group",
+          "ParentId": "sec_project",
+          "FieldType": "Group",
+          "LabelEn": "Timeline",
+          "CssClasses": "grid-2-col",
+          "Order": 23
+        },
+        {
+          "Id": "start_date",
+          "ParentId": "proj_dates_group",
+          "FieldType": "DatePicker",
+          "LabelEn": "Start Date",
+          "Validation": { "IsRequired": true },
+          "Order": 24
+        },
+        {
+          "Id": "end_date",
+          "ParentId": "proj_dates_group",
+          "FieldType": "DatePicker",
+          "LabelEn": "End Date",
+          "Validation": { "IsRequired": true },
+          "Order": 25
+        },
+        {
+          "Id": "sec_funding",
+          "FieldType": "Section",
+          "LabelEn": "Funding Request",
+          "Order": 30
+        },
+        {
+          "Id": "req_amount",
+          "ParentId": "sec_funding",
+          "FieldType": "Number",
+          "LabelEn": "Requested Amount ($)",
+          "Validation": {
+              "IsRequired": true,
+              "MinValue": 1000,
+              "MaxValue": 50000
+          },
+          "Order": 31
+        },
+        {
+            "Id": "has_other_funding",
+            "ParentId": "sec_funding",
+            "FieldType": "RadioButtonList",
+            "LabelEn": "Do you have other funding sources?",
+            "Options": [
+                { "Value": "yes", "TextEn": "Yes" },
+                { "Value": "no", "TextEn": "No" }
+            ],
+            "Order": 32
+        },
+        {
+            "Id": "other_funding_desc",
+            "ParentId": "sec_funding",
+            "FieldType": "TextArea",
+            "LabelEn": "Please list other sources",
+            "ConditionalRules": [
+                {
+                    "TargetFieldId": "has_other_funding",
+                    "Operator": "Equals",
+                    "Value": "yes",
+                    "Action": "Show"
+                }
+            ],
+            "Order": 33
+        },
+        {
+            "Id": "terms_check",
+            "FieldType": "Checkbox",
+            "LabelEn": "I agree to the terms and conditions",
+            "Validation": { "IsRequired": true },
+            "Order": 100
+        }
+      ]
+    };
+
+    // --- 1. Schema Loading ---
+    function loadSchema() {
+        // Use embedded schema instead of fetch
+        renderForm(schema);
+    }
+
+    // --- 2. Renderer Engine ---
+    const formData = {}; // Store current values
+    let fieldRegistry = []; // Store field definitions for easy lookup
+
+    function renderForm(schema) {
+        document.getElementById('form-title').textContent = schema.TitleEn;
+        document.getElementById('form-desc').textContent = schema.DescriptionEn;
+        
+        const container = document.getElementById('form-container');
+        fieldRegistry = schema.Fields; // Store for logic lookups
+
+        // 1. Sort fields by order
+        const sortedFields = schema.Fields.sort((a, b) => a.Order - b.Order);
+        
+        // 2. Build Hierarchy (Map parent IDs to children)
+        const childrenMap = {};
+        const rootFields = [];
+
+        sortedFields.forEach(field => {
+            if (field.ParentId) {
+                if (!childrenMap[field.ParentId]) childrenMap[field.ParentId] = [];
+                childrenMap[field.ParentId].push(field);
+            } else {
+                rootFields.push(field);
+            }
+        });
+
+        // 3. Recursive Render Function
+        function renderFieldNode(field) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `form-field field-${field.FieldType.toLowerCase()}`;
+            wrapper.id = `wrapper-${field.Id}`;
+            wrapper.dataset.id = field.Id;
+            
+            // Apply CSS classes (e.g. grid-2-col)
+            if (field.CssClasses) wrapper.classList.add(field.CssClasses);
+
+            // Logic: Initial Visibility (Default true, but hidden if conditional)
+            if (field.ConditionalRules && field.ConditionalRules.length > 0) {
+                // Assume hidden by default if it has "Show" rules
+                // In a real engine, we evaluate immediately, but let's start hidden
+                wrapper.classList.add('hidden'); 
+            }
+
+            // Render Label
+            if (field.LabelEn && field.FieldType !== 'Checkbox') { // Checkbox label is usually next to box
+                const label = document.createElement('label');
+                label.textContent = field.LabelEn;
+                if (field.Validation && field.Validation.IsRequired) {
+                    const req = document.createElement('span');
+                    req.className = 'required-mark';
+                    req.textContent = ' *';
+                    label.appendChild(req);
+                }
+                wrapper.appendChild(label);
+            }
+
+            // Render Input
+            let inputEl;
+
+            switch (field.FieldType) {
+                case 'Section':
+                    const heading = document.createElement('h2');
+                    heading.textContent = field.LabelEn;
+                    wrapper.appendChild(heading);
+                    break;
+                    
+                case 'Group':
+                    // Groups are just wrappers, children rendered below
+                    break;
+
+                case 'TextBox':
+                case 'Email':
+                case 'Number':
+                    inputEl = document.createElement('input');
+                    inputEl.type = field.FieldType === 'Number' ? 'number' : 'text';
+                    inputEl.id = field.Id;
+                    inputEl.name = field.Id;
+                    inputEl.addEventListener('input', (e) => handleInput(field, e.target.value));
+                    wrapper.appendChild(inputEl);
+                    break;
+
+                case 'TextArea':
+                    inputEl = document.createElement('textarea');
+                    inputEl.id = field.Id;
+                    inputEl.name = field.Id;
+                    inputEl.rows = 4;
+                    inputEl.addEventListener('input', (e) => handleInput(field, e.target.value));
+                    wrapper.appendChild(inputEl);
+                    break;
+
+                case 'DropDown':
+                    inputEl = document.createElement('select');
+                    inputEl.id = field.Id;
+                    inputEl.name = field.Id;
+                    
+                    field.Options.forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt.Value;
+                        option.textContent = opt.TextEn;
+                        inputEl.appendChild(option);
+                    });
+                    
+                    inputEl.addEventListener('change', (e) => handleInput(field, e.target.value));
+                    wrapper.appendChild(inputEl);
+                    break;
+
+                case 'DatePicker':
+                    inputEl = document.createElement('input');
+                    inputEl.type = 'date';
+                    inputEl.id = field.Id;
+                    inputEl.name = field.Id;
+                    inputEl.addEventListener('change', (e) => handleInput(field, e.target.value));
+                    wrapper.appendChild(inputEl);
+                    break;
+
+                case 'Checkbox':
+                    const cbLabel = document.createElement('label');
+                    cbLabel.style.display = 'flex';
+                    cbLabel.style.alignItems = 'center';
+                    
+                    inputEl = document.createElement('input');
+                    inputEl.type = 'checkbox';
+                    inputEl.id = field.Id;
+                    inputEl.name = field.Id;
+                    inputEl.style.width = 'auto';
+                    inputEl.style.marginRight = '0.5rem';
+                    inputEl.addEventListener('change', (e) => handleInput(field, e.target.checked));
+                    
+                    cbLabel.appendChild(inputEl);
+                    cbLabel.appendChild(document.createTextNode(field.LabelEn));
+                    if (field.Validation && field.Validation.IsRequired) {
+                         const req = document.createElement('span');
+                         req.className = 'required-mark';
+                         req.textContent = ' *';
+                         cbLabel.appendChild(req);
+                    }
+                    wrapper.appendChild(cbLabel);
+                    break;
+
+                case 'RadioButtonList':
+                    const radioGroup = document.createElement('div');
+                    radioGroup.className = 'radio-group';
+                    field.Options.forEach(opt => {
+                        const rLabel = document.createElement('label');
+                        const rInput = document.createElement('input');
+                        rInput.type = 'radio';
+                        rInput.name = field.Id;
+                        rInput.value = opt.Value;
+                        rInput.addEventListener('change', (e) => handleInput(field, e.target.value));
+                        
+                        rLabel.appendChild(rInput);
+                        rLabel.appendChild(document.createTextNode(opt.TextEn));
+                        radioGroup.appendChild(rLabel);
+                    });
+                    wrapper.appendChild(radioGroup);
+                    break;
+            }
+
+            // Validation Error Message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-msg';
+            errorDiv.id = `error-${field.Id}`;
+            wrapper.appendChild(errorDiv);
+
+            // Recursively render children
+            if (childrenMap[field.Id]) {
+                const childrenContainer = document.createElement('div');
+                childrenContainer.className = 'field-children';
+                // Apply grid classes to children container if parent is a group
+                if (field.FieldType === 'Group' && field.CssClasses) {
+                    childrenContainer.className += ' ' + field.CssClasses;
+                }
+                
+                childrenMap[field.Id].forEach(child => {
+                    childrenContainer.appendChild(renderFieldNode(child));
+                });
+                wrapper.appendChild(childrenContainer);
+            }
+
+            return wrapper;
+        }
+
+        // Start rendering from root fields
+        rootFields.forEach(field => {
+            container.appendChild(renderFieldNode(field));
+        });
+    }
+
+    // --- 3. Logic Engine ---
+    function handleInput(field, value) {
+        formData[field.Id] = value;
+        
+        // 1. Run Validation for this field
+        validateField(field, value);
+
+        // 2. Evaluate Conditional Rules (Cross-field logic)
+        evaluateAllRules();
+    }
+
+    function evaluateAllRules() {
+        fieldRegistry.forEach(field => {
+            if (!field.ConditionalRules || field.ConditionalRules.length === 0) return;
+
+            const wrapper = document.getElementById(`wrapper-${field.Id}`);
+            let shouldShow = false;
+
+            // Simple OR logic for demonstration (if any rule matches, show)
+            field.ConditionalRules.forEach(rule => {
+                const triggerValue = formData[rule.TargetFieldId];
+                
+                if (rule.Operator === 'Equals') {
+                    if (triggerValue === rule.Value) shouldShow = true;
+                }
+                // Add NotEquals, Contains, etc. here
+            });
+
+            // Apply Visibility
+            if (shouldShow) {
+                wrapper.classList.remove('hidden');
+            } else {
+                wrapper.classList.add('hidden');
+                // Clear value when hidden? Optional logic
+            }
+        });
+    }
+
+    // --- 4. Validation Engine ---
+    function validateField(field, value) {
+        const wrapper = document.getElementById(`wrapper-${field.Id}`);
+        const errorDiv = document.getElementById(`error-${field.Id}`);
+        const config = field.Validation;
+        
+        if (!config) return true;
+
+        // Reset
+        wrapper.classList.remove('invalid');
+        errorDiv.textContent = '';
+
+        // Skip validation if hidden
+        if (wrapper.classList.contains('hidden')) return true;
+
+        // 1. Required
+        if (config.IsRequired) {
+            if (value === null || value === undefined || value === '' || value === false) {
+                showError(field, 'This field is required.');
+                return false;
+            }
+        }
+
+        // 2. Pattern
+        if (config.Pattern && value) {
+            const regex = new RegExp(config.Pattern);
+            if (!regex.test(value)) {
+                showError(field, config.PatternMessageEn || 'Invalid format.');
+                return false;
+            }
+        }
+
+        // 3. Length
+        if (config.MinLength && value && value.length < config.MinLength) {
+            showError(field, `Minimum ${config.MinLength} characters required.`);
+            return false;
+        }
+
+        // 4. Numeric Range
+        if (config.MinValue !== undefined && value) {
+             if (parseFloat(value) < config.MinValue) {
+                 showError(field, `Value must be at least ${config.MinValue}.`);
+                 return false;
+             }
+        }
+
+        return true;
+    }
+
+    function showError(field, msg) {
+        const wrapper = document.getElementById(`wrapper-${field.Id}`);
+        const errorDiv = document.getElementById(`error-${field.Id}`);
+        wrapper.classList.add('invalid');
+        errorDiv.textContent = msg;
+    }
+
+    // --- 5. Submit Handler ---
+    document.getElementById('dynamic-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        let isValid = true;
+        
+        // Validate all visible fields
+        fieldRegistry.forEach(field => {
+            const val = formData[field.Id];
+            if (!validateField(field, val)) {
+                isValid = false;
+            }
+        });
+
+        if (isValid) {
+            alert('Form Valid! JSON Data:\n' + JSON.stringify(formData, null, 2));
+        } else {
+            alert('Please correct the errors before submitting.');
+        }
+    });
+
+    // Initialize
+    loadSchema();
+
+</script>
+
+</body>
+</html>

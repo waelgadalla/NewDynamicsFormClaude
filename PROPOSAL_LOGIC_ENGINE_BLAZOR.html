@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Engine Proposal - Blazor Edition</title>
+    <style>
+        :root {
+            --primary: #58258b; /* Blazor Purple */
+            --accent: #a76dce;
+            --text: #1e293b;
+            --bg: #f8fafc;
+            --code-bg: #1e1e1e;
+            --code-text: #d4d4d4;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        h1, h2, h3 { color: var(--primary); }
+        h1 { border-bottom: 3px solid var(--accent); padding-bottom: 0.5rem; }
+        h2 { margin-top: 2rem; border-left: 4px solid var(--accent); padding-left: 1rem; }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        code {
+            font-family: 'Consolas', monospace;
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #c239b3;
+        }
+        
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        .highlight { background: #fdf4ff; border-left: 4px solid #d946ef; padding: 1rem; margin: 1rem 0; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f8fafc; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <h1>Logic Engine Proposal: Blazor Server Edition</h1>
+    <p><strong>Architecture:</strong> Pure C# (Server-Side) | <strong>Format:</strong> JSON Logic</p>
+
+    <div class="card">
+        <h2>1. Why Blazor Simplifies Everything</h2>
+        <div class="highlight">
+            <strong>The "Single Stack" Advantage:</strong><br>
+            Because you are using Blazor Server, the logic engine resides <strong>100% in C#</strong>.
+        </div>
+        <p>
+            In a traditional React/Angular app, you would need a JavaScript engine for the UI (instant feedback) 
+            and a C# engine for the API (security). With Blazor Server, the UI events <code>OnChange</code> are 
+            processed on the server.
+        </p>
+        <p>
+            <strong>Result:</strong> You only write the <code>LogicEvaluator</code> service ONCE in the Core V3 project. 
+            It handles both the interactive user experience and the final validation.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>2. The Implementation Pattern</h2>
+        <p>How the engine integrates with the Blazor `EditForm` lifecycle.</p>
+
+        <h3>The Workflow</h3>
+        <ol>
+            <li><strong>User Action:</strong> User selects "Business" in a Dropdown.</li>
+            <li><strong>Blazor Event:</strong> <code>EditContext.OnFieldChanged</code> fires on the server.</li>
+            <li><strong>Logic Service:</strong> 
+                <ul>
+                    <li>The Form Component injects <code>ILogicEvaluator</code>.</li>
+                    <li>It calls <code>EvaluateAllRules(CurrentModel)</code>.</li>
+                </ul>
+            </li>
+            <li><strong>State Update:</strong> 
+                <li>The Evaluator returns a list of <code>FieldState</code> changes (e.g., <code>BizNum.IsVisible = true</code>).</li>
+                <li>The Form Component applies these changes to its local state.</li>
+            </li>
+            <li><strong>Render:</strong> Blazor sends the UI diff (the new field appearing) to the browser via SignalR.</li>
+        </ol>
+    </div>
+
+    <div class="card">
+        <h2>3. The "LogicRule" Schema (Revised)</h2>
+        <p>We stick to the <strong>JSON Logic</strong> format for storage. It remains the most secure and portable way to save rules in a database.</p>
+
+        <pre><code>// In DynamicForms.Core.V3.Schemas
+public record LogicRuleSchema
+{
+    public string Id { get; init; }
+    
+    // Trigger: When to run? (e.g. "OnChange", "OnSubmit")
+    public LogicTrigger Trigger { get; init; } = LogicTrigger.OnChange;
+
+    // Condition: The JSON Logic Tree
+    // e.g. { "==": [ { "var": "OrgType" }, "Business" ] }
+    public JsonElement Condition { get; init; }
+
+    // Actions: What to do if True?
+    public RuleAction[] TrueActions { get; init; }
+    
+    // Actions: What to do if False? (Optional - e.g. Hide back)
+    public RuleAction[] FalseActions { get; init; }
+}
+
+public record RuleAction(
+    string TargetFieldId,
+    string Property, // "IsVisible", "IsRequired", "Value"
+    object Value     // true, false, "Some String"
+);</code></pre>
+    </div>
+
+    <div class="card">
+        <h2>4. The C# Service (Core V3)</h2>
+        <p>This service parses the JSON and executes it against your Data Model.</p>
+
+        <pre><code>public class JsonLogicEvaluator : ILogicEvaluator
+{
+    public bool Evaluate(JsonElement rule, Dictionary&lt;string, object&gt; formData)
+    {
+        // 1. Recursive Parser
+        // 2. Operator Logic (==, >, <, AND, OR)
+        // 3. Variable Extraction (formData[key])
+        
+        // This is pure C#, ~100 lines of code. 
+        // No external Nuget required, or use 'NJsonLogic' if preferred.
+    }
+
+    public FormState ApplyRules(FormModuleSchema schema, Dictionary&lt;string, object&gt; formData)
+    {
+        var state = new FormState();
+        foreach(var rule in schema.Rules)
+        {
+            if (Evaluate(rule.Condition, formData))
+            {
+                // Apply TrueActions (e.g. Show Field)
+                state.Apply(rule.TrueActions);
+            }
+            else 
+            {
+                // Apply FalseActions (e.g. Hide Field)
+                state.Apply(rule.FalseActions);
+            }
+        }
+        return state;
+    }
+}</code></pre>
+    </div>
+
+    <div class="card">
+        <h2>5. Performance Check</h2>
+        <p><strong>Is Blazor Server fast enough?</strong></p>
+        <ul>
+            <li><strong>Scenario:</strong> User clicks a checkbox.</li>
+            <li><strong>Latency:</strong> ~50-100ms (SignalR roundtrip).</li>
+            <li><strong>Perception:</strong> For showing/hiding a large section, this is <strong>instantaneous</strong> to the human eye.</li>
+            <li><strong>Validation:</strong> For real-time character validation (e.g. "Must be a number"), use HTML5 attributes (<code>type="number"</code>) for zero latency. Use the Logic Engine for complex business rules.</li>
+        </ul>
+        <p class="highlight">
+            <strong>Conclusion:</strong> Yes. Blazor Server is perfect for this. It avoids the complexity of client-side logic synchronization.
+        </p>
+    </div>
+
+</body>
+</html>

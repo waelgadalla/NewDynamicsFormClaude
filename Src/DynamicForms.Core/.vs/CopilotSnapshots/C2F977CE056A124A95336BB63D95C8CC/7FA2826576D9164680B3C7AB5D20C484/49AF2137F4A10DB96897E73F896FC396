@@ -1,0 +1,228 @@
+﻿using DynamicForms.Core.V2.Extensions;
+using DynamicForms.Core.V2.Schemas;
+using DynamicForms.Core.V2.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace DynamicForms.Core.V2.Examples;
+
+/// <summary>
+/// Example demonstrating how to use CodeSets in DynamicForms.Core.V2
+/// </summary>
+public class CodeSetExample
+{
+    public static async Task RunExampleAsync()
+    {
+        Console.WriteLine("=== DynamicForms.Core.V2 CodeSet Example ===\n");
+
+        // 1. Setup Services
+        var services = new ServiceCollection();
+        services.AddLogging(builder => builder.AddConsole());
+        services.AddDynamicFormsV2(); // Registers with InMemoryCodeSetProvider
+
+        var serviceProvider = services.BuildServiceProvider();
+
+        // 2. Register Sample CodeSets
+        var codeSetProvider = serviceProvider.GetRequiredService<ICodeSetProvider>() as InMemoryCodeSetProvider;
+if (codeSetProvider != null)
+        {
+            codeSetProvider.RegisterCodeSets(SampleCodeSets.GetSampleCodeSets());
+      Console.WriteLine("✓ Registered sample CodeSets\n");
+
+            // Display stats
+      var stats = codeSetProvider.GetStats();
+Console.WriteLine($"CodeSet Provider Stats:");
+  Console.WriteLine($"  Total CodeSets: {stats.TotalCodeSets}");
+            Console.WriteLine($"  Active CodeSets: {stats.ActiveCodeSets}");
+        Console.WriteLine($"  Total Items: {stats.TotalItems}");
+   Console.WriteLine($"  Categories: {string.Join(", ", stats.Categories)}\n");
+        }
+
+        // 3. Create a Form Schema with CodeSet References
+        var schema = new FormModuleSchema
+        {
+      Id = 2025,
+       TitleEn = "Grant Application with CodeSets",
+         DescriptionEn = "Demonstrates CodeSet usage",
+            Version = 1.0f,
+       Fields = new[]
+            {
+          // Section
+         FormFieldSchema.CreateSection(
+     id: "sec_applicant",
+          titleEn: "Applicant Information",
+   order: 1),
+
+          // Dropdown using CodeSet
+     FormFieldSchema.CreateDropDownFromCodeSet(
+        id: "org_type",
+         labelEn: "Organization Type",
+        codeSetId: 99, // References SampleCodeSets.OrganizationTypes
+     labelFr: "Type d'organisation",
+                    isRequired: true,
+     order: 2)
+      with { ParentId = "sec_applicant" },
+
+     // Another dropdown using different CodeSet
+         FormFieldSchema.CreateDropDownFromCodeSet(
+        id: "province",
+    labelEn: "Province/Territory",
+        codeSetId: 1, // References SampleCodeSets.CanadianProvinces
+            labelFr: "Province/Territoire",
+               isRequired: true,
+   order: 3)
+     with { ParentId = "sec_applicant" },
+
+                // Radio buttons using CodeSet
+         new FormFieldSchema
+      {
+     Id = "has_funding",
+               ParentId = "sec_applicant",
+   FieldType = "RadioButtonList",
+           LabelEn = "Do you have other funding?",
+   LabelFr = "Avez-vous d'autres sources de financement?",
+          CodeSetId = 2, // References SampleCodeSets.YesNoOptions
+            Order = 4
+      },
+
+           // Dropdown using inline options (no CodeSet)
+       FormFieldSchema.CreateDropDown(
+  id: "project_size",
+        labelEn: "Project Size",
+    options: new[]
+    {
+         new FieldOption("", "-- Select --", "-- Sélectionner --", false, 0),
+        new FieldOption("small", "Small (<10 people)", "Petit (<10 personnes)", false, 1),
+       new FieldOption("medium", "Medium (10-50 people)", "Moyen (10-50 personnes)", false, 2),
+      new FieldOption("large", "Large (>50 people)", "Grand (>50 personnes)", false, 3)
+ },
+  order: 5)
+       with { ParentId = "sec_applicant" }
+            }
+        };
+
+ Console.WriteLine($"Created form schema: '{schema.TitleEn}' with {schema.Fields.Length} fields\n");
+
+      // 4. Build Hierarchy (CodeSets are resolved automatically)
+        var hierarchyService = serviceProvider.GetRequiredService<IFormHierarchyService>();
+        var runtime = await hierarchyService.BuildHierarchyAsync(schema);
+
+        Console.WriteLine($"✓ Built hierarchy: {runtime.Metrics.TotalFields} fields, {runtime.Metrics.RootFields} roots\n");
+
+        // 5. Inspect Resolved Options
+        Console.WriteLine("=== Field Options ===\n");
+
+        foreach (var field in runtime.GetFieldsInOrder())
+    {
+   if (field.Schema.SupportsOptions())
+     {
+             var effectiveOptions = field.GetEffectiveOptions();
+    var source = field.Schema.CodeSetId.HasValue
+            ? $"CodeSet {field.Schema.CodeSetId}"
+     : "Inline Options";
+
+         Console.WriteLine($"Field: {field.Schema.Id} ({field.Schema.FieldType})");
+          Console.WriteLine($"  Label: {field.Schema.LabelEn}");
+         Console.WriteLine($"  Source: {source}");
+           Console.WriteLine($"  Options: {effectiveOptions?.Length ?? 0}");
+
+          if (effectiveOptions != null && effectiveOptions.Length > 0)
+    {
+ foreach (var option in effectiveOptions.Take(3)) // Show first 3
+    {
+      Console.WriteLine($"    - {option.Value}: {option.LabelEn} / {option.LabelFr ?? "(no FR)"}");
+           }
+          if (effectiveOptions.Length > 3)
+   {
+        Console.WriteLine($"    ... and {effectiveOptions.Length - 3} more");
+         }
+  }
+        Console.WriteLine();
+   }
+     }
+
+        // 6. Query CodeSets Directly
+        Console.WriteLine("=== Direct CodeSet Queries ===\n");
+
+        var orgTypes = await codeSetProvider!.GetCodeSetAsync(99);
+        if (orgTypes != null)
+ {
+ Console.WriteLine($"CodeSet: {orgTypes.NameEn} ({orgTypes.Code})");
+      Console.WriteLine($"  Description: {orgTypes.DescriptionEn ?? "N/A"}");
+          Console.WriteLine($"  Category: {orgTypes.Category}");
+            Console.WriteLine($"  Items: {orgTypes.Items.Length}");
+   Console.WriteLine();
+      }
+
+    // Get by code
+        var yesNo = await codeSetProvider.GetCodeSetByCodeAsync("YES_NO");
+        if (yesNo != null)
+        {
+       Console.WriteLine($"Found CodeSet by code: {yesNo.Code} = '{yesNo.NameEn}'");
+      Console.WriteLine();
+        }
+
+        // Get by category
+        var geographyCodeSets = await codeSetProvider.GetCodeSetsByCategoryAsync("Geography");
+        Console.WriteLine($"CodeSets in 'Geography' category: {geographyCodeSets.Length}");
+        foreach (var cs in geographyCodeSets)
+     {
+            Console.WriteLine($"  - {cs.Code}: {cs.NameEn}");
+        }
+        Console.WriteLine();
+
+        // 7. Demonstrate Adding Custom CodeSet
+     Console.WriteLine("=== Adding Custom CodeSet ===\n");
+
+        var customCodeSet = CodeSetSchema.Create(
+    id: 500,
+    code: "GRANT_TYPES",
+     nameEn: "Grant Types",
+       items: new[]
+    {
+      new CodeSetItem { Value = "research", TextEn = "Research Grant", TextFr = "Subvention de recherche", Order = 1 },
+    new CodeSetItem { Value = "community", TextEn = "Community Grant", TextFr = "Subvention communautaire", Order = 2 },
+       new CodeSetItem { Value = "capital", TextEn = "Capital Grant", TextFr = "Subvention d'investissement", Order = 3 }
+  })
+        with
+        {
+            NameFr = "Types de subventions",
+      Category = "Funding",
+    Tags = new[] { "grants", "funding" }
+        };
+
+        codeSetProvider.RegisterCodeSet(customCodeSet);
+        Console.WriteLine($"✓ Registered custom CodeSet: {customCodeSet.Code}");
+        Console.WriteLine($"  Items: {customCodeSet.Items.Length}");
+
+        var updatedStats = codeSetProvider.GetStats();
+     Console.WriteLine($"  Updated total CodeSets: {updatedStats.TotalCodeSets}\n");
+
+        // 8. Test with Form Data
+        Console.WriteLine("=== Simulating Form Submission ===\n");
+
+        var formData = new Dictionary<string, object?>
+        {
+      ["org_type"] = "non_profit",
+  ["province"] = "ON",
+     ["has_funding"] = "yes",
+        ["project_size"] = "medium"
+        };
+
+        Console.WriteLine("Form Data:");
+        foreach (var kvp in formData)
+   {
+    var fieldNode = runtime.GetField(kvp.Key);
+            if (fieldNode != null)
+            {
+  var options = fieldNode.GetEffectiveOptions();
+    var selectedOption = options?.FirstOrDefault(o => o.Value == kvp.Value?.ToString());
+           var displayText = selectedOption?.LabelEn ?? kvp.Value?.ToString() ?? "N/A";
+
+      Console.WriteLine($"{fieldNode.Schema.LabelEn}: {displayText}");
+  }
+        }
+
+   Console.WriteLine("\n=== Example Complete ===");
+    }
+}

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unified Editor - Version A</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome for Icons (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Top Header -->
+    <header class="header">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="btn btn-icon"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="logo"><i class="fa-solid fa-layer-group"></i> DynamicForms <span style="font-weight:400; color:#64748b;">| Grant Application 2025</span></div>
+        </div>
+        <div class="flex items-center gap-2">
+            <div class="flex gap-1 border-r pr-2 mr-2">
+                <button class="btn btn-icon" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
+                <button class="btn btn-icon" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+            <button class="btn"><i class="fa-solid fa-file-import"></i> Import</button>
+            <button class="btn"><i class="fa-solid fa-download"></i> Export</button>
+            <button class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Changes</button>
+        </div>
+    </header>
+
+    <div class="workspace">
+        
+        <!-- Left Sidebar: Library -->
+        <aside class="sidebar-library" id="library-sidebar">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="font-bold text-sm">Toolbox</h3>
+                <button class="btn btn-icon text-xs"><i class="fa-solid fa-filter"></i></button>
+            </div>
+            
+            <div style="overflow-y: auto; flex: 1;">
+                <div class="library-section">
+                    <div class="library-title">Common Fields</div>
+                    <div class="library-item">
+                        <i class="fa-solid fa-font library-icon"></i>
+                        <span>Text Box</span>
+                    </div>
+                    <div class="library-item">
+                        <i class="fa-regular fa-calendar library-icon"></i>
+                        <span>Date Picker</span>
+                    </div>
+                    <div class="library-item">
+                        <i class="fa-solid fa-list-ul library-icon"></i>
+                        <span>Dropdown</span>
+                    </div>
+                    <div class="library-item">
+                        <i class="fa-regular fa-square-check library-icon"></i>
+                        <span>Checkbox</span>
+                    </div>
+                </div>
+
+                <div class="library-section">
+                    <div class="library-title">Templates & Groups</div>
+                    <div class="library-item">
+                        <i class="fa-solid fa-address-card library-icon"></i>
+                        <span>Contact Block</span>
+                    </div>
+                    <div class="library-item">
+                        <i class="fa-solid fa-map-location-dot library-icon"></i>
+                        <span>Address (CAN)</span>
+                    </div>
+                    <div class="library-item">
+                        <i class="fa-solid fa-table library-icon"></i>
+                        <span>Line Items Table</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Resizer Left -->
+        <div class="resizer" id="resizer-left"></div>
+
+        <!-- Center: Editor -->
+        <main class="editor-main">
+            
+            <!-- Workflow Context Strip -->
+            <div class="workflow-strip">
+                <div style="font-weight:600; font-size:0.85rem; color:#64748b; text-transform:uppercase;">Workflow:</div>
+                <div class="wf-step active" id="wf-step-start">
+                    <i class="fa-solid fa-play"></i> Start 
+                    <button class="btn-icon-sm" style="margin-left:4px; border:none; background:transparent; cursor:pointer;" title="Step Properties"><i class="fa-solid fa-gear"></i></button>
+                </div>
+                <div class="wf-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="wf-step">Applicant Info</div>
+                <div class="wf-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="wf-step">Project Details</div>
+                <div class="wf-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="wf-step">Review</div>
+                <button class="btn btn-icon" style="margin-left:auto; border-radius:99px;"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <!-- Editor Toolbar -->
+            <div class="editor-toolbar">
+                <div class="flex gap-2 items-center">
+                    <button id="btn-toggle-library" class="btn btn-icon"><i class="fa-solid fa-bars"></i></button>
+                    <h2 class="font-bold text-lg">Step: Start</h2>
+                </div>
+                
+                <div class="tab-group">
+                    <button class="tab-btn active" data-tab="editor"><i class="fa-solid fa-pen-ruler"></i> Designer</button>
+                    <button class="tab-btn" data-tab="preview"><i class="fa-solid fa-eye"></i> Preview</button>
+                    <button class="tab-btn" data-tab="validation"><i class="fa-solid fa-check-double"></i> Validation</button>
+                    <button class="tab-btn" data-tab="json"><i class="fa-solid fa-code"></i> JSON</button>
+                </div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="canvas-container">
+                
+                <!-- Validation Error Panel (Hidden by default) -->
+                <div id="validation-summary" class="validation-panel">
+                    <h4 style="font-weight:700; margin-bottom:0.5rem; color:#7c2d12;"><i class="fa-solid fa-triangle-exclamation"></i> Validation Issues</h4>
+                    <div class="valid-item"><i class="fa-solid fa-circle-xmark"></i> Field "Email" is missing required property "Label (FR)".</div>
+                    <div class="valid-item"><i class="fa-solid fa-circle-exclamation"></i> Section "Address" has no child fields.</div>
+                </div>
+
+                <!-- JSON View Panel (Hidden by default) -->
+                <div id="json-view" class="form-canvas hidden" style="background:#1e293b; color:#e2e8f0; font-family:monospace; white-space:pre; overflow:auto;">
+{
+  "id": "module_01",
+  "titleEn": "Applicant Info",
+  "fields": [
+    {
+      "id": "sec_intro",
+      "type": "Section",
+      "labelEn": "Introduction"
+    },
+    {
+      "id": "app_title",
+      "type": "TextBox",
+      "labelEn": "Application Title",
+      "required": true
+    }
+  ]
+}
+                </div>
+
+                <div id="form-canvas" class="form-canvas">
+                    <!-- Sample Field 1 -->
+                    <div class="field-node" data-type="Section" data-label="Introduction">
+                        <div class="field-header">
+                            <div class="field-title">
+                                <span class="field-type-badge" style="background:#f0f9ff; color:#0369a1;">Section</span>
+                                Introduction
+                            </div>
+                            <div class="field-actions">
+                                <button class="btn btn-icon" title="Edit Properties"><i class="fa-solid fa-gear"></i></button>
+                                <button class="btn btn-icon" title="Move Up"><i class="fa-solid fa-arrow-up"></i></button>
+                                <button class="btn btn-icon" title="Move Down"><i class="fa-solid fa-arrow-down"></i></button>
+                                <button class="btn btn-icon text-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="field-body">
+                            <div style="padding:1rem; border:1px dashed #cbd5e1; background:#f8fafc; border-radius:4px; text-align:center; color:#64748b; font-size:0.85rem;">
+                                Contains 2 fields (Drop here to add)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sample Field 2 -->
+                    <div class="field-node selected" data-type="TextBox" data-label="Application Title">
+                        <div class="field-header">
+                            <div class="field-title">
+                                <span class="field-type-badge">TextBox</span>
+                                Application Title
+                            </div>
+                            <div class="field-actions">
+                                <button class="btn btn-icon"><i class="fa-solid fa-gear"></i></button>
+                                <button class="btn btn-icon"><i class="fa-solid fa-arrow-up"></i></button>
+                                <button class="btn btn-icon"><i class="fa-solid fa-arrow-down"></i></button>
+                                <button class="btn btn-icon text-danger"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="field-body">
+                            <label class="form-label">Application Title <span style="color:red">*</span></label>
+                            <input type="text" class="form-input" placeholder="Enter title..." disabled>
+                            <div style="font-size:0.75rem; color:#64748b; margin-top:0.25rem;">English Label displayed.</div>
+                        </div>
+                    </div>
+
+                     <!-- Sample Field 3 -->
+                     <div class="field-node" data-type="Date" data-label="Submission Date">
+                        <div class="field-header">
+                            <div class="field-title">
+                                <span class="field-type-badge">Date</span>
+                                Submission Date
+                            </div>
+                            <div class="field-actions">
+                                <button class="btn btn-icon"><i class="fa-solid fa-gear"></i></button>
+                                <button class="btn btn-icon"><i class="fa-solid fa-arrow-up"></i></button>
+                                <button class="btn btn-icon"><i class="fa-solid fa-arrow-down"></i></button>
+                                <button class="btn btn-icon text-danger"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="field-body">
+                            <label class="form-label">Submission Date</label>
+                            <input type="date" class="form-input" disabled>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <!-- Resizer Right -->
+        <div class="resizer" id="resizer-right"></div>
+
+        <!-- Right Sidebar: Properties -->
+        <aside class="sidebar-properties" id="properties-panel">
+            <div class="p-4 border-b bg-white sticky top-0">
+                <h3 class="font-bold text-sm" id="prop-title">TextBox Properties</h3>
+            </div>
+            
+            <div class="prop-group">
+                <h4 style="font-weight:700; margin-bottom:1rem; font-size:0.8rem; text-transform:uppercase; color:#94a3b8; cursor:pointer; display:flex; align-items:center; justify-content:space-between;">
+                    General <i class="fa-solid fa-chevron-down" style="transition: transform 0.2s;"></i>
+                </h4>
+                <div class="prop-content">
+                    <div class="mb-4">
+                        <label class="prop-label">Field ID</label>
+                        <div class="flex gap-2">
+                            <input type="text" class="prop-input" value="app_title_01" readonly style="background:#f1f5f9;">
+                            <button class="btn btn-icon"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="prop-label">Label (English)</label>
+                        <input type="text" class="prop-input" id="prop-label-input" value="Application Title">
+                    </div>
+                    <div class="mb-4">
+                        <label class="prop-label">Label (French)</label>
+                        <input type="text" class="prop-input" value="Titre de la demande">
+                    </div>
+                </div>
+            </div>
+
+            <div class="prop-group">
+                <h4 style="font-weight:700; margin-bottom:1rem; font-size:0.8rem; text-transform:uppercase; color:#94a3b8; cursor:pointer; display:flex; align-items:center; justify-content:space-between;">
+                    Validation <i class="fa-solid fa-chevron-down" style="transition: transform 0.2s;"></i>
+                </h4>
+                <div class="prop-content">
+                    <div class="flex items-center gap-2 mb-2">
+                        <input type="checkbox" id="chk-req" checked>
+                        <label for="chk-req" style="font-size:0.875rem;">Required</label>
+                    </div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <input type="checkbox" id="chk-ro">
+                        <label for="chk-ro" style="font-size:0.875rem;">Read Only</label>
+                    </div>
+                    <div class="mb-2">
+                        <label class="prop-label">Max Length</label>
+                        <input type="number" class="prop-input" value="100">
+                    </div>
+                </div>
+            </div>
+
+            <div class="prop-group">
+                <h4 style="font-weight:700; margin-bottom:1rem; font-size:0.8rem; text-transform:uppercase; color:#94a3b8; cursor:pointer; display:flex; align-items:center; justify-content:space-between;">
+                    Accessibility (WCAG) <i class="fa-solid fa-chevron-down" style="transition: transform 0.2s;"></i>
+                </h4>
+                <div class="prop-content">
+                    <div class="mb-2">
+                        <label class="prop-label">ARIA Role</label>
+                        <select class="prop-input">
+                            <option>textbox</option>
+                            <option>searchbox</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="prop-label">Help Text ID (DescribedBy)</label>
+                        <input type="text" class="prop-input" placeholder="help_element_id">
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+﻿namespace DynamicForms.Core.V4.Schemas;
+
+/// <summary>
+/// Defines a conditional rule for field visibility or behavior based on another field's value
+/// </summary>
+/// <param name="FieldId">ID of the field that triggers this rule</param>
+/// <param name="Operator">Comparison operator (equals, notEquals, contains, greaterThan, lessThan, etc.)</param>
+/// <param name="Value">Value to compare against (null for existence checks)</param>
+/// <param name="Action">Action to take when condition is met (show, hide, enable, disable, require)</param>
+public record ConditionalRule(
+    string FieldId,
+    string Operator,
+    string? Value,
+    string Action
+);
+
+/// <summary>
+/// Represents an option in a dropdown, radio button group, or checkbox list
+/// </summary>
+/// <param name="Value">The underlying value of the option (submitted with form data)</param>
+/// <param name="LabelEn">English display label for the option</param>
+/// <param name="LabelFr">French display label for the option (optional)</param>
+/// <param name="IsDefault">Whether this option is selected by default</param>
+/// <param name="Order">Display order for the option (lower values appear first)</param>
+public record FieldOption(
+    string Value,
+    string LabelEn,
+    string? LabelFr = null,
+    bool IsDefault = false,
+    int Order = 0
+);

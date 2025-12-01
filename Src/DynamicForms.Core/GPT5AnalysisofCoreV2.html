@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>DynamicForms.Core.V2 Design Analysis (GPT5)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+ body { font-family: system-ui, Arial, sans-serif; line-height:1.5; margin:2rem; color:#222; }
+ h1, h2, h3 { font-weight:600; }
+ h1 { margin-top:0; }
+ code, pre { background:#f5f5f7; padding:.25rem .5rem; border-radius:4px; font-size:.9em; }
+ ul { margin:001rem1.2rem; }
+ .tag { display:inline-block; background:#eef; padding:.2rem .5rem; margin:.15rem; border-radius:4px; font-size:.75rem; }
+ .section { margin-bottom:2rem; }
+ .pros li { color:#064d06; }
+ .cons li { color:#7d0000; }
+ table { border-collapse:collapse; width:100%; margin:1rem0; }
+ th, td { border:1px solid #ccc; padding:.5rem; text-align:left; vertical-align:top; }
+ th { background:#fafafa; }
+ .highlight { background:#ffeeb5; }
+ footer { margin-top:3rem; font-size:.75rem; color:#666; }
+ .pill { background:#222; color:#fff; padding:0 .4rem; border-radius:3px; font-size:.65rem; }
+</style>
+</head>
+<body>
+<h1>DynamicForms.Core.V2 Design Analysis</h1>
+<p><strong>Date:</strong>2025-11-30<br /><strong>Target Framework:</strong> .NET9<br /><strong>Scope:</strong> Schema, Runtime, Services, CodeSet Extension</p>
+<hr />
+
+<div class="section" id="summary">
+<h2>Executive Summary</h2>
+<p>The <code>DynamicForms.Core.V2</code> project adopts a modern, immutable schema + runtime composition pattern backed by DI-driven services for hierarchy and validation. This yields testability, thread safety, and extensibility, but some advanced dynamic form capabilities (complex conditional logic, repeaters, computed fields, richer validation semantics, layout abstractions) remain unimplemented. This document catalogs current strengths, weaknesses, missing features, and concrete improvement suggestions including new field types.</p>
+</div>
+
+<div class="section" id="pros-cons">
+<h2>Pros &amp; Cons Overview</h2>
+<h3>Pros</h3>
+<ul class="pros">
+ <li>Clear separation of concerns: immutable <code>Schemas</code>, runtime tree (<code>FormFieldNode</code>, <code>FormModuleRuntime</code>), service layer (<code>IFormHierarchyService</code>, <code>IFormValidationService</code>).</li>
+ <li>Immutability simplifies caching, concurrency, safe sharing across threads.</li>
+ <li>Hierarchy building isolated: deterministic, easy to profile and test.</li>
+ <li>Polymorphic <code>FieldTypeConfig</code> enables typed, future-proof field configuration.</li>
+ <li>Metrics object (<code>HierarchyMetrics</code>) provides structural insights (depth, conditional field count).</li>
+ <li>CodeSet system added with flexible provider abstraction (<code>ICodeSetProvider</code>) and in-memory default.</li>
+ <li>DI extension methods cleanly bundle setup and allow replacement of implementations.</li>
+ <li>Validation service supports rule registration and layered rule execution.</li>
+ <li>Records + <code>init</code> properties enforce construction-time completeness.</li>
+ <li>Resolved options concept (<code>ResolvedOptions</code>) keeps runtime interpretation separate from schema definition.</li>
+</ul>
+<h3>Cons</h3>
+<ul class="cons">
+ <li>Conditional logic is primitive: single-condition, single action, no composite (AND/OR), no multi-action chaining.</li>
+ <li>Lacks cross-field / module-level validation abstractions (date span validity, aggregated numeric limits, dependent required sets).</li>
+ <li>No builtin support for repeatable groups (dynamic arrays) or nested table editing structures.</li>
+ <li>Missing computed / expression-based fields (derived read-only values).</li>
+ <li>UI layout concepts (tabs, steppers, columns, responsive breakpoints) not formalized in schema.</li>
+ <li>Error reporting uses plain strings (no codes, categories, severity levels).</li>
+ <li>No schema migration/versioning tooling (diff, upgrade path, compatibility checks).</li>
+ <li>Localization limited to discrete EN/FR label/description fields—no unified resource abstraction.</li>
+ <li>Validation rules lack contextual metadata (field reference sets, severity).</li>
+ <li>Persistence abstraction for modules not defined beyond repository marker interface; no lifecycle events.</li>
+ <li>No formal renderer contract (e.g., component hints, input modes, accessibility metadata).</li>
+ <li>Metrics could be richer (branching factor per level, rule density, visibility complexity score).</li>
+</ul>
+</div>
+
+<div class="section" id="missing-features">
+<h2>Missing / High-Value Features</h2>
+<ul>
+ <li><strong>Composite Conditional Logic:</strong> Nested groups, AND/OR, NOT, multi-action outcomes.</li>
+ <li><strong>Cascading / Dependent Options:</strong> Parent selection filters child CodeSet items (hierarchical CodeSets).</li>
+ <li><strong>Cross-Field Validation:</strong> Date range (start &le; end), numeric totals, mutually exclusive sets, one-of-required groups.</li>
+ <li><strong>Repeatable Structures (Repeater):</strong> Dynamic lists of a field block with add/remove constraints.</li>
+ <li><strong>Computed / Formula Fields:</strong> Expression engine for read-only derived values (e.g., totals).</li>
+ <li><strong>Advanced Field Types:</strong> Multi-select dropdown, slider, time picker, rich text, signature, geo point.</li>
+ <li><strong>Dynamic Table / Grid Field:</strong> Inline row-adding with column definitions and row-level validation.</li>
+ <li><strong>File Upload Enhancements:</strong> Pluggable storage, virus scanning events, duplicate detection, multi-file sets.</li>
+ <li><strong>Layout / Navigation Models:</strong> Tabs, steppers (wizard steps), collapsible panels, responsive width policies.</li>
+ <li><strong>Extended Internationalization:</strong> Language packs, fallback chain, external resource keys.</li>
+ <li><strong>Schema Governance:</strong> Version migration scripts, compatibility analysis, diff reports.</li>
+ <li><strong>Diagnostics / Linting:</strong> Duplicate order detection, unreachable fields, deep hierarchy warnings, unused CodeSets.</li>
+ <li><strong>Visibility & Enablement Service:</strong> Central service evaluating all conditional logic with caching.</li>
+ <li><strong>Content Security:</strong> Sanitization for rich text / HTML fields.</li>
+ <li><strong>Accessibility Metadata:</strong> ARIA role hints, required rationale, help association model.</li>
+</ul>
+</div>
+
+<div class="section" id="improvement-suggestions">
+<h2>Improvement Suggestions</h2>
+<h3>Schema Layer</h3>
+<ul>
+ <li>Introduce <code>CompositeConditionalRule</code> supporting an array of conditions with logical operator tree.</li>
+ <li>Add <code>DefaultValue</code> & <code>Expression</code> fields (expressions referencing other field IDs).</li>
+ <li>Expand <code>FieldTypeConfig</code> set (see Proposed Field Types below).</li>
+ <li>Embed <code>FieldAccessibility</code> for ARIA labels, describedBy references.</li>
+ <li>Add <code>FieldDisplayHints</code> (preferred component, mask, keyboard, autoComplete).</li>
+ <li>Provide <code>ModuleValidationRule</code> types: <em>DateRangeRule</em>, <em>SumLimitRule</em>, <em>MutualExclusionRule</em>, <em>OneOfRequiredRule</em>.</li>
+</ul>
+<h3>Runtime & Services</h3>
+<ul>
+ <li>Create <code>IVisibilityService</code> consolidating visibility/enablement evaluation with memoization.</li>
+ <li>Add <code>IExpressionEngine</code> (simple DSL or delegate registry) for computed values.</li>
+ <li>Extend validation to return structured objects: code, message, severity, suggested fix.</li>
+ <li>Add profiling hooks: capture evaluation counts, rule timings.</li>
+</ul>
+<h3>Extensibility & Integration</h3>
+<ul>
+ <li>Pluggable storage for file uploads (local, blob, S3) via <code>IFileStorageProvider</code>.</li>
+ <li>Introduce <code>IFieldRendererDescriptorProvider</code> to map field types to UI hints/components.</li>
+ <li>Add caching strategies for CodeSets (ETag, timestamp, soft-expiration).</li>
+</ul>
+<h3>Governance & Tooling</h3>
+<ul>
+ <li>Schema diff tool: old vs new—list breaking vs non-breaking changes.</li>
+ <li>Validation lint pass executed pre-deploy generating quality score.</li>
+ <li>Migration assistant converting V1 objects to V2 records with mapping report.</li>
+</ul>
+<h3>Performance</h3>
+<ul>
+ <li>Pre-compute condition dependency graph to evaluate only affected rules when data changes.</li>
+ <li>Use pooled collections in hierarchy runtime for large forms (&gt;1000 fields).</li>
+ <li>Optional lazy-building of children for deeply nested structures.</li>
+</ul>
+</div>
+
+<div class="section" id="field-types">
+<h2>Suggested Additional Field Types</h2>
+<table>
+<thead>
+<tr><th>Field Type</th><th>Purpose</th><th>Key Config Additions</th></tr>
+</thead>
+<tbody>
+<tr><td>MultiSelectDropDown</td><td>Select multiple values</td><td>maxSelections, searchable</td></tr>
+<tr><td>CheckBoxList</td><td>List of checkboxes</td><td>layout (columns), min/max selections</td></tr>
+<tr><td>RadioButtonList</td><td>Exclusive selection variants</td><td>layout, direction</td></tr>
+<tr><td>Repeater / Collection</td><td>Dynamic repeated block</td><td>minItems, maxItems, templateFields</td></tr>
+<tr><td>Stepper / WizardStep</td><td>Stage-based navigation</td><td>stepIndex, nextConditions</td></tr>
+<tr><td>RichText / Markdown</td><td>Formatted content input</td><td>allowedTags, maxLength</td></tr>
+<tr><td>Slider</td><td>Range selection</td><td>min, max, step, showTicks</td></tr>
+<tr><td>Range (Dual Slider)</td><td>Min/max pair</td><td>min, max, allowOverlap</td></tr>
+<tr><td>TimePicker / DateTimePicker</td><td>Time or date-time capture</td><td>format, min/max, timezoneMode</td></tr>
+<tr><td>GeoPoint / Map</td><td>Location data</td><td>provider, zoom, allowManual</td></tr>
+<tr><td>Signature</td><td>User drawn signature</td><td>canvasSize, exportFormat</td></tr>
+<tr><td>Computed / Formula</td><td>Derived value display</td><td>expression, dependsOn[], format</td></tr>
+<tr><td>Currency</td><td>Monetary entry</td><td>currencyCode, min/max, decimals</td></tr>
+<tr><td>Percent</td><td>0–100 scaled input</td><td>min/max, step, displayMode</td></tr>
+<tr><td>Attachment (MultiFile)</td><td>Multiple file uploads</td><td>maxFiles, totalSizeLimit, virusScan</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="section" id="prioritized-roadmap">
+<h2>Prioritized Enhancement Roadmap</h2>
+<ol>
+ <li><span class="pill">Phase1</span> Composite conditional logic, cross-field validation rules, visibility service.</li>
+ <li><span class="pill">Phase2</span> Repeater support, computed fields, richer FieldTypeConfig set, metrics expansion.</li>
+ <li><span class="pill">Phase3</span> Advanced layout (tabs/stepper), hierarchical CodeSets, expression engine, renderer descriptors.</li>
+ <li><span class="pill">Phase4</span> Governance (diff/migration tooling), caching optimizations, localization abstraction.</li>
+ <li><span class="pill">Phase5</span> Performance profiling integration, analytics, accessibility metadata.</li>
+</ol>
+</div>
+
+<div class="section" id="risk-mitigation">
+<h2>Risk &amp; Mitigation</h2>
+<table>
+<thead><tr><th>Risk</th><th>Impact</th><th>Mitigation</th></tr></thead>
+<tbody>
+<tr><td>Feature creep in conditional logic</td><td>Complexity & performance regression</td><td>Introduce rule complexity scoring, cap nesting depth</td></tr>
+<tr><td>Expression engine security</td><td>Injection / sandbox escape</td><td>Whitelist functions, restrict to safe runtime ops</td></tr>
+<tr><td>Large form performance</td><td>Slow render/evaluation</td><td>Dependency graph + incremental evaluation</td></tr>
+<tr><td>Localization proliferation</td><td>Maintenance overhead</td><td>Adopt resource key indirection early</td></tr>
+<tr><td>Unstructured validation output</td><td>Hard UI mapping</td><td>Add codes, severity, fieldId references</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>DynamicForms.Core.V2 establishes a solid architectural foundation emphasizing immutability and service-driven runtime behaviors. Strategic enhancements in conditional logic, validation breadth, repeatable structures, computed fields, and governance tooling will elevate the platform from robust core to enterprise-grade dynamic form engine. The proposed roadmap and field type expansion provide a practical path forward while maintaining architectural clarity.</p>
+</div>
+
+<footer>
+Generated by GitHub Copilot (GPT5 Analysis). This document is advisory and reflects current repository state at time of generation.
+</footer>
+</body>
+</html>

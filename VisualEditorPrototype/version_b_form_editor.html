@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Editor - Version B</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Identical Editor UI to Version A, but without the Workflow Strip -->
+    <header class="header">
+        <div class="flex items-center gap-4">
+            <a href="version_b_workflow.html" class="btn btn-icon"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="logo"><i class="fa-solid fa-pen-to-square"></i> Form Editor <span style="font-weight:400; color:#64748b;">| Module: Project Details</span></div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Module</button>
+        </div>
+    </header>
+
+    <div class="workspace">
+        
+        <aside class="sidebar-library" id="library-sidebar">
+            <div class="p-4 border-b"><h3 class="font-bold text-sm">Toolbox</h3></div>
+            <div style="padding:1rem;">
+                <div class="library-item"><i class="fa-solid fa-font library-icon"></i> Text Box</div>
+                <div class="library-item"><i class="fa-solid fa-hashtag library-icon"></i> Number</div>
+                <div class="library-item"><i class="fa-solid fa-upload library-icon"></i> File Upload</div>
+            </div>
+        </aside>
+
+        <main class="editor-main">
+            <div class="editor-toolbar">
+                <h2 class="font-bold text-lg">Layout Designer</h2>
+                <div class="tab-group">
+                    <button class="tab-btn active" data-tab="editor">Design</button>
+                    <button class="tab-btn" data-tab="preview">Preview</button>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <div id="form-canvas" class="form-canvas">
+                    
+                    <div class="field-node" data-type="TextBox" data-label="Project Name">
+                        <div class="field-header">
+                            <div class="field-title"><span class="field-type-badge">TextBox</span> Project Name</div>
+                            <div class="field-actions">
+                                <button class="btn btn-icon"><i class="fa-solid fa-gear"></i></button>
+                                <button class="btn btn-icon text-danger"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="field-body">
+                            <label class="form-label">Project Name</label>
+                            <input type="text" class="form-input" disabled>
+                        </div>
+                    </div>
+
+                    <div class="field-node" data-type="TextArea" data-label="Description">
+                        <div class="field-header">
+                            <div class="field-title"><span class="field-type-badge">TextArea</span> Description</div>
+                            <div class="field-actions">
+                                <button class="btn btn-icon"><i class="fa-solid fa-gear"></i></button>
+                                <button class="btn btn-icon text-danger"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="field-body">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-input" rows="4" disabled></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar-properties" id="properties-panel">
+            <div class="p-4 border-b"><h3 class="font-bold text-sm">Properties</h3></div>
+            <div class="p-4 text-center text-light text-sm">Select a field to edit properties</div>
+        </aside>
+
+    </div>
+    
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -10,14 +10,18 @@ namespace DynamicForms.Core.V2.Services;
 public class FormHierarchyService : IFormHierarchyService
 {
     private readonly ILogger<FormHierarchyService> _logger;
+    private readonly ICodeSetProvider? _codeSetProvider;
 
-    public FormHierarchyService(ILogger<FormHierarchyService> logger)
+    public FormHierarchyService(
+        ILogger<FormHierarchyService> logger,
+        ICodeSetProvider? codeSetProvider = null)
     {
         _logger = logger;
+        _codeSetProvider = codeSetProvider;
     }
 
     /// <inheritdoc/>
-    public Task<FormModuleRuntime> BuildHierarchyAsync(
+    public async Task<FormModuleRuntime> BuildHierarchyAsync(
         FormModuleSchema schema,
         CancellationToken cancellationToken = default)
     {
@@ -63,6 +67,12 @@ public class FormHierarchyService : IFormHierarchyService
             }
         }
 
+        // Phase 2.5: Resolve CodeSets if provider is available
+        if (_codeSetProvider != null)
+        {
+            await ResolveCodeSetsAsync(runtime, cancellationToken);
+        }
+
         // Phase 3: Sort root fields by Order
         runtime.RootFields.Sort((a, b) => a.Schema.Order.CompareTo(b.Schema.Order));
 
@@ -77,7 +87,7 @@ public class FormHierarchyService : IFormHierarchyService
         _logger.LogDebug("Hierarchy built successfully: {TotalFields} fields, {RootFields} roots, max depth {MaxDepth}",
             metrics.TotalFields, metrics.RootFields, metrics.MaxDepth);
 
-        return Task.FromResult(runtime);
+        return runtime;
     }
 
     /// <inheritdoc/>
@@ -271,6 +281,51 @@ public class FormHierarchyService : IFormHierarchyService
         }
 
         return false;
+    }
+
+    private async Task ResolveCodeSetsAsync(FormModuleRuntime runtime, CancellationToken cancellationToken)
+    {
+        if (_codeSetProvider == null)
+            return;
+
+        var fieldsNeedingResolution = runtime.FieldNodes.Values
+            .Where(node => node.Schema.RequiresCodeSetResolution())
+            .ToList();
+
+        if (!fieldsNeedingResolution.Any())
+        {
+            _logger.LogDebug("No fields require CodeSet resolution");
+            return;
+        }
+
+        _logger.LogDebug("Resolving CodeSets for {Count} fields", fieldsNeedingResolution.Count);
+
+        foreach (var node in fieldsNeedingResolution)
+        {
+            try
+            {
+                var options = await _codeSetProvider.GetCodeSetAsFieldOptionsAsync(
+                    node.Schema.CodeSetId!.Value, 
+                    cancellationToken);
+
+                if (options != null && options.Length > 0)
+                {
+                    node.ResolvedOptions = options;
+                    _logger.LogDebug("Resolved CodeSet {CodeSetId} for field '{FieldId}': {OptionCount} options",
+                        node.Schema.CodeSetId, node.Schema.Id, options.Length);
+                }
+                else
+                {
+                    _logger.LogWarning("CodeSet {CodeSetId} for field '{FieldId}' returned no options",
+                        node.Schema.CodeSetId, node.Schema.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to resolve CodeSet {CodeSetId} for field '{FieldId}'",
+                    node.Schema.CodeSetId, node.Schema.Id);
+            }
+        }
     }
 
     #endregion

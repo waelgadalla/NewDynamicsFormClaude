@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workflow Editor - Version B</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Workflow Specific Styles */
+        .wf-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: start;
+            position: relative;
+        }
+        .wf-card::before {
+            content: '';
+            position: absolute;
+            left: 1.5rem;
+            top: 3rem;
+            bottom: -1.5rem;
+            width: 2px;
+            background: #e2e8f0;
+            z-index: 0;
+        }
+        .wf-card:last-child::before { display: none; }
+        
+        .wf-icon {
+            width: 3rem; height: 3rem;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            z-index: 1;
+            border: 4px solid white;
+        }
+        
+        .wf-content { flex: 1; }
+        
+        .module-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+        .module-link:hover { border-color: var(--primary); color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="btn btn-icon"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="logo"><i class="fa-solid fa-diagram-project"></i> Workflow Editor <span style="font-weight:400; color:#64748b;">| Grant Flow</span></div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Workflow</button>
+        </div>
+    </header>
+
+    <div class="workspace" style="background: #f1f5f9; padding: 2rem; display: block; overflow-y: auto;">
+        
+        <div style="max-width: 800px; margin: 0 auto;">
+            
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="font-bold text-xl">Workflow Steps</h1>
+                    <p class="text-light text-sm">Define the sequence and assign Form Modules to each step.</p>
+                </div>
+                <button class="btn"><i class="fa-solid fa-plus"></i> Add Step</button>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="wf-card">
+                <div class="wf-icon"><i class="fa-solid fa-play"></i></div>
+                <div class="wf-content">
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-bold">Step 1: Initiation</h3>
+                        <div class="flex gap-1">
+                            <button class="btn btn-icon text-xs"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-icon text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-light mb-2">User starts the application.</p>
+                    
+                    <div style="font-size:0.75rem; font-weight:600; text-transform:uppercase; color:#94a3b8;">Associated Form Module</div>
+                    <a href="version_b_form_editor.html" class="module-link">
+                        <i class="fa-regular fa-file-lines"></i> Module: Applicant Info (v1)
+                        <i class="fa-solid fa-external-link-alt" style="font-size:0.7rem; margin-left:auto;"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="wf-card">
+                <div class="wf-icon"><i class="fa-solid fa-user-pen"></i></div>
+                <div class="wf-content">
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-bold">Step 2: Data Entry</h3>
+                        <div class="flex gap-1">
+                            <button class="btn btn-icon text-xs"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-icon text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-light mb-2">Main data collection phase.</p>
+                    
+                    <div style="font-size:0.75rem; font-weight:600; text-transform:uppercase; color:#94a3b8;">Associated Form Module</div>
+                    <a href="version_b_form_editor.html" class="module-link">
+                        <i class="fa-regular fa-file-lines"></i> Module: Project Details (v2)
+                        <i class="fa-solid fa-external-link-alt" style="font-size:0.7rem; margin-left:auto;"></i>
+                    </a>
+                </div>
+            </div>
+
+             <!-- Step 3 -->
+             <div class="wf-card">
+                <div class="wf-icon" style="background:#f0fdf4; color:#16a34a;"><i class="fa-solid fa-check"></i></div>
+                <div class="wf-content">
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-bold">Step 3: Approval</h3>
+                        <div class="flex gap-1">
+                            <button class="btn btn-icon text-xs"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-icon text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-light mb-2">Internal review by officers.</p>
+                    
+                    <div style="font-size:0.75rem; font-weight:600; text-transform:uppercase; color:#94a3b8;">Associated Form Module</div>
+                    <div class="module-link" style="border-style: dashed; color:#94a3b8;">
+                        <i class="fa-solid fa-plus"></i> Select or Create Module...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
