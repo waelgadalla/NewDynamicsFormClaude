@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DynamicForms V4 - Implementation Caveats</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --bg: #f8fafc;
+            --text: #334155;
+        }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: var(--text); background: var(--bg); padding: 2rem; max-width: 900px; margin: 0 auto; }
+        h1, h2 { color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 1.5rem; border-left: 4px solid var(--primary); }
+        .card-high { border-left-color: var(--danger); }
+        .card-med { border-left-color: var(--warning); }
+        
+        code { font-family: Consolas, monospace; background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; color: #0f172a; }
+        strong { color: #0f172a; }
+    </style>
+</head>
+<body>
+
+    <h1>Implementation Caveats (V4 Core)</h1>
+    <p><strong>Status:</strong> Pending Implementation Details</p>
+    <p>These are architectural risks identified during the final V4 audit. They do not require schema changes but <strong>must</strong> be addressed during the implementation of the Renderer and Editor services.</p>
+
+    <div class="card card-high">
+        <h2>1. The "DataGrid" Logic Scope</h2>
+        <p><strong>Risk:</strong> High</p>
+        <p><strong>The Scenario:</strong> A DataGrid (Repeater) has a logic rule inside it: <em>"Show 'Guardian Name' if 'Age' < 18"</em>.</p>
+        <p><strong>The Problem:</strong> The <code>IConditionEvaluator</code> currently resolves <code>Module.Field</code>. It does not natively understand <code>Row.Field</code>. If you have 5 rows, the evaluator needs to know <em>which</em> row's "Age" to check.</p>
+        <p><strong>Required Solution (Runtime):</strong></p>
+        <ul>
+            <li>The Evaluator must support a <strong>Context Stack</strong> or <strong>Relative Pathing</strong>.</li>
+            <li>When running logic inside a Repeater, the loop index (e.g., <code>[2]</code>) must be injected into the field resolution logic.</li>
+            <li>Field ID: <code>beneficiary_age</code> -> Runtime Path: <code>grid_beneficiaries[2].beneficiary_age</code>.</li>
+        </ul>
+    </div>
+
+    <div class="card card-high">
+        <h2>2. Validation vs. Dynamic State</h2>
+        <p><strong>Risk:</strong> High</p>
+        <p><strong>The Scenario:</strong> Logic Rule: <em>"If Status='Final', make Signature Required"</em>.</p>
+        <p><strong>The Problem:</strong> 
+            <code>FormValidationService</code> reads <code>Schema.Validation.IsRequired</code>. 
+            The Logic Engine updates the UI state, but the Validation Service typically reads the <strong>static schema</strong>.
+        </p>
+        <p><strong>Required Solution (Runtime):</strong></p>
+        <ul>
+            <li>Validation must never run against the raw <code>Schema</code> alone.</li>
+            <li>It must run against the <strong>Effective Runtime State</strong> (Schema + Logic Overrides).</li>
+            <li>The Renderer must maintain a <code>FieldState</code> dictionary (<code>{ IsVisible: true, IsRequired: true }</code>) and pass this to the validator.</li>
+        </ul>
+    </div>
+
+    <div class="card card-med">
+        <h2>3. "Phantom Data" Persistence</h2>
+        <p><strong>Risk:</strong> Medium</p>
+        <p><strong>The Scenario:</strong> User fills out "Section B". Logic runs and hides "Section B". User submits.</p>
+        <p><strong>The Problem:</strong> If the hidden data is saved to the database, it creates "Phantom Data" that might trigger logic rules incorrectly in future steps or corrupt reporting.</p>
+        <p><strong>Required Solution (Runtime):</strong></p>
+        <ul>
+            <li><strong>Option A (Aggressive):</strong> Clear data value immediately when a field becomes hidden.</li>
+            <li><strong>Option B (Lazy):</strong> Strip hidden fields from the JSON payload <em>during submission</em> (Sanitization Pass).</li>
+            <li>Recommendation: <strong>Option B</strong> is safer for UX (prevents data loss if user accidentally toggles a box).</li>
+        </ul>
+    </div>
+
+</body>
+</html>
