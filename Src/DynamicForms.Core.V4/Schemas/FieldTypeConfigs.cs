@@ -1,8 +1,16 @@
+using System.Text.Json.Serialization;
+
 namespace DynamicForms.Core.V4.Schemas;
 
 /// <summary>
 /// Base class for type-specific configuration.
+/// Uses polymorphic serialization to handle derived types.
 /// </summary>
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonDerivedType(typeof(AutoCompleteConfig), typeDiscriminator: "autocomplete")]
+[JsonDerivedType(typeof(DataGridConfig), typeDiscriminator: "datagrid")]
+[JsonDerivedType(typeof(FileUploadConfig), typeDiscriminator: "fileupload")]
+[JsonDerivedType(typeof(DateConfig), typeDiscriminator: "date")]
 public abstract record FieldTypeConfig { }
 
 /// <summary>
