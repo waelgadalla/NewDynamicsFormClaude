@@ -1,6 +1,7 @@
 using DynamicForms.Core.V4.Runtime;
 using DynamicForms.Core.V4.Schemas;
 using DynamicForms.Core.V4.Services;
+using DynamicForms.Core.V4.Enums; // Added for ConditionOperator
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -27,17 +28,17 @@ public class ConditionEvaluatorTests
         // Arrange
         var condition = new Condition
         {
-    Field = "org_type",
-            Operator = "eq",
+            Field = "org_type",
+            Operator = ConditionOperator.Equals,
             Value = "Business"
- };
+        };
 
         var data = new Dictionary<string, object?>
         {
-{ "org_type", "Business" }
+            { "org_type", "Business" }
         };
 
-     // Act
+        // Act
         var result = _evaluator.Evaluate(condition, data);
 
         // Assert
@@ -49,19 +50,19 @@ public class ConditionEvaluatorTests
     {
         // Arrange
         var condition = new Condition
-    {
-         Field = "age",
-        Operator = "lt",
-        Value = 18
- };
+        {
+            Field = "age",
+            Operator = ConditionOperator.LessThan,
+            Value = 18
+        };
 
-  var data = new Dictionary<string, object?>
-     {
-        { "age", 16 }
+        var data = new Dictionary<string, object?>
+        {
+            { "age", 16 }
         };
 
         // Act
-    var result = _evaluator.Evaluate(condition, data);
+        var result = _evaluator.Evaluate(condition, data);
 
         // Assert
         Assert.True(result);
@@ -73,75 +74,75 @@ public class ConditionEvaluatorTests
         // Arrange
         var condition = new Condition
         {
-        Field = "email",
-    Operator = "contains",
+            Field = "email",
+            Operator = ConditionOperator.Contains,
             Value = "@example.com"
         };
 
         var data = new Dictionary<string, object?>
-     {
-          { "email", "user@example.com" }
+        {
+            { "email", "user@example.com" }
         };
 
-    // Act
+        // Act
         var result = _evaluator.Evaluate(condition, data);
 
-   // Assert
+        // Assert
         Assert.True(result);
     }
 
     [Fact]
     public void Evaluate_InOperator_ReturnsTrue()
-{
+    {
         // Arrange
         var condition = new Condition
         {
-    Field = "province",
-Operator = "in",
-   Value = new[] { "ON", "QC", "BC" }
+            Field = "province",
+            Operator = ConditionOperator.In,
+            Value = new[] { "ON", "QC", "BC" }
         };
 
-   var data = new Dictionary<string, object?>
+        var data = new Dictionary<string, object?>
         {
-      { "province", "ON" }
+            { "province", "ON" }
         };
 
         // Act
-var result = _evaluator.Evaluate(condition, data);
+        var result = _evaluator.Evaluate(condition, data);
 
-    // Assert
+        // Assert
         Assert.True(result);
     }
 
- #endregion
+    #endregion
 
     #region Complex Condition Tests
 
     [Fact]
     public void Evaluate_AndCondition_AllTrue_ReturnsTrue()
     {
-   // Arrange
+        // Arrange
         var condition = new Condition
         {
             LogicalOp = LogicalOperator.And,
-       Conditions = new[]
+            Conditions = new[]
             {
-      new Condition { Field = "age", Operator = "lt", Value = 18 },
-      new Condition { Field = "province", Operator = "eq", Value = "ON" }
-       }
-     };
-
- var data = new Dictionary<string, object?>
-        {
-          { "age", 16 },
-        { "province", "ON" }
+                new Condition { Field = "age", Operator = ConditionOperator.LessThan, Value = 18 },
+                new Condition { Field = "province", Operator = ConditionOperator.Equals, Value = "ON" }
+            }
         };
 
-   // Act
+        var data = new Dictionary<string, object?>
+        {
+            { "age", 16 },
+            { "province", "ON" }
+        };
+
+        // Act
         var result = _evaluator.Evaluate(condition, data);
 
-     // Assert
-     Assert.True(result);
+        // Assert
+        Assert.True(result);
     }
 
     [Fact]
@@ -150,49 +151,49 @@ var result = _evaluator.Evaluate(condition, data);
         // Arrange
         var condition = new Condition
         {
-   LogicalOp = LogicalOperator.Or,
-  Conditions = new[]
+            LogicalOp = LogicalOperator.Or,
+            Conditions = new[]
             {
-     new Condition { Field = "province", Operator = "eq", Value = "ON" },
-                new Condition { Field = "province", Operator = "eq", Value = "QC" }
- }
-        };
-
- var data = new Dictionary<string, object?>
-        {
-          { "province", "ON" }
-  };
-
-        // Act
-        var result = _evaluator.Evaluate(condition, data);
-
-     // Assert
-   Assert.True(result);
-    }
-
-    [Fact]
-    public void Evaluate_NotCondition_ReturnsTrueWhenInnerIsFalse()
- {
-      // Arrange
-      var condition = new Condition
-        {
-            LogicalOp = LogicalOperator.Not,
-        Conditions = new[]
-          {
-   new Condition { Field = "is_student", Operator = "eq", Value = true }
+                new Condition { Field = "province", Operator = ConditionOperator.Equals, Value = "ON" },
+                new Condition { Field = "province", Operator = ConditionOperator.Equals, Value = "QC" }
             }
         };
 
         var data = new Dictionary<string, object?>
-     {
-        { "is_student", false }
+        {
+            { "province", "ON" }
         };
 
         // Act
         var result = _evaluator.Evaluate(condition, data);
 
-     // Assert
-     Assert.True(result);
+        // Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void Evaluate_NotCondition_ReturnsTrueWhenInnerIsFalse()
+    {
+        // Arrange
+        var condition = new Condition
+        {
+            LogicalOp = LogicalOperator.Not,
+            Conditions = new[]
+            {
+                new Condition { Field = "is_student", Operator = ConditionOperator.Equals, Value = true }
+            }
+        };
+
+        var data = new Dictionary<string, object?>
+        {
+            { "is_student", false }
+        };
+
+        // Act
+        var result = _evaluator.Evaluate(condition, data);
+
+        // Assert
+        Assert.True(result);
     }
 
     [Fact]
@@ -200,26 +201,26 @@ var result = _evaluator.Evaluate(condition, data);
     {
         // Scenario: Age < 18 AND (Province = ON OR Province = QC)
         // Arrange
- var condition = new Condition
+        var condition = new Condition
         {
             LogicalOp = LogicalOperator.And,
- Conditions = new[]
-   {
-       new Condition { Field = "age", Operator = "lt", Value = 18 },
-   new Condition
-         {
-             LogicalOp = LogicalOperator.Or,
- Conditions = new[]
-      {
-          new Condition { Field = "province", Operator = "eq", Value = "ON" },
-               new Condition { Field = "province", Operator = "eq", Value = "QC" }
-   }
-       }
+            Conditions = new[]
+            {
+                new Condition { Field = "age", Operator = ConditionOperator.LessThan, Value = 18 },
+                new Condition
+                {
+                    LogicalOp = LogicalOperator.Or,
+                    Conditions = new[]
+                    {
+                        new Condition { Field = "province", Operator = ConditionOperator.Equals, Value = "ON" },
+                        new Condition { Field = "province", Operator = ConditionOperator.Equals, Value = "QC" }
+                    }
+                }
             }
         };
 
-      var data = new Dictionary<string, object?>
-{
+        var data = new Dictionary<string, object?>
+        {
             { "age", 16 },
             { "province", "QC" }
         };
@@ -236,14 +237,14 @@ var result = _evaluator.Evaluate(condition, data);
     #region Cross-Module Field Reference Tests
 
     [Fact]
-  public void ParseFieldReference_SimpleField_ReturnsNoModule()
+    public void ParseFieldReference_SimpleField_ReturnsNoModule()
     {
         // Act
-     var (moduleKey, fieldId) = _evaluator.ParseFieldReference("age");
+        var (moduleKey, fieldId) = _evaluator.ParseFieldReference("age");
 
-  // Assert
+        // Assert
         Assert.Null(moduleKey);
- Assert.Equal("age", fieldId);
+        Assert.Equal("age", fieldId);
     }
 
     [Fact]
@@ -254,7 +255,7 @@ var result = _evaluator.Evaluate(condition, data);
 
         // Assert
         Assert.Equal("PersonalInfo", moduleKey);
- Assert.Equal("age", fieldId);
+        Assert.Equal("age", fieldId);
     }
 
     [Fact]
@@ -263,7 +264,7 @@ var result = _evaluator.Evaluate(condition, data);
         // Act
         var (moduleKey, fieldId) = _evaluator.ParseFieldReference("1.applicant_age");
 
-   // Assert
+        // Assert
         Assert.Equal("1", moduleKey);
         Assert.Equal("applicant_age", fieldId);
     }
@@ -271,47 +272,47 @@ var result = _evaluator.Evaluate(condition, data);
     [Fact]
     public void Evaluate_CrossModuleReference_ReturnsTrue()
     {
-    // Arrange
-  var condition = new Condition
+        // Arrange
+        var condition = new Condition
         {
             Field = "PersonalInfo.age",  // Cross-module reference
-            Operator = "lt",
+            Operator = ConditionOperator.LessThan,
             Value = 18
         };
 
         var workflowData = new WorkflowFormData
         {
-   Modules = new Dictionary<string, Dictionary<string, object?>>
+            Modules = new Dictionary<string, Dictionary<string, object?>>
             {
-        { "PersonalInfo", new Dictionary<string, object?> { { "age", 16 } } },
-    { "ContactInfo", new Dictionary<string, object?> { { "email", "test@example.com" } } }
-   }
+                { "PersonalInfo", new Dictionary<string, object?> { { "age", 16 } } },
+                { "ContactInfo", new Dictionary<string, object?> { { "email", "test@example.com" } } }
+            }
         };
 
-    // Act
+        // Act
         var result = _evaluator.Evaluate(condition, workflowData);
 
         // Assert
-  Assert.True(result);
+        Assert.True(result);
     }
 
     [Fact]
     public void Evaluate_CrossModuleWithCurrentModuleFallback_ReturnsTrue()
     {
-  // Arrange
+        // Arrange
         var condition = new Condition
         {
-    Field = "age",  // No module prefix - should use CurrentModuleKey
-     Operator = "lt",
+            Field = "age",  // No module prefix - should use CurrentModuleKey
+            Operator = ConditionOperator.LessThan,
             Value = 18
-    };
+        };
 
         var workflowData = new WorkflowFormData
         {
-       CurrentModuleKey = "PersonalInfo",
- Modules = new Dictionary<string, Dictionary<string, object?>>
-        {
-    { "PersonalInfo", new Dictionary<string, object?> { { "age", 16 } } }
+            CurrentModuleKey = "PersonalInfo",
+            Modules = new Dictionary<string, Dictionary<string, object?>>
+            {
+                { "PersonalInfo", new Dictionary<string, object?> { { "age", 16 } } }
             }
         };
 
@@ -325,67 +326,67 @@ var result = _evaluator.Evaluate(condition, data);
     [Fact]
     public void Evaluate_ComplexCrossModuleCondition_ReturnsTrue()
     {
-   // Scenario: Show parental consent if age < 18 in Module 1 AND province = ON in Module 2
+        // Scenario: Show parental consent if age < 18 in Module 1 AND province = ON in Module 2
         // Arrange
         var condition = new Condition
         {
-         LogicalOp = LogicalOperator.And,
+            LogicalOp = LogicalOperator.And,
             Conditions = new[]
- {
-    new Condition { Field = "1.applicant_age", Operator = "lt", Value = 18 },
-              new Condition { Field = "2.province", Operator = "eq", Value = "ON" }
-       }
-    };
-
-        var workflowData = new WorkflowFormData
-        {
-     Modules = new Dictionary<string, Dictionary<string, object?>>
             {
-     { "1", new Dictionary<string, object?> { { "applicant_age", 16 } } },
-       { "2", new Dictionary<string, object?> { { "province", "ON" } } }
+                new Condition { Field = "1.applicant_age", Operator = ConditionOperator.LessThan, Value = 18 },
+                new Condition { Field = "2.province", Operator = ConditionOperator.Equals, Value = "ON" }
             }
         };
 
- // Act
+        var workflowData = new WorkflowFormData
+        {
+            Modules = new Dictionary<string, Dictionary<string, object?>>
+            {
+                { "1", new Dictionary<string, object?> { { "applicant_age", 16 } } },
+                { "2", new Dictionary<string, object?> { { "province", "ON" } } }
+            }
+        };
+
+        // Act
         var result = _evaluator.Evaluate(condition, workflowData);
 
         // Assert
         Assert.True(result);
     }
 
-  #endregion
+    #endregion
 
     #region Workflow Rule Evaluation Tests
 
     [Fact]
     public void EvaluateRule_FieldLevelAction_ReturnsTriggered()
-{
+    {
         // Arrange
         var rule = new ConditionalRule
         {
             Id = "show_business_number",
             TargetFieldId = "business_number",
-     Action = "show",
-    Condition = new Condition
+            Action = "show",
+            Condition = new Condition
             {
-         Field = "org_type",
-       Operator = "eq",
-         Value = "Business"
-    }
+                Field = "org_type",
+                Operator = ConditionOperator.Equals,
+                Value = "Business"
+            }
         };
 
         var workflowData = WorkflowFormData.FromSingleModule("current", new Dictionary<string, object?>
-{
-  { "org_type", "Business" }
+        {
+            { "org_type", "Business" }
         });
 
-// Act
+        // Act
         var result = _evaluator.EvaluateRule(rule, workflowData);
 
-  // Assert
+        // Assert
         Assert.True(result.IsTriggered);
         Assert.Equal("show", result.ActionToPerform);
-   Assert.Equal("business_number", result.TargetFieldId);
+        Assert.Equal("business_number", result.TargetFieldId);
     }
 
     [Fact]
@@ -394,30 +395,30 @@ var result = _evaluator.Evaluate(condition, data);
         // Arrange
         var rule = new ConditionalRule
         {
-Id = "skip_financial_review",
+            Id = "skip_financial_review",
             TargetStepNumber = 3,
-        Action = "skipStep",
+            Action = "skipStep",
             Condition = new Condition
-       {
- Field = "1.total_amount",
-         Operator = "lt",
-       Value = 10000
-        }
+            {
+                Field = "1.total_amount",
+                Operator = ConditionOperator.LessThan,
+                Value = 10000
+            }
         };
 
         var workflowData = new WorkflowFormData
-    {
-      Modules = new Dictionary<string, Dictionary<string, object?>>
+        {
+            Modules = new Dictionary<string, Dictionary<string, object?>>
             {
                 { "1", new Dictionary<string, object?> { { "total_amount", 5000 } } }
-       }
+            }
         };
 
         // Act
         var result = _evaluator.EvaluateRule(rule, workflowData);
 
         // Assert
-   Assert.True(result.IsTriggered);
+        Assert.True(result.IsTriggered);
         Assert.Equal("skipStep", result.ActionToPerform);
         Assert.Equal(3, result.TargetStepNumber);
     }
@@ -428,45 +429,45 @@ Id = "skip_financial_review",
         // Arrange
         var rules = new[]
         {
-     new ConditionalRule
-     {
-     Id = "rule3",
-        Priority = 300,
-                TargetFieldId = "field1",
-    Action = "show",
-      Condition = new Condition { Field = "trigger", Operator = "eq", Value = true }
-  },
             new ConditionalRule
-  {
-                Id = "rule1",
-         Priority = 100,
-      TargetFieldId = "field2",
-     Action = "hide",
-     Condition = new Condition { Field = "trigger", Operator = "eq", Value = true }
-            },
-   new ConditionalRule
             {
-            Id = "rule2",
+                Id = "rule3",
+                Priority = 300,
+                TargetFieldId = "field1",
+                Action = "show",
+                Condition = new Condition { Field = "trigger", Operator = ConditionOperator.Equals, Value = true }
+            },
+            new ConditionalRule
+            {
+                Id = "rule1",
+                Priority = 100,
+                TargetFieldId = "field2",
+                Action = "hide",
+                Condition = new Condition { Field = "trigger", Operator = ConditionOperator.Equals, Value = true }
+            },
+            new ConditionalRule
+            {
+                Id = "rule2",
                 Priority = 200,
-   TargetFieldId = "field3",
-   Action = "disable",
-        Condition = new Condition { Field = "trigger", Operator = "eq", Value = true }
-        }
+                TargetFieldId = "field3",
+                Action = "disable",
+                Condition = new Condition { Field = "trigger", Operator = ConditionOperator.Equals, Value = true }
+            }
         };
 
-   var workflowData = WorkflowFormData.FromSingleModule("current", new Dictionary<string, object?>
+        var workflowData = WorkflowFormData.FromSingleModule("current", new Dictionary<string, object?>
         {
-      { "trigger", true }
- });
+            { "trigger", true }
+        });
 
         // Act
         var results = _evaluator.EvaluateRules(rules, workflowData);
 
-      // Assert
+        // Assert
         Assert.Equal(3, results.Length);
         Assert.Equal("rule1", results[0].Rule.Id);  // Priority 100
         Assert.Equal("rule2", results[1].Rule.Id);  // Priority 200
-     Assert.Equal("rule3", results[2].Rule.Id);  // Priority 300
+        Assert.Equal("rule3", results[2].Rule.Id);  // Priority 300
     }
 
     [Fact]
@@ -475,11 +476,11 @@ Id = "skip_financial_review",
         // Arrange
         var rule = new ConditionalRule
         {
-    Id = "inactive_rule",
-  IsActive = false,
-   TargetFieldId = "field1",
+            Id = "inactive_rule",
+            IsActive = false,
+            TargetFieldId = "field1",
             Action = "show",
-    Condition = new Condition { Field = "trigger", Operator = "eq", Value = true }
+            Condition = new Condition { Field = "trigger", Operator = ConditionOperator.Equals, Value = true }
         };
 
         var workflowData = WorkflowFormData.FromSingleModule("current", new Dictionary<string, object?>
@@ -490,7 +491,7 @@ Id = "skip_financial_review",
         // Act
         var result = _evaluator.EvaluateRule(rule, workflowData);
 
- // Assert
+        // Assert
         Assert.False(result.IsTriggered);
     }
 
@@ -504,74 +505,74 @@ Id = "skip_financial_review",
         // Real scenario: Show parental consent field if applicant is under 18 AND in ON or QC
         // Arrange
         var rule = new ConditionalRule
-    {
-       Id = "show_parental_consent",
-TargetFieldId = "sec_parental_consent",
-       Action = "show",
+        {
+            Id = "show_parental_consent",
+            TargetFieldId = "sec_parental_consent",
+            Action = "show",
             Condition = new Condition
             {
-         LogicalOp = LogicalOperator.And,
-     Conditions = new[]
-     {
-        new Condition { Field = "PersonalInfo.applicant_age", Operator = "lt", Value = 18 },
-    new Condition
-       {
-       LogicalOp = LogicalOperator.Or,
-    Conditions = new[]
-    {
-    new Condition { Field = "PersonalInfo.province", Operator = "eq", Value = "ON" },
-      new Condition { Field = "PersonalInfo.province", Operator = "eq", Value = "QC" }
-   }
-   }
+                LogicalOp = LogicalOperator.And,
+                Conditions = new[]
+                {
+                    new Condition { Field = "PersonalInfo.applicant_age", Operator = ConditionOperator.LessThan, Value = 18 },
+                    new Condition
+                    {
+                        LogicalOp = LogicalOperator.Or,
+                        Conditions = new[]
+                        {
+                            new Condition { Field = "PersonalInfo.province", Operator = ConditionOperator.Equals, Value = "ON" },
+                            new Condition { Field = "PersonalInfo.province", Operator = ConditionOperator.Equals, Value = "QC" }
+                        }
+                    }
+                }
             }
-            }
-   };
+        };
 
         var workflowData = new WorkflowFormData
         {
-Modules = new Dictionary<string, Dictionary<string, object?>>
-       {
-    { "PersonalInfo", new Dictionary<string, object?> 
-      { 
-         { "applicant_age", 16 }, 
-       { "province", "ON" } 
-            } 
+            Modules = new Dictionary<string, Dictionary<string, object?>>
+            {
+                { "PersonalInfo", new Dictionary<string, object?> 
+                    { 
+                        { "applicant_age", 16 }, 
+                        { "province", "ON" } 
+                    } 
                 }
-      }
-     };
+            }
+        };
 
-    // Act
-    var result = _evaluator.EvaluateRule(rule, workflowData);
+        // Act
+        var result = _evaluator.EvaluateRule(rule, workflowData);
 
         // Assert
         Assert.True(result.IsTriggered);
         Assert.Equal("show", result.ActionToPerform);
-}
+    }
 
     [Fact]
     public void Scenario_SkipFinancialReviewForSmallAmounts_ReturnsTrue()
     {
         // Real scenario: Skip financial review step if total amount < $10,000
-  // Arrange
+        // Arrange
         var rule = new ConditionalRule
         {
-          Id = "skip_financial_review",
+            Id = "skip_financial_review",
             Description = "Skip financial review for amounts under $10,000",
-        TargetStepNumber = 3,
-    Action = "skipStep",
+            TargetStepNumber = 3,
+            Action = "skipStep",
             Condition = new Condition
-    {
+            {
                 Field = "Step1.total_request_amount",
-         Operator = "lt",
-           Value = 10000
-         }
+                Operator = ConditionOperator.LessThan,
+                Value = 10000
+            }
         };
 
-    var workflowData = new WorkflowFormData
+        var workflowData = new WorkflowFormData
         {
-         Modules = new Dictionary<string, Dictionary<string, object?>>
-       {
-             { "Step1", new Dictionary<string, object?> { { "total_request_amount", 7500 } } }
+            Modules = new Dictionary<string, Dictionary<string, object?>>
+            {
+                { "Step1", new Dictionary<string, object?> { { "total_request_amount", 7500 } } }
             }
         };
 
@@ -586,34 +587,34 @@ Modules = new Dictionary<string, Dictionary<string, object?>>
 
     [Fact]
     public void Scenario_CompleteWorkflowForPreApproved_ReturnsTrue()
-  {
+    {
         // Real scenario: Complete workflow immediately if user is pre-approved
         // Arrange
         var rule = new ConditionalRule
-   {
+        {
             Id = "complete_for_preapproved",
-    Action = "completeWorkflow",
-  Condition = new Condition
+            Action = "completeWorkflow",
+            Condition = new Condition
             {
-        LogicalOp = LogicalOperator.And,
-  Conditions = new[]
-   {
-      new Condition { Field = "Step1.approval_status", Operator = "eq", Value = "pre_approved" },
-            new Condition { Field = "Step1.credit_score", Operator = "gte", Value = 750 }
+                LogicalOp = LogicalOperator.And,
+                Conditions = new[]
+                {
+                    new Condition { Field = "Step1.approval_status", Operator = ConditionOperator.Equals, Value = "pre_approved" },
+                    new Condition { Field = "Step1.credit_score", Operator = ConditionOperator.GreaterThanOrEqual, Value = 750 }
+                }
             }
-  }
         };
 
         var workflowData = new WorkflowFormData
         {
-  Modules = new Dictionary<string, Dictionary<string, object?>>
+            Modules = new Dictionary<string, Dictionary<string, object?>>
             {
-       { "Step1", new Dictionary<string, object?> 
-     { 
-        { "approval_status", "pre_approved" }, 
-  { "credit_score", 800 } 
-                 } 
-        }
+                { "Step1", new Dictionary<string, object?> 
+                    { 
+                        { "approval_status", "pre_approved" }, 
+                        { "credit_score", 800 } 
+                    } 
+                }
             }
         };
 

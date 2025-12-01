@@ -3,13 +3,19 @@
   "WorkspaceRootPath": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\tests\\conditionevaluatortests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\schemas\\fieldsupport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\extensions\\servicecollectionextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\services\\iconditionevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\services\\conditionevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\schemas\\fieldsupport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\tests\\conditionevaluatortests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\schemas\\conditionalrule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
@@ -143,16 +149,10 @@
       "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\runtime\\workflowformdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\services\\iconditionevaluator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\dynamicforms.core.v4.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5216D46D-67EC-C2C0-64F6-2908E9265ECB}|..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj|c:\\users\\waelm\\source\\repos\\waelgadalla\\newdynamicsformclaude\\src\\dynamicforms.core.v4\\extensions\\servicecollectionextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\V4_IMPLEMENTATION_COMPLETE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
@@ -170,19 +170,84 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 47,
-              "Title": "V4_FIELD_TYPES_REFERENCE.md",
-              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\V4_FIELD_TYPES_REFERENCE.md",
-              "RelativeDocumentMoniker": "V4_FIELD_TYPES_REFERENCE.md",
-              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\V4_FIELD_TYPES_REFERENCE.md",
-              "RelativeToolTip": "V4_FIELD_TYPES_REFERENCE.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0CAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2025-12-01T00:36:08.891Z",
+              "DocumentIndex": 1,
+              "Title": "ServiceCollectionExtensions.cs",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Extensions\\ServiceCollectionExtensions.cs",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Extensions\\ServiceCollectionExtensions.cs",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Extensions\\ServiceCollectionExtensions.cs",
+              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Extensions\\ServiceCollectionExtensions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T00:31:56.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "DynamicForms.Core.V4",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj",
+              "RelativeToolTip": "..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-12-01T00:30:51.899Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ConditionEvaluatorTests.cs",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Tests\\ConditionEvaluatorTests.cs",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Tests\\ConditionEvaluatorTests.cs",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Tests\\ConditionEvaluatorTests.cs",
+              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Tests\\ConditionEvaluatorTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T00:15:13.522Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ConditionEvaluator.cs",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Services\\ConditionEvaluator.cs",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Services\\ConditionEvaluator.cs",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Services\\ConditionEvaluator.cs",
+              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Services\\ConditionEvaluator.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAIwEgAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T00:13:27.982Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IConditionEvaluator.cs",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Services\\IConditionEvaluator.cs",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Services\\IConditionEvaluator.cs",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Services\\IConditionEvaluator.cs",
+              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Services\\IConditionEvaluator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T00:12:48.705Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FieldSupport.cs",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Schemas\\FieldSupport.cs",
+              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Schemas\\FieldSupport.cs",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Schemas\\FieldSupport.cs",
+              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Schemas\\FieldSupport.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T00:27:15.21Z",
               "EditorCaption": ""
             },
             {
@@ -200,72 +265,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
-              "Title": "ServiceCollectionExtensions.cs",
-              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Extensions\\ServiceCollectionExtensions.cs",
-              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Extensions\\ServiceCollectionExtensions.cs",
-              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Extensions\\ServiceCollectionExtensions.cs",
-              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Extensions\\ServiceCollectionExtensions.cs",
-              "ViewState": "AgIAAFAAAAAAAAAAAEBVwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T00:31:56.305Z",
+              "DocumentIndex": 47,
+              "Title": "V4_FIELD_TYPES_REFERENCE.md",
+              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\V4_FIELD_TYPES_REFERENCE.md",
+              "RelativeDocumentMoniker": "V4_FIELD_TYPES_REFERENCE.md",
+              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\V4_FIELD_TYPES_REFERENCE.md",
+              "RelativeToolTip": "V4_FIELD_TYPES_REFERENCE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-12-01T00:36:08.891Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
-              "Title": "DynamicForms.Core.V4",
-              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj",
-              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj",
-              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj",
-              "RelativeToolTip": "..\\DynamicForms.Core.V4\\DynamicForms.Core.V4.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-01T00:30:51.899Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ConditionEvaluatorTests.cs",
-              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Tests\\ConditionEvaluatorTests.cs",
-              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Tests\\ConditionEvaluatorTests.cs",
-              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Tests\\ConditionEvaluatorTests.cs",
-              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Tests\\ConditionEvaluatorTests.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T00:15:13.522Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ConditionEvaluator.cs",
-              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Services\\ConditionEvaluator.cs",
-              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Services\\ConditionEvaluator.cs",
-              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Services\\ConditionEvaluator.cs",
-              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Services\\ConditionEvaluator.cs",
-              "ViewState": "AgIAADgAAAAAAAAAAAAIwEUAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T00:13:27.982Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "FieldSupport.cs",
-              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Schemas\\FieldSupport.cs",
-              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Schemas\\FieldSupport.cs",
-              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Schemas\\FieldSupport.cs",
-              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Schemas\\FieldSupport.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T00:27:15.21Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "ConditionalRule.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Schemas\\ConditionalRule.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Schemas\\ConditionalRule.cs",
@@ -278,7 +291,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "FormWorkflowSchema.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Schemas\\FormWorkflowSchema.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Schemas\\FormWorkflowSchema.cs",
@@ -291,7 +304,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "plan-f8d08aaa-b8a2-4493-b34f-5b58f1956e07.md",
               "DocumentMoniker": "C:\\Users\\waelm\\AppData\\Local\\Temp\\VisualStudio\\copilot-vs\\plan-f8d08aaa-b8a2-4493-b34f-5b58f1956e07.md",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\VisualStudio\\copilot-vs\\plan-f8d08aaa-b8a2-4493-b34f-5b58f1956e07.md",
@@ -304,20 +317,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 42,
               "Title": "Condition.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Schemas\\Condition.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Schemas\\Condition.cs",
               "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Schemas\\Condition.cs",
               "RelativeToolTip": "..\\DynamicForms.Core.V4\\Schemas\\Condition.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-01T00:11:59.543Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 43,
               "Title": "WorkflowFormData.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Runtime\\WorkflowFormData.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Runtime\\WorkflowFormData.cs",
@@ -330,20 +343,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
-              "Title": "IConditionEvaluator.cs",
-              "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Services\\IConditionEvaluator.cs",
-              "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\Services\\IConditionEvaluator.cs",
-              "ToolTip": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\Services\\IConditionEvaluator.cs",
-              "RelativeToolTip": "..\\DynamicForms.Core.V4\\Services\\IConditionEvaluator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T00:12:48.705Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 44,
               "Title": "README.md",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V4\\README.md",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V4\\README.md",
@@ -356,7 +356,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 32,
               "Title": "Sonnet45_CoreV2_DesignAnalysis_Part3.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45_CoreV2_DesignAnalysis_Part3.html",
               "RelativeDocumentMoniker": "Sonnet45_CoreV2_DesignAnalysis_Part3.html",
@@ -369,7 +369,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "Sonnet45_CoreV2_DesignAnalysis_Part2.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45_CoreV2_DesignAnalysis_Part2.html",
               "RelativeDocumentMoniker": "Sonnet45_CoreV2_DesignAnalysis_Part2.html",
@@ -382,7 +382,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "Sonnet45_CoreV2_DesignAnalysis_Part1.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45_CoreV2_DesignAnalysis_Part1.html",
               "RelativeDocumentMoniker": "Sonnet45_CoreV2_DesignAnalysis_Part1.html",
@@ -395,7 +395,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "GPT5AnalysisofCoreV2.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\GPT5AnalysisofCoreV2.html",
               "RelativeDocumentMoniker": "GPT5AnalysisofCoreV2.html",
@@ -408,7 +408,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "plan-ce77f9c2-6a05-4a12-9533-6bb63d95c8cc.md",
               "DocumentMoniker": "C:\\Users\\waelm\\AppData\\Local\\Temp\\VisualStudio\\copilot-vs\\plan-ce77f9c2-6a05-4a12-9533-6bb63d95c8cc.md",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\VisualStudio\\copilot-vs\\plan-ce77f9c2-6a05-4a12-9533-6bb63d95c8cc.md",
@@ -421,7 +421,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 41,
               "Title": "Sonnet45_HybridRules_WorkflowAnalysis.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45_HybridRules_WorkflowAnalysis.html",
               "RelativeDocumentMoniker": "Sonnet45_HybridRules_WorkflowAnalysis.html",
@@ -434,7 +434,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 40,
               "Title": "Sonnet45_LogicEngine_BlazorEdition.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45_LogicEngine_BlazorEdition.html",
               "RelativeDocumentMoniker": "Sonnet45_LogicEngine_BlazorEdition.html",
@@ -447,7 +447,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 39,
               "Title": "Sonnet45_LogicEngine_UltraAnalysis.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45_LogicEngine_UltraAnalysis.html",
               "RelativeDocumentMoniker": "Sonnet45_LogicEngine_UltraAnalysis.html",
@@ -460,7 +460,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 38,
               "Title": "Sonnet45CoreToV3_Comparison_Part3.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45CoreToV3_Comparison_Part3.html",
               "RelativeDocumentMoniker": "Sonnet45CoreToV3_Comparison_Part3.html",
@@ -473,7 +473,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 37,
               "Title": "Sonnet45CoreToV3_Comparison_Part2.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45CoreToV3_Comparison_Part2.html",
               "RelativeDocumentMoniker": "Sonnet45CoreToV3_Comparison_Part2.html",
@@ -486,7 +486,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 36,
               "Title": "Sonnet45CoreToV3_Comparison_Part1.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45CoreToV3_Comparison_Part1.html",
               "RelativeDocumentMoniker": "Sonnet45CoreToV3_Comparison_Part1.html",
@@ -499,7 +499,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 35,
               "Title": "Sonnet45CoreV2toCoreV3_Comparison_Part3.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45CoreV2toCoreV3_Comparison_Part3.html",
               "RelativeDocumentMoniker": "Sonnet45CoreV2toCoreV3_Comparison_Part3.html",
@@ -512,7 +512,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 34,
               "Title": "Sonnet45CoreV2toCoreV3_Comparison_Part2.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45CoreV2toCoreV3_Comparison_Part2.html",
               "RelativeDocumentMoniker": "Sonnet45CoreV2toCoreV3_Comparison_Part2.html",
@@ -525,7 +525,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 33,
               "Title": "Sonnet45CoreV2toCoreV3_Comparison_Part1.html",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\Sonnet45CoreV2toCoreV3_Comparison_Part1.html",
               "RelativeDocumentMoniker": "Sonnet45CoreV2toCoreV3_Comparison_Part1.html",
@@ -538,7 +538,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 20,
               "Title": "CodeSetSchema.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V2\\Schemas\\CodeSetSchema.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V2\\Schemas\\CodeSetSchema.cs",
@@ -551,7 +551,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 21,
               "Title": "ICodeSetProvider.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V2\\Services\\ICodeSetProvider.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V2\\Services\\ICodeSetProvider.cs",
@@ -564,7 +564,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 22,
               "Title": "InMemoryCodeSetProvider.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V2\\Services\\InMemoryCodeSetProvider.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V2\\Services\\InMemoryCodeSetProvider.cs",
@@ -577,7 +577,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 23,
               "Title": "FormFieldSchema.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V2\\Schemas\\FormFieldSchema.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V2\\Schemas\\FormFieldSchema.cs",
@@ -590,7 +590,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "FormFieldNode.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V2\\Runtime\\FormFieldNode.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V2\\Runtime\\FormFieldNode.cs",
@@ -603,7 +603,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "FormHierarchyService.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V2\\Services\\FormHierarchyService.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V2\\Services\\FormHierarchyService.cs",
@@ -616,7 +616,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "CODESETS_README.md",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V2\\CODESETS_README.md",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V2\\CODESETS_README.md",
@@ -629,7 +629,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "SampleCodeSets.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V2\\Services\\SampleCodeSets.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V2\\Services\\SampleCodeSets.cs",
@@ -642,7 +642,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "ServiceCollectionExtensions.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core.V2\\Extensions\\ServiceCollectionExtensions.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Core.V2\\Extensions\\ServiceCollectionExtensions.cs",
@@ -655,7 +655,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "schema.json",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\ComplexFormDemo\\schema.json",
               "RelativeDocumentMoniker": "..\\..\\ComplexFormDemo\\schema.json",
@@ -668,7 +668,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 19,
               "Title": "Editor.razor",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Core\\DynamicForms.Editor\\Pages\\Editor.razor",
               "RelativeDocumentMoniker": "DynamicForms.Editor\\Pages\\Editor.razor",
@@ -681,7 +681,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "FieldListDemo.razor",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\FieldListDemo.razor",
               "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Pages\\FieldListDemo.razor",
@@ -694,7 +694,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "FieldListDemo.razor.css",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\FieldListDemo.razor.css",
               "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Pages\\FieldListDemo.razor.css",
@@ -707,7 +707,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "Routes.razor",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Routes.razor",
               "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Routes.razor",
@@ -720,7 +720,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "App.razor",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\App.razor",
               "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\App.razor",
@@ -733,7 +733,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "ModuleList.razor",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\ModuleList.razor",
               "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Pages\\ModuleList.razor",
@@ -746,7 +746,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "Home.razor",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Pages\\Home.razor",
               "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Pages\\Home.razor",
@@ -759,7 +759,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "PUBLISH_SERVICE_SUMMARY.md",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\PUBLISH_SERVICE_SUMMARY.md",
               "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\PUBLISH_SERVICE_SUMMARY.md",
@@ -776,7 +776,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 17,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\waelm\\source\\repos\\waelgadalla\\NewDynamicsFormClaude\\Src\\DynamicForms.Editor\\Program.cs",
               "RelativeDocumentMoniker": "..\\DynamicForms.Editor\\Program.cs",
@@ -789,7 +789,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 18,
               "Title": "Microsoft.NET.TargetFrameworkInference.targets",
               "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets",

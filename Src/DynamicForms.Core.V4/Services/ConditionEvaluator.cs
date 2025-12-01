@@ -1,5 +1,6 @@
 using DynamicForms.Core.V4.Runtime;
 using DynamicForms.Core.V4.Schemas;
+using DynamicForms.Core.V4.Enums;
 using Microsoft.Extensions.Logging;
 
 namespace DynamicForms.Core.V4.Services;
@@ -123,20 +124,20 @@ return (moduleKey, fieldId);
 
     private bool EvaluateSimpleCondition(Condition condition, WorkflowFormData workflowData)
     {
-        if (condition.Field == null || condition.Operator == null)
+        if (condition.Field == null || !condition.Operator.HasValue)
         {
-         _logger.LogWarning("Invalid simple condition: missing Field or Operator");
+            _logger.LogWarning("Invalid simple condition: missing Field or Operator");
             return false;
         }
 
         // Parse field reference to get module and field ID
         var (moduleKey, fieldId) = ParseFieldReference(condition.Field);
 
-// Get field value from workflow data
+        // Get field value from workflow data
         var fieldValue = workflowData.GetFieldValue(moduleKey, fieldId);
 
-      // Evaluate operator
-     return EvaluateOperator(fieldValue, condition.Operator, condition.Value);
+        // Evaluate operator
+        return EvaluateOperator(fieldValue, condition.Operator.Value, condition.Value);
     }
 
     private bool EvaluateComplexCondition(Condition condition, WorkflowFormData workflowData)
@@ -156,30 +157,32 @@ return (moduleKey, fieldId);
         };
     }
 
-    private bool EvaluateOperator(object? fieldValue, string op, object? expectedValue)
- {
-   // Normalize operator (support both symbolic and text forms)
-        var normalizedOp = op.ToLowerInvariant();
-
-        return normalizedOp switch
+    private bool EvaluateOperator(object? fieldValue, ConditionOperator op, object? expectedValue)
+    {
+        return op switch
         {
-         "eq" or "==" => AreEqual(fieldValue, expectedValue),
-         "neq" or "!=" => !AreEqual(fieldValue, expectedValue),
-  "lt" or "<" => Compare(fieldValue, expectedValue) < 0,
-            "lte" or "<=" => Compare(fieldValue, expectedValue) <= 0,
-    "gt" or ">" => Compare(fieldValue, expectedValue) > 0,
-    "gte" or ">=" => Compare(fieldValue, expectedValue) >= 0,
-            "in" => IsIn(fieldValue, expectedValue),
-    "notin" => !IsIn(fieldValue, expectedValue),
-      "contains" => Contains(fieldValue, expectedValue),
-     "notcontains" => !Contains(fieldValue, expectedValue),
-  "startswith" => StartsWith(fieldValue, expectedValue),
-            "endswith" => EndsWith(fieldValue, expectedValue),
-         "isempty" => IsEmpty(fieldValue),
-     "isnotempty" => !IsEmpty(fieldValue),
-     "isnull" => fieldValue == null,
- "isnotnull" => fieldValue != null,
-_ => throw new NotSupportedException($"Operator '{op}' is not supported")
+            ConditionOperator.Equals => AreEqual(fieldValue, expectedValue),
+            ConditionOperator.NotEquals => !AreEqual(fieldValue, expectedValue),
+            
+            ConditionOperator.LessThan => Compare(fieldValue, expectedValue) < 0,
+            ConditionOperator.LessThanOrEqual => Compare(fieldValue, expectedValue) <= 0,
+            ConditionOperator.GreaterThan => Compare(fieldValue, expectedValue) > 0,
+            ConditionOperator.GreaterThanOrEqual => Compare(fieldValue, expectedValue) >= 0,
+            
+            ConditionOperator.In => IsIn(fieldValue, expectedValue),
+            ConditionOperator.NotIn => !IsIn(fieldValue, expectedValue),
+            
+            ConditionOperator.Contains => Contains(fieldValue, expectedValue),
+            ConditionOperator.NotContains => !Contains(fieldValue, expectedValue),
+            ConditionOperator.StartsWith => StartsWith(fieldValue, expectedValue),
+            ConditionOperator.EndsWith => EndsWith(fieldValue, expectedValue),
+            
+            ConditionOperator.IsEmpty => IsEmpty(fieldValue),
+            ConditionOperator.IsNotEmpty => !IsEmpty(fieldValue),
+            ConditionOperator.IsNull => fieldValue == null,
+            ConditionOperator.IsNotNull => fieldValue != null,
+            
+            _ => throw new NotSupportedException($"Operator '{op}' is not supported")
         };
     }
 

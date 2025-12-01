@@ -1,45 +1,30 @@
+using System.Text.Json.Serialization;
+using DynamicForms.Core.V4.Enums;
+
 namespace DynamicForms.Core.V4.Schemas;
 
 /// <summary>
-/// Represents a condition for conditional rules.
-/// Supports simple conditions (field comparison) and complex conditions (AND/OR/NOT logic).
+/// Represents a logical condition for rules (e.g. Visibility, Validation).
+/// Recursive structure supports nested groups (AND/OR).
 /// Enables cross-module field references using dot notation (ModuleKey.FieldId).
 /// </summary>
 public record Condition
 {
     // ===== Simple Condition (Leaf Node) =====
 
-/// <summary>
-    /// Field reference for condition evaluation.
-    /// 
-    /// Syntax options:
-    /// - Simple reference: "age" (field in current module)
-  /// - Numeric module reference: "1.age" (field in module with ID 1)
-    /// - Named module reference: "PersonalInfo.age" (field in module named "PersonalInfo")
-    /// 
-    /// Cross-module references allow conditions to depend on field values from other modules in a workflow.
+    /// <summary>
+    /// The field ID to evaluate (e.g. "age", "Step1.total").
+    /// Null if this is a complex group.
     /// </summary>
     public string? Field { get; init; }
 
     /// <summary>
-    /// Comparison operator for evaluating the field value.
-    /// 
-    /// Supported operators:
-    /// - Equality: "eq" or "==", "neq" or "!="
-    /// - Comparison: "lt" or "<", "lte" or "<=", "gt" or ">", "gte" or ">="
-    /// - Collection: "in" (value in array), "notIn" (value not in array)
-    /// - String: "contains", "notContains", "startsWith", "endsWith"
-    /// - Existence: "isEmpty", "isNotEmpty", "isNull", "isNotNull"
+    /// The operator to apply (Equals, GreaterThan, etc.).
     /// </summary>
-    public string? Operator { get; init; }
+    public ConditionOperator? Operator { get; init; }
 
-  /// <summary>
-    /// Expected value to compare the field value against.
-    /// Type depends on field type and operator:
-    /// - String comparison: string value
-    /// - Numeric comparison: int or double
-    /// - Array operators (in/notIn): array of values
-    /// - Boolean: true/false
+    /// <summary>
+    /// The value to compare against.
     /// </summary>
     public object? Value { get; init; }
 
@@ -52,45 +37,15 @@ public record Condition
     public LogicalOperator? LogicalOp { get; init; }
 
     /// <summary>
-    /// Array of sub-conditions for complex logic.
-    /// Used with LogicalOp to create AND/OR/NOT expressions.
-    /// Each sub-condition can itself be simple or complex (recursive).
+    /// Child conditions for this group.
     /// </summary>
     public Condition[]? Conditions { get; init; }
 
-    // ===== Validation Helper =====
+    // ===== Helpers =====
+    
+    [JsonIgnore]
+    public bool IsSimpleCondition => !string.IsNullOrWhiteSpace(Field) && Operator.HasValue;
 
-    /// <summary>
-    /// Checks if this is a simple condition (has Field and Operator).
-    /// </summary>
-    public bool IsSimpleCondition => Field != null && Operator != null;
-
-    /// <summary>
-    /// Checks if this is a complex condition (has LogicalOp and Conditions).
-    /// </summary>
-    public bool IsComplexCondition => LogicalOp != null && Conditions != null && Conditions.Length > 0;
-}
-
-/// <summary>
-/// Logical operators for combining conditions in complex logic expressions.
-/// </summary>
-public enum LogicalOperator
-{
-    /// <summary>
-    /// All sub-conditions must be true (logical AND).
-    /// Example: Age < 18 AND Province = ON
-    /// </summary>
-    And,
-
-    /// <summary>
-    /// At least one sub-condition must be true (logical OR).
-    /// Example: Province = ON OR Province = QC
-    /// </summary>
-    Or,
-
-    /// <summary>
-    /// Negates the sub-condition (logical NOT).
-    /// Example: NOT (Age < 18)
-    /// </summary>
-    Not
+    [JsonIgnore]
+    public bool IsComplexCondition => LogicalOp.HasValue && Conditions != null && Conditions.Length > 0;
 }
